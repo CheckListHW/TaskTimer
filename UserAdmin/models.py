@@ -1,5 +1,9 @@
 from django.db import models
 
+
 # Create your models here.
 class Project(models.Model):
-    Name = models.CharField(max_length=30)
+    Creator = models.IntegerField(null='true'),
+    Name = models.CharField(max_length=30),
+    Time = models.IntegerField(null='true'),
+

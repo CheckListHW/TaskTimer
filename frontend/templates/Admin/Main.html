@@ -1,0 +1,104 @@
+{% extends "Shared/Header.html" %}
+
+{% block content %}
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static "Admin/css/Main.css" %}">
+
+</head>
+    {% verbatim %}
+    <!-- Main Body -->
+    <div class="main_body">
+        <div class="wrapper" id="projectList">
+            <div class="title">
+                <h1>Проекты</h1>
+            </div>
+
+
+            <div class="projects_control">
+                <div class="projects_list_window">
+
+                    <div class="add_project">
+                        <div class="add" @click="isAdded = !isAdded">
+                            Добавить проект <i class="fa fa-plus"></i>
+                        </div>
+
+                        <transition
+                           name="custom-classes-transition"
+                           enter-active-class="animate__animated animate__zoomIn"
+                           leave-active-class="animate__animated animate__zoomOut"
+                        >
+                            <div class="add_input" v-show="isAdded">
+                                <input type="text"
+                                    placeholder="Введите название нового проекта..."
+                                    v-model="enterdName"
+                                >
+                                <div class="add_new" @click="addNewProject">
+                                    Создать
+                                </div>
+
+                                <div class="cancel" @click="cancel">
+                                    Отмена
+                                </div>
+                            </div>
+                        </transition>
+                    </div>
+
+                    <div class="info" v-show="projects_list.length == 0">
+                        <h2>Проектов нет</h2>
+                    </div>
+
+                    <div class="projects_list">
+                        <div v-for="(project, index) in projects_list"
+                        v-bind:class="{project : true, selectedProject : index == activeProject}"
+                        @click="changeVisible(index)">
+                            <div class="project_name">
+                                <h2>{{project.name}}</h2>
+                            </div>
+
+                            <div class="menu" v-show="project.menuVisible">
+                                <div class="edit" @click="editProject(index)">
+                                    <i class="fa fa-pencil"></i>
+                                </div>
+
+                                <div class="delete" @click="deleteProject(index)">
+                                    <i class="fa fa-trash-o"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="projects_edit">
+                    <div class="message" v-show="activeProject == -1 || !isEdited">
+                        <h2>Выберите проект для редактирования</h2>
+                    </div>
+
+                    <div class="edit_window" v-show="activeProject != -1 && isEdited">
+                        <h2>Редактирование проекта</h2>
+
+                        <div class="edit_input_window">
+                            <input type="text" class="edit_input" v-model="editedName">
+                        </div>
+
+                        <div class="edit_buttons">
+                            <div class="save_edit" @click="saveEdit">
+                                Сохранить
+                            </div>
+
+                            <div class="cancel_edit" @click="cancelEdit">
+                                Отмена
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endverbatim %}
+
+
+{% load static %}
+    <script src="{% static "Admin/js/Main.js" %} "></script>
+{% endblock %}
+

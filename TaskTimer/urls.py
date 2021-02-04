@@ -15,7 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from rest_framework.routers import SimpleRouter
+
+from UserAdmin import views as AdminViews
+from UserAdmin import Filters as AdminFilters
+
+router = SimpleRouter()
+router.register('api/project', AdminFilters.ProjectView, basename='ProjectList')
 
 urlpatterns = [
+    path('', AdminViews.Main),
     path('admin/', admin.site.urls),
 ]
+
+urlpatterns += router.urls
