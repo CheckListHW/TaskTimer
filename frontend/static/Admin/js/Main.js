@@ -11,7 +11,7 @@ new Vue ({
         isEdited: false,
 
         newProjectCount: 0,
-
+        lastEventId: null,
         editedName: "",
     },
 
@@ -109,5 +109,21 @@ new Vue ({
             Vue.set(this.projects_list, this.activeProject, temp);
             this.activeProject = -1;
         },
+    },
+
+    created: async function() {
+
+        const vm = this;
+        let projects = (await axios.get('/api/project')).data
+
+        projects.forEach(function (project) {
+            var newProject = {
+                id:project.id ,
+                name: project.Name,
+                time: project.Time,
+                menuVisible: false,
+            };
+            vm.projects_list.push(newProject);
+        })
     }
 })
