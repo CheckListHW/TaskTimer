@@ -26,7 +26,7 @@ SECRET_KEY = '8q_)*t*-5sntua&a-s55noaf#t2=4b=gw$rt#3h+-tmfi-61v='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'cheklist.ru.com', 'www.cheklist.ru.com']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'UserAdmin',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -50,9 +51,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'TaskTimer.urls'
+
+
 
 TEMPLATES = [
     {

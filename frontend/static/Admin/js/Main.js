@@ -30,10 +30,18 @@ new Vue ({
                 name: str,
                 menuVisible: false,
             };
-            this.projects_list.push(newProject);
-            let projects = (await axios.get('/api/project')).data
 
-            console.log(projects);
+
+
+            newProject.id = await axiospost('/project/add',
+                {
+                    Name:newProject.name,
+                    })
+
+
+            this.projects_list.push(newProject);
+            console.log(this.projects_list)
+
             this.isAdded = false;
             this.enterdName = "";
         },
@@ -46,17 +54,15 @@ new Vue ({
         changeVisible: function(index) {
             if(!this.isDeleted) {
                 if(this.activeProject >= 0) {
-                    var temp = {
-                        name: this.projects_list[this.activeProject].name,
-                        menuVisible: false,
-                    }
+
+                    var temp = this.projects_list[this.activeProject]
+                    temp.menuVisible = false
                     Vue.set(this.projects_list, this.activeProject, temp);
                 }
 
-                var temp = {
-                    name: this.projects_list[index].name,
-                    menuVisible: true,
-                }
+                var temp = this.projects_list[index]
+                temp.menuVisible = true
+
                 Vue.set(this.projects_list, index, temp);
                 this.activeProject = index;
 
@@ -73,6 +79,11 @@ new Vue ({
         },
 
         deleteProject: function(index) {
+            axiospost('/project/delete',
+            {
+                id: this.projects_list[index].id,
+            })
+
             this.projects_list.splice(index, 1);
             this.activeProject = -1;
             this.isDeleted = true;
@@ -90,6 +101,13 @@ new Vue ({
                 menuVisible: false,
             };
 
+            console.log(this.projects_list[this.activeProject])
+
+            axiospost('/project/edit',
+            {
+                id: this.projects_list[this.activeProject].id,
+                Name: str,
+            })
             Vue.set(this.projects_list, this.activeProject, newProject);
 
             this.isEdited = false;
@@ -114,6 +132,7 @@ new Vue ({
     created: async function() {
 
         const vm = this;
+
         let projects = (await axios.get('/api/project')).data
 
         projects.forEach(function (project) {
@@ -127,3 +146,10 @@ new Vue ({
         })
     }
 })
+
+
+async function  axiospost(url, data){
+    let csrfToken = document.querySelector('form[name=csrf-token]').querySelector('input').value
+    let headersOption = {  headers: {"X-CSRFToken": csrfToken}  }
+    return ( await axios.post(url, data , headersOption) ).data
+}

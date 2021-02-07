@@ -13,9 +13,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
 
+
     {% load static %}
     <link rel="stylesheet" href="{% static "Shared/icons/font-awesome-4.7.0/css/font-awesome.min.css" %}">
-
     <title>HarTime</title>
 </head>
 <body>
@@ -38,6 +38,8 @@
 
 {% block content %}
 {% endblock %}
-
+    <form name="csrf-token">
+        {% csrf_token %}
+    </form>
 </body>
 </html>
