@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "Welcome/icons/font-awesome-4.7.0/css/font-awesome.min.css" %}">
+    <link rel="stylesheet" href="{% static "Welcome/css/login_css.css" %}">
+    <link rel="stylesheet" href="{% static "Welcome/anim/animate.min.css" %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div class="content">
+        <div v-bind:class="[login_visible ? 'short' : 'expand', 'login-container', 'animated', 'fadeInDown']" style="animation-delay:.3s;" id="login">
+
+            <div class="login" v-show="login_visible">
+                <div class="icon">
+                    <i class="fa fa-user"></i>
+                </div>
+                <h1 class="form-title">
+                    ВХОД
+                    <hr>
+                </h1>
+                <form method="post">
+                    <div v-bind:class="[login_visible ? 'short_margin' : 'expand_margin', 'form-container', 'animated', 'fadeIn']" style="animation-delay: .2s;">
+                        <label for=""><i class="fa fa-at"></i> Email</label>
+                        <input type="text" name="username" v-model="login.email" placeholder="E-mail">
+
+                        <label for=""><i class="fa fa-slack"></i> Пароль</label>
+                        <input type="password" name="password" v-model="login.password" placeholder="Пароль">
+
+                        <label style="color: red; font-size: 13px"> {{ message }}</label>
+
+                        {% csrf_token %}
+
+                        <div class="submit-buttons">
+                            <input type="submit" value="Войти">
+                            <input type="button" value="Регистрация" @click="change">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="register animated" v-show="register_visible" style="animation-delay: .3s">
+                <div class="icon">
+                    <i class="fa fa-user-plus" style="color:#57efc4;"></i>
+                </div>
+                <h1 class="form-title">
+                    РЕГИСТРАЦИЯ
+                    <hr>
+                </h1>
+
+                <div v-bind:class="[login_visible ? 'short_margin' : 'expand_margin', 'form-container', 'animated', 'fadeIn']" style="animation-delay: .2s;">
+                    <label for=""><i class="fa fa-user-circle"></i> Имя </label>
+                    <input  type="text" v-model="register.name" placeholder="Имя">
+
+                    <label for=""><i class="fa fa-at"></i> Email </label>
+                    <input type="email" v-model="register.email" placeholder="E-mail">
+
+                    <label for=""><i class="fa fa-slack"></i> Пароль </label>
+                    <input type="password" v-model="register.password" placeholder="Пароль">
+
+                    <label for=""><i class="fa fa-slack"></i> Подтвердите пароль </label>
+                    <input type="password" v-model="register.confirn_passford"  placeholder="Пароль">
+
+                    <div class="submit-buttons">
+                        <input type="submit" value="Регистрация" style="background:#55efc4;">
+                        <input type="button" value="Войти"  @click="change">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% load static %}
+    <script src="{% static "Welcome/js/login_js.js" %} "></script>
+</body>
+</html>

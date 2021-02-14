@@ -1,0 +1,168 @@
+body {
+    margin: 0;
+    height: 100%;
+    font-family: 'Comfortaa', sans-serif;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+
+    background-color: #eee;
+}
+
+*,
+*: before,
+*: after {
+    box-sizing: border-box;
+}
+
+.content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.login-container {
+    position: relative;
+    display: flex;
+
+    width: 400px;
+
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.07);
+    transition: .4s;
+}
+
+.short {
+    height: 60vh;
+    min-height: 450px;
+}
+
+.expand {
+    height: 80vh;
+    min-height: 600px;
+}
+
+.login {
+    width: 100%;
+    padding: 15px;
+    align-items: center;
+    text-align: center;
+    position: relative;
+
+    transition: .4s;
+}
+
+.register {
+    width: 100%;
+    padding: 15px;
+    align-items: center;
+    text-align: center;
+    position: relative;
+
+    transition: .4s;
+}
+
+.icon {
+    font-size: 45px;
+    color: #55a0ff;
+
+    margin-top: 30px;
+}
+
+.form-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    text-align: center;
+    color: #dedede;
+
+    font-size: 30px;
+    line-height: 1.5;
+
+    margin-bottom: 30px;
+    margin-top: 0;
+}
+
+.form-title hr {
+    width: 75%;
+    border: 2px solid #dedede;
+    border-radius: 2px;
+    margin-top: 20px;
+
+    opacity: 0.3;
+}
+
+.form-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+
+    text-align: left;
+}
+
+.short_margin {
+    margin-top: 75px;
+}
+
+.expand_margin {
+    margin-top: 75px;
+}
+
+
+.form-container label {
+    font-size: 9.5px;
+    color: #55a0ff;
+    margin-left: 4px;
+}
+
+.form-container input {
+    background: #f8fafc ;
+    border: 0;
+    width: 100%;
+
+    font-family: 'Comfortaa';
+
+    box-sizing: border-box;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    outline: 0;
+    transition: .4s;
+}
+
+.form-container input::placeholder {
+    opacity: .4;
+
+    font-family: 'Comfortaa';
+}
+
+.submit-buttons {
+    display: flex;
+
+    margin-top: 20px;
+}
+
+.submit-buttons input {
+    width: 50%;
+    text-align: center;
+    color: white;
+    transition: .2s;
+}
+
+.submit-buttons input:hover {
+    opacity: .7;
+}
+
+.submit-buttons input:nth-of-type(1) {
+    border-radius: 5px 0 0 5px;
+    background: #55a0ff;
+}
+
+.submit-buttons input:nth-of-type(2) {
+    border-radius: 0 5px 5px 0;
+    background: #c8d6e5;
+}

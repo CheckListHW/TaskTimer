@@ -21,23 +21,30 @@ new Vue ({
     methods: {
         addNewProject: async function() {
             var str = this.enterdName;
+
             if(str == "") {
                 this.newProjectCount += 1;
                 str = "Новый проект " + this.newProjectCount;
             }
 
-            var newProject = {
-                name: str,
-                menuVisible: false,
-            };
-
-
-
-            newProject.id = await axiospost('/project/add',
+            newProjectId = await axiospost('/project/add',
                 {
                     Name:newProject.name,
                     })
 
+            if (newProjectId < 0)
+                Toast.add({
+                        text: 'Проект не добавлена!',
+                        color: '#ff0000',
+                        delay: 100000,
+                    });
+                return
+
+            var newProject = {
+                name: str,
+                menuVisible: false,
+                id:newProjectId,
+            };
 
             this.projects_list.push(newProject);
             console.log(this.projects_list)
@@ -83,6 +90,8 @@ new Vue ({
             {
                 id: this.projects_list[index].id,
             })
+
+
 
             this.projects_list.splice(index, 1);
             this.activeProject = -1;
@@ -146,10 +155,3 @@ new Vue ({
         })
     }
 })
-
-
-async function  axiospost(url, data){
-    let csrfToken = document.querySelector('form[name=csrf-token]').querySelector('input').value
-    let headersOption = {  headers: {"X-CSRFToken": csrfToken}  }
-    return ( await axios.post(url, data , headersOption) ).data
-}

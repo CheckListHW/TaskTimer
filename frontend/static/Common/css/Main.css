@@ -1,0 +1,548 @@
+body {
+    margin: 0;
+    font-family: 'Commissioner', sans-serif;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+
+    background-color: #000;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+/* Scrollbar ===============*/
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: #282828;
+}
+
+::-webkit-scrollbar-thumb {
+    width: 6px;
+    height: 6px;
+    background-color: #240090;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #282828;
+}
+
+/* Container ===============*/
+
+.container {
+    width: 100%;
+    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header ===============*/
+
+.header {
+    width: 100%;
+    height: 65px;
+    margin-bottom: 20px;
+    top: 0;
+    left: 0;
+
+    /*box-shadow: 0 0 7px;*/
+}
+
+.header__inner {
+    display: flex;
+    height: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Navigator ===============*/
+
+.nav {
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.selected {
+    box-shadow: 0 -3px 0 0 #240090 inset;
+}
+
+.nav_link {
+    padding: 0 20px;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+
+    position: relative;
+
+    color: #fff;
+    text-decoration: none;
+    opacity: 0.75;
+
+    transition: opacity 0.1s linear;
+
+    z-index: 9999;
+}
+
+.nav_link:before {
+    content:'';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 0px;
+    height: 65px;
+
+    background: #240090;
+
+    transition: all .5s ease;
+    z-index: -1;
+}
+
+.nav_link:hover:before {
+    width: 100%;
+    z-index: -1;
+}
+
+.nav_link:hover {
+    color: #fff;
+    text-decoration: none;
+    opacity: 1;
+}
+
+/* Common ===============*/
+
+.user {
+    display: flex;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.user_link {
+    color: #3500D3;
+    text-decoration: none;
+    opacity: 0.85;
+
+    transition: opacity 0.1s linear;
+}
+
+.user_link:hover {
+    color: #3500D3;
+    text-decoration: none;
+    opacity: 1;
+}
+
+/* Main Body ===============*/
+
+.main_body {
+    width: 100%;
+}
+
+.wrapper {
+    height: calc(100vh - 85px);
+    max-height: calc(100vh - 85px);
+
+    width: 100%;
+    max-width: 1200px;
+
+    margin: 0 auto;
+    padding: 0 15px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* Data Block ===============*/
+
+.data_block {
+    display: flex;
+
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.data_buttons {
+    display: flex;
+
+    margin-right: 15px;
+}
+
+.data_title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.data_title h1 {
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 22px;
+
+    margin: 0;
+}
+
+/* Add New Timer ===============*/
+
+.add_new_timer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0px 20px;
+
+    height: 70px;
+
+    color: #fff;
+    background: rgba(40,40,40,0.65);
+
+    margin-bottom: 15px;
+}
+
+.choose_block {
+    display: flex;
+    align-items: center;
+
+    padding: 0px 10px;
+
+    height: 80%;
+    width: 400px;
+
+    font-size: 16px;
+
+    position: relative;
+}
+
+.choose_block:hover {
+    background: rgba(255,255,255,0.15);
+    cursor: pointer;
+}
+
+.choose_block p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    margin-bottom: 0px;
+}
+
+/* Choose Block ===============*/
+
+.choose_window {
+    display: flex;
+    flex-direction: column;
+
+    padding: 10px 15px 10px 10px;
+
+    width: 300px;
+    height: 200px;
+    max-height: 200px;
+
+    position: absolute;
+    margin-top: 300px;
+    background: rgba(40,40,40,1);
+}
+
+.choose_title {
+    width: 100%;
+}
+
+.choose_title h3 {
+    font-size: 16px;
+    padding: 0 0 0 5px;
+}
+
+.choose_projects_list {
+    height: 150px;
+    max-height: 150px;
+
+    overflow: auto;
+}
+
+.choose_project {
+    display: flex;
+    align-items: center;
+
+    padding: 0 10px 0 5px;
+
+    min-height: 30px;
+}
+
+.choose_project:hover {
+    background: rgba(255,255,255,0.1);
+
+    cursor: pointer;
+}
+
+/* Add Timer Button ===============*/
+
+.button_add_timer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+}
+
+.button_add_timer button {
+    align-items: center;
+    color: #fff;
+    border: 0;
+}
+
+.button_add_timer button:disabled {
+    background-color: rgba(36,0,144,0.6);
+}
+.button_add_timer button:disabled:hover {
+    opacity: 0.8;
+    cursor: default;
+}
+
+.button_add_timer button:active, button:focus {
+    outline: none
+}
+
+/* Project Timers List ===============*/
+
+.project_timers_list {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    /*max-height: 100px;*/
+
+    color: #fff;
+}
+
+.project_timer {
+    display: flex;
+    align-items: center;
+
+    padding: 0px 20px;
+    margin-bottom: 10px;
+
+    width: 100%;
+    height: 70px;
+
+    background: rgba(40,40,40,0.65);
+}
+
+.project_timer_title {
+    display: flex;
+    align-items: center;
+
+    padding: 0px 10px;
+
+    height: 80%;
+    width: 50%;
+}
+
+.project_timer_title h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    width: 400px;
+
+    margin-bottom: 0px;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.time_main_block {
+    display: flex;
+    align-items: center;
+
+    height: 80%;
+    width: 50%;
+}
+
+.time_note {
+    display: flex;
+    align-items: center;
+
+    margin-right: 20px;
+    padding: 0px 10px;
+
+    width: 200px;
+    height: 70%;
+}
+
+.time_note:hover {
+    background: rgba(40,40,40,1);
+    cursor: pointer;
+}
+
+.time_note p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    margin-bottom: 0px;
+    font-size: 16px;
+}
+
+/* Note Window ===============*/
+
+.note_window {
+    display: flex;
+    width: 260px;
+    height: 100px;
+
+    position: absolute;
+    top: 228px;
+    right: 433px;
+}
+
+.note_window textarea {
+    width: 100%;
+    height: 100%;
+    resize: none;
+
+    background: rgba(244,244,244,1);
+
+    font-size: 14px
+}
+
+.note_window textarea:active, textarea:focus {
+    border: none;
+    box-shadow: none;
+    outline: none
+}
+
+/* ===========================*/
+
+.time_period {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 20px;
+
+    width: 115px;
+}
+
+.time_period p {
+    margin-bottom: 0px;
+    font-size: 16px;
+}
+
+.time {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100px;
+}
+
+.time p {
+    margin-bottom: 0px;
+    font-size: 16px;
+}
+
+.time_buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+}
+
+.time_buttons button {
+    align-items: center;
+
+    color: #fff;
+    margin-right: 10px;
+
+    border: 0;
+
+    height: 40px;
+    width: 40px;
+}
+
+.time_buttons button:disabled {
+    background-color: rgba(36,0,144,0.6);
+}
+.time_buttons button:disabled:hover {
+    opacity: 0.8;
+    cursor: default;
+}
+.time_buttons button:disabled:active {
+    box-shadow: none;
+}
+
+.time_buttons button:active, button:focus {
+    outline: none
+}
+
+.time_buttons button:last-child {
+    margin-right: 0;
+}
+
+/* Buttons ===============*/
+
+.button {
+    display: flex;
+    justify-content: center;
+    padding: 7px 10px;
+
+    font-size: 14px;
+
+    background: #240090;
+    opacity: 0.8;
+    transition: opacity 0.15s linear;
+}
+
+.button:hover {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.button:active {
+    box-shadow: 0 -4px 6px rgba(0,0,0,0.35) inset;
+}
+
+.button_out {
+    display: flex;
+    justify-content: center;
+    padding: 7px 10px;
+
+    font-size: 14px;
+
+    box-shadow: 1px 1px 0 #240090 inset, -1px -1px 0 #240090 inset;
+    transition: background 0.15s linear;
+}
+
+.button_out:hover {
+    background: #240090;
+    cursor: pointer;
+}
+
+.button_out:active {
+    box-shadow: 0 -4px 6px rgba(0,0,0,0.35) inset;
+}
+
+/* Animation ===============*/
+
+.animate__animated.animate__slideInDown {
+    --animate-duration: 400ms;
+}
+
+.animate__animated.animate__fadeOutUp {
+    --animate-duration: 200ms;
+}
+
+.animate__animated.animate__zoomIn {
+    --animate-duration: 400ms;
+}
+
+.animate__animated.animate__zoomOut {
+    --animate-duration: 400ms;
+}

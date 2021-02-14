@@ -16,6 +16,11 @@
 
     {% load static %}
     <link rel="stylesheet" href="{% static "Shared/icons/font-awesome-4.7.0/css/font-awesome.min.css" %}">
+    <link rel="stylesheet" href="{% static "Shared/css/toast.css" %}">
+    <script src="{% static "Shared/js/Head.js" %} "></script>
+    <script src="{% static "Shared/js/toast.js" %} "></script>
+    <script src="{% static "Shared/js/axiospost.js" %} "></script>
+
     <title>HarTime</title>
 </head>
 <body>
@@ -30,7 +35,9 @@
                 </nav>
 
                 <div class="user">
-                    <a class="user_link" href="#">User Name</a>
+                    <a class="user_link" id="user_name" value="{{user.username}}"> {{user.username}} </a>
+                    <a class="user_link" id="user_id" value="{{user.id}}"></a>
+                    <a class="user_link" href="/logout">&nbsp Выйти</a>
                 </div>
             </div>
         </div>

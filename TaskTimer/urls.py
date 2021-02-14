@@ -19,14 +19,19 @@ from django.urls import path
 from rest_framework.routers import SimpleRouter
 
 from UserAdmin import views as AdminViews
+from UserCommon import views as CommonViews
 from UserAdmin import Filters as AdminFilters
+from UserCommon import Filters as CommonFilters
 
 router = SimpleRouter()
 router.register('api/project', AdminFilters.ProjectView, basename='ProjectList')
+router.register('api/project_active', CommonFilters.ProjectActiveListView, basename='ProjectActiveListView')
 
 urlpatterns = [
-    path('', AdminViews.main),
+    path('', AdminViews.start),
+    path('logout', AdminViews.LogoutView),
     path('project/add', AdminViews.add),
+    path('project_active/add', CommonViews.add),
     path('project/edit', AdminViews.edit),
     path('project/delete', AdminViews.delete),
     path('admin/', admin.site.urls),

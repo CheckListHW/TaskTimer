@@ -1,0 +1,12 @@
+{% extends "Shared/Header.html" %}
+
+{% block content %}
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static "Laboratorian/css/Stages.css" %}">
+</head>
+    <span>Страница не доступна: </span><span style="color: firebrick">{{ Message }}</span>
+    <form method="post" action="/">
+        <input type="submit" value="Вернутся к списку проб">
+    </form>
+{% endblock %}

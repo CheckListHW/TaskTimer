@@ -1,0 +1,130 @@
+{% extends "Shared/Header.html" %}
+
+{% block content %}
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static "Common/css/Main.css" %}">
+
+</head>
+    {% verbatim %}
+    <!-- Main Body -->
+    <div class="main_body">
+        <div class="wrapper" id="projectList">
+            <div class="tollbar">
+                <div class="data_block">
+                    <div class="data_buttons">
+                        <div class="button">
+                            <i class="fa fa-angle-left"></i>
+                        </div>
+                        <div class="button_out">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <div class="button">
+                            <i class="fa fa-angle-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="data_title">
+                        <h1>Суббота, 13 Июня</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="add_new_timer">
+                <div class="choose_block" @click="isChoosed = !isChoosed">
+                    <p>{{nameChosenProject}}</p>
+                </div>
+
+                <transition
+                   name="custom-classes-transition"
+                   enter-active-class="animate__animated animate__slideInDown"
+                   leave-active-class="animate__animated animate__fadeOutUp"
+                >
+                    <div class="choose_window" v-show="isChoosed">
+                        <div class="choose_title">
+                            <h3>Список проектов</h3>
+                        </div>
+
+                        <div class="choose_projects_list">
+                            <div class="choose_project" v-for="(project, index) in projects" @click="chooseProject(index)">
+                                {{project.name}}
+                            </div>
+                        </div>
+                    </div>
+                </transition>
+
+                <div class="button_add_timer">
+                    <button class="button"
+                            :disabled="isChosenProject"
+                            @click="addProject">
+                        Добавить запись
+                    </button>
+                </div>
+            </div>
+
+            <div class="project_timers_list">
+                <div class="project_timer" v-for="(projectTimer, index) in projectsTimers">
+                    <div class="project_timer_title">
+                        <h2>{{projectTimer.name}}</h2>
+                    </div>
+
+                    <div class="time_main_block">
+                        <div class="time_note" @click="showNote(index)">
+                            <p>{{noteText(index)}}</p>
+                        </div>
+                        <transition
+                           name="custom-classes-transition"
+                           enter-active-class="animate__animated animate__zoomIn"
+                           leave-active-class="animate__animated animate__zoomOut"
+                        >
+                            <div class="note_window" v-show="projectTimer.isAddNote">
+                                <textarea id="textarea" placeholder="Введите заметку..."
+                                          v-model="projectTimer.inputedNote"
+                                          @keyup.enter="addNote(index)"
+                                          @keyup.esc="closeNote(index)"
+                                          >
+                                </textarea>
+                            </div>
+                        </transition>
+
+                        <div class="time_period">
+                            <p>{{prettify(projectTimer.timeStart.hour)}}:{{prettify(projectTimer.timeStart.minutes)}} - {{prettify(projectTimer.timeEnd.hour)}}:{{prettify(projectTimer.timeEnd.minutes)}}</p>
+                        </div>
+
+                        <div class="time">
+                            <pretty_time   :value="projectTimer.time"
+                                           :key="index">
+                            </pretty_time>
+                        </div>
+
+                        <div class="time_buttons">
+                            <button class="button"
+                                   v-if="!projectTimer.isPlayed"
+                                   :disabled="projectTimer.isDone || projectTimer.isAddNote"
+                                   @click="start(index)">
+                                        <i class="fa fa-play"></i>
+                            </button>
+                            <button class="button"
+                                   v-else
+                                   @click="stop(index)"
+                                   :disabled="projectTimer.isAddNote">
+                                        <i class="fa fa-stop"></i>
+                            </button>
+
+                            <button class="button"
+                                    :disabled="projectTimer.isAddNote">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endverbatim %}
+
+
+{% load static %}
+    <script src="{% static "Common/js/Main.js" %} "></script>
+{% endblock %}
+
