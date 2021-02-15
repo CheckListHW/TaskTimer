@@ -27,18 +27,22 @@ new Vue ({
                 str = "Новый проект " + this.newProjectCount;
             }
 
-            newProjectId = await axiospost('/project/add',
-                {
-                    Name:newProject.name,
-                    })
 
-            if (newProjectId < 0)
+
+            newProjectId = await axiospost('/project/add',
+            {
+                Name:str,
+                })
+
+            if (newProjectId < 0){
                 Toast.add({
                         text: 'Проект не добавлена!',
                         color: '#ff0000',
                         delay: 100000,
                     });
                 return
+            }
+
 
             var newProject = {
                 name: str,
@@ -85,14 +89,20 @@ new Vue ({
             this.editedName = this.projects_list[index].name;
         },
 
-        deleteProject: function(index) {
-            axiospost('/project/delete',
+        deleteProject: async function(index) {
+            let deleteProj = (await axiospost('/project/delete',
             {
                 id: this.projects_list[index].id,
-            })
-
-
-
+            }))
+            if (deleteProj<0){
+                Toast.add({
+                        text: 'Проект: \"{project}\" нельзя удалить! Его уже выполняют.'
+                            .replace('{project}', this.projects_list[index].name),
+                        color: '#ff0000',
+                        delay: 100000,
+                    });
+                return
+            }
             this.projects_list.splice(index, 1);
             this.activeProject = -1;
             this.isDeleted = true;

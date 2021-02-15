@@ -45,14 +45,14 @@ def main(request):
 
 
 def add(request):
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
-    if type(body.get('Name')) == str:
+    try:
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
         new_project = Project(Name=body.get('Name'))
         new_project.save()
-    else:
+        return HttpResponse(new_project.id)
+    except Exception:
         return HttpResponse(-1)
-    return HttpResponse(new_project.id)
 
 
 def edit(request):
@@ -68,12 +68,12 @@ def edit(request):
 
 
 def delete(request):
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
-    print(body)
-    if body.get('id') > 0:
+    try:
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
         delete_project = Project.objects.get(id=body.get('id'))
         delete_project.delete()
-    return HttpResponse(0)
-
+        return HttpResponse(0)
+    except Exception:
+        return HttpResponse(-1)
 

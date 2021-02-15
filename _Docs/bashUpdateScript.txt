@@ -1,0 +1,7 @@
+cd cheklist.ru.com;
+zip -r "archive-$(date +"%Y-%m-%d-%H-%M-%S").zip" ./TaskTimer;
+for z in *.zip; 
+	do mv ${z%} archive;
+done;
+rm -rf TaskTimer;
+git clone "https://github.com/CheckListHW/TaskTimer"
