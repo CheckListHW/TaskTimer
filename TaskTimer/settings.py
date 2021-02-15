@@ -43,7 +43,6 @@ INSTALLED_APPS = [
 
     'UserAdmin',
     'UserCommon',
-    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -137,6 +136,5 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS':
         ['django_filters.rest_framework.DjangoFilterBackend']
 }
-
 
 # hello my friend
