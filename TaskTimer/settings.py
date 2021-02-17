@@ -86,7 +86,7 @@ DATABASES = {
         'NAME': 'u1101946_tasktimer',
         'USER': 'u1101946_root',
         'PASSWORD': '162534!K',
-        'HOST': '31.31.196.223',
+        'HOST': 'localhost',
     }
 }
 
