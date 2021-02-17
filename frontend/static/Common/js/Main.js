@@ -137,7 +137,6 @@ new Vue ({
 
         start: function(index) {
             var now = new Date();
-
             this.projectsTimers[index].isPlayed = true;
             this.startTimer(index);
         },
@@ -191,12 +190,12 @@ new Vue ({
                 name: proj.Name,
             })
         })
-
         var now = new Date();
         tempProjetsActive.forEach(function (projAct) {
             vm.projectsTimers.push({
                 id: projAct.id,
-                name: tempProjets.find(city => city.id === projAct.Project).Name,
+                name: projAct.Name,
+                //name: tempProjets.find(city => city.id === projAct.Project).Name,
                 // если сразу вставлять projAct.Note == '', то не будет написанно: Введите заметку...
                 note: projAct.Note == '' ? projAct.Note : '',
                 inputedNote: "",
@@ -208,6 +207,7 @@ new Vue ({
                     hour: now.getHours(),
                     minutes: now.getMinutes(),
                 },
+
                 timeEnd: {
                     hour: now.getHours(),
                     minutes: now.getMinutes(),
