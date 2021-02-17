@@ -83,13 +83,14 @@ WSGI_APPLICATION = 'TaskTimer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'u1101946_tasktimer',
-        'USER': 'u1101946_root',
-        'PASSWORD': '162534!K',
-        'HOST': 'localhost',
+        'OPTIONS': {
+            'read_default_file': 'my.cnf',
+        },
     }
 }
 
+
+print(DATABASES)
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
