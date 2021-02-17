@@ -3,12 +3,8 @@
 import logging
 import os
 import sys
-from pathlib import Path
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 def main():
-    print(BASE_DIR)
-    print(os.path.join(BASE_DIR, "TaskTimer\my.cnf"))
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
