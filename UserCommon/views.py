@@ -31,10 +31,10 @@ def add(request):
         user = request.user
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        old_project_active = ProjectActive.objects.get(Owner=user, Project_id=body.get('project_id'))
+        old_project_active = ProjectActive.objects.filter(Owner=user, Project_id=body.get('project_id'))
         if len(old_project_active) < 1:
             main_project = admin_models.Project.objects.get(id=body.get('project_id'))
-            new_project_active = ProjectActive(Owner=user, Project=main_project, Time=1, Name=main_project.Name)
+            new_project_active = ProjectActive(Owner=user, Project=main_project, Name=main_project.Name)
             new_project_active.save()
         return HttpResponse(new_project_active.id)
     except Exception:
