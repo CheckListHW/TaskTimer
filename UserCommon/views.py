@@ -2,6 +2,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from rest_framework.utils import json
+from django.utils import timezone
+
 
 from .models import *
 from UserAdmin import models as admin_models
@@ -26,16 +28,49 @@ def main(request):
     return render(request, 'Common/Main.html')
 
 
-def add(request):
+def start_project(request):
     try:
-        user = request.user
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        old_project_active = ProjectActive.objects.filter(Owner=user, Project_id=body.get('project_id'))
-        if len(old_project_active) < 1:
-            main_project = admin_models.Project.objects.get(id=body.get('project_id'))
-            new_project_active = ProjectActive(Owner=user, Project=main_project, Name=main_project.Name)
-            new_project_active.save()
-        return HttpResponse(new_project_active.id)
+        project_history = ProjectHistory.objects.get(id=body.get('project_id'))
+        if project_history.Start is None:
+            project_history.Start = timezone.now()
+            project_history.Play = True
+            project_history.save()
+        return HttpResponse(True)
     except Exception:
-        return HttpResponse(-1)
+        return HttpResponse(False)
+
+
+def stop_project(request):
+    try:
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        project_history = ProjectHistory.objects.get(id=body.get('project_id'))
+        if project_history.Play:
+            project_history.End = timezone.now()
+            project_history.Play = False
+            project_history.save()
+        return HttpResponse(True)
+    except Exception:
+        return HttpResponse(False)
+
+
+
+def add(request):
+#try:
+    user = request.user
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    main_project = admin_models.Project.objects.get(id=body.get('project_id'))
+    project_active, created = ProjectActive.objects.get_or_create(Owner=user,
+                                                                  Project=main_project, Name=main_project.Name)
+    if not created:
+        project_active.save()
+    project_history = ProjectHistory(ProjectActive=project_active,
+                                     Name=main_project.Name,
+                                     Play=False)
+    project_history.save()
+    return HttpResponse(project_history.id)
+#except Exception:
+    return HttpResponse(-1)

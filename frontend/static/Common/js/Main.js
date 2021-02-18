@@ -136,6 +136,7 @@ new Vue ({
         },
 
         start: function(index) {
+            const vm =  this;
             var now = new Date();
             this.projectsTimers[index].isPlayed = true;
             this.startTimer(index);
@@ -161,17 +162,43 @@ new Vue ({
             }
         },
 
-        startTimer: function(index) {
-            this.projectsTimers[index].timer = setInterval(() => {
-                this.projectsTimers[index].time = this.projectsTimers[index].time + 1;
-                var now = new Date();
-                this.projectsTimers[index].timeEnd.hour = now.getHours();
-                this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
-            }, 1000)
+        startTimer: async function(index) {
+            start = await axiospost('project_active/start', {
+                project_id: this.projectsTimers[index].id,
+            })
+            if (start){
+               this.projectsTimers[index].timer = setInterval(() => {
+                    this.projectsTimers[index].time = this.projectsTimers[index].time + 1;
+                    var now = new Date();
+                    this.projectsTimers[index].timeEnd.hour = now.getHours();
+                    this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
+                }, 1000)
+            }
+            else{
+                Toast.add({
+                        text: 'Проект не оставновлен! Перезагрузите страницу',
+                        color: '#ff0000',
+                        delay: 100000,
+                    });
+            }
         },
 
-        stopTimer: function(index) {
-            clearTimeout(this.projectsTimers[index].timer)
+        stopTimer:async function(index) {
+            stop = await axiospost('project_active/stop', {
+                project_id: this.projectsTimers[index].id,
+            })
+            if (stop){
+                clearTimeout(this.projectsTimers[index].timer)
+            }
+            else{
+                Toast.add({
+                        text: 'Проект не оставновлен! Перезагрузите страницу',
+                        color: '#ff0000',
+                        delay: 100000,
+                    });
+            }
+
+
         },
     },
 
@@ -179,9 +206,9 @@ new Vue ({
         const vm = this;
 
         let tempProjets = (await axios.get('/api/project')).data
-        let tempProjetsActive = (await axios.get('/api/project_active')).data
+        let tempProjetsActive = (await axios.get('/api/project_history')).data
 
-        console.log(tempProjetsActive)
+        console.log(tempProjets)
 
 
         tempProjets.forEach(function (proj) {
@@ -190,8 +217,13 @@ new Vue ({
                 name: proj.Name,
             })
         })
-        var now = new Date();
-        tempProjetsActive.forEach(function (projAct) {
+
+        tempProjetsActive.forEach(await function (projAct) {
+            var start = projAct.Start == null ? new Date() : new Date(projAct.Start);
+            var end = projAct.End == null ? new Date() : new Date(projAct.End);
+            var done = null != projAct.End;
+            var total_time = (end.getHours() - start.getHours())*60 + end.getMinutes()-start.getMinutes()
+            console.log(total_time)
             vm.projectsTimers.push({
                 id: projAct.id,
                 name: projAct.Name,
@@ -201,23 +233,22 @@ new Vue ({
                 inputedNote: "",
                 isAddNote: false,
 
-                timer: null,
-                time: 0,
+                timer: 11,//total_time,
+                time: 11,//total_time,
                 timeStart: {
-                    hour: now.getHours(),
-                    minutes: now.getMinutes(),
+                    hour: start.getHours(),
+                    minutes: start.getMinutes(),
                 },
 
                 timeEnd: {
-                    hour: now.getHours(),
-                    minutes: now.getMinutes(),
+                    hour: end.getHours(),
+                    minutes: end.getMinutes(),
                 },
 
-                isDone: false,
-                isPlayed: false,
+                isDone: done,
+                isPlayed: projAct.Play,
             })
         })
-
-
+        console.log(vm.projectsTimers)
     }
 })

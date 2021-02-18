@@ -26,12 +26,15 @@ from UserCommon import Filters as CommonFilters
 router = SimpleRouter()
 router.register('api/project', AdminFilters.ProjectView, basename='ProjectList')
 router.register('api/project_active', CommonFilters.ProjectActiveListView, basename='ProjectActiveListView')
+router.register('api/project_history', CommonFilters.ProjectHistoryListView, basename='ProjectHistoryListView')
 
 urlpatterns = [
     path('', AdminViews.start),
     path('logout', AdminViews.LogoutView),
     path('project/add', AdminViews.add),
     path('project_active/add', CommonViews.add),
+    path('project_active/start', CommonViews.start_project),
+    path('project_active/stop', CommonViews.stop_project),
     path('project/edit', AdminViews.edit),
     path('project/delete', AdminViews.delete),
     path('admin/', admin.site.urls),

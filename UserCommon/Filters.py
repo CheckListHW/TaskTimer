@@ -22,4 +22,21 @@ class ProjectActiveListView(ModelViewSet):
         return ProjectActive.objects.all()
 
 
+class ProjectHistoryFilter(filters.FilterSet):
+    Owner = filters.NumberFilter()
+
+    class Meta:
+        model = ProjectHistory
+        fields = ['Owner']
+
+
+class ProjectHistoryListView(ModelViewSet):
+    serializer_class = ProjectHistorySerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = ProjectHistoryFilter
+
+    def get_queryset(self):
+        return ProjectHistory.objects.all()
+
+
 

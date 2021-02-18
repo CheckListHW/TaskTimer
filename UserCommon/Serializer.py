@@ -7,3 +7,12 @@ class ProjectActiveSerializer(ModelSerializer):
     class Meta:
         model = ProjectActive
         fields = '__all__'
+
+
+class ProjectHistorySerializer(ModelSerializer):
+    class Meta:
+        model = ProjectHistory
+        fields = '__all__'
+
+
+

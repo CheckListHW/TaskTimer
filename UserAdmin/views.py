@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.db import IntegrityError
 from rest_framework.utils import json
 
 from .models import *
@@ -46,25 +47,32 @@ def main(request):
 
 def add(request):
     try:
+        user = request.user
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        new_project = Project(Name=body.get('Name'))
+        new_project = Project(Name=body.get('Name'), Creator=user)
         new_project.save()
         return HttpResponse(new_project.id)
+    except IntegrityError:
+        return HttpResponse('Имя уже существует!')
     except Exception:
-        return HttpResponse(-1)
+        return HttpResponse('Произошла непредвиденная ошибка!')
 
 
 def edit(request):
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
-    print(body)
-    if type(body.get('Name')) == str and body.get('id') > 0:
-        edit_project = Project.objects.get(id=body.get('id'))
-        edit_project.Name = body.get('Name')
-        edit_project.save()
-        return HttpResponse(edit_project.id)
-    return HttpResponse(-1)
+    try:
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        print(body)
+        if type(body.get('Name')) == str and body.get('id') > 0:
+            edit_project = Project.objects.get(id=body.get('id'))
+            edit_project.Name = body.get('Name')
+            edit_project.save()
+            return HttpResponse(edit_project.id)
+    except IntegrityError:
+        return HttpResponse('Имя уже существует!')
+    except Exception:
+        return HttpResponse('Произошла непредвиденная ошибка!')
 
 
 def delete(request):

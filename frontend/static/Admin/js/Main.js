@@ -27,16 +27,14 @@ new Vue ({
                 str = "Новый проект " + this.newProjectCount;
             }
 
-
-
             newProjectId = await axiospost('/project/add',
             {
                 Name:str,
                 })
 
-            if (newProjectId < 0){
+            if (isNaN(newProjectId)){
                 Toast.add({
-                        text: 'Проект не добавлена!',
+                        text: 'Проект не добавлен: '+ newProjectId,
                         color: '#ff0000',
                         delay: 100000,
                     });
@@ -108,7 +106,7 @@ new Vue ({
             this.isDeleted = true;
         },
 
-        saveEdit: function() {
+        saveEdit: async function() {
             var str = this.editedName;
             if(str == "") {
                 this.newProjectCount += 1;
@@ -120,13 +118,22 @@ new Vue ({
                 menuVisible: false,
             };
 
-            console.log(this.projects_list[this.activeProject])
 
-            axiospost('/project/edit',
+            newProjectId = await axiospost('/project/edit',
             {
                 id: this.projects_list[this.activeProject].id,
                 Name: str,
             })
+
+            if (isNaN(newProjectId)){
+                Toast.add({
+                        text: 'Проект не добавлен: '+ newProjectId,
+                        color: '#ff0000',
+                        delay: 100000,
+                    });
+                return
+            }
+
             Vue.set(this.projects_list, this.activeProject, newProject);
 
             this.isEdited = false;
