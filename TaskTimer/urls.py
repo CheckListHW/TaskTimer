@@ -31,12 +31,13 @@ router.register('api/project_history', CommonFilters.ProjectHistoryListView, bas
 urlpatterns = [
     path('', AdminViews.start),
     path('logout', AdminViews.LogoutView),
-    path('project/add', AdminViews.add),
-    path('project_active/add', CommonViews.add),
+    path('logouts', AdminViews.startss),
+    path('project/add', AdminViews.add_project_views),
+    path('project_active/add', CommonViews.add_project_views),
     path('project_active/start', CommonViews.start_project),
     path('project_active/stop', CommonViews.stop_project),
-    path('project/edit', AdminViews.edit),
-    path('project/delete', AdminViews.delete),
+    path('project/edit', AdminViews.edit_project_views),
+    path('project/delete', AdminViews.delete_project_views),
     path('admin/', admin.site.urls),
 ]
 

@@ -35,7 +35,7 @@ def start_project(request):
         project_history = ProjectHistory.objects.get(id=body.get('project_id'))
         if project_history.Start is None:
             project_history.Start = timezone.now()
-            project_history.Play = True
+            project_history.Activity = True
             project_history.save()
         return HttpResponse(True)
     except Exception:
@@ -47,9 +47,9 @@ def stop_project(request):
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         project_history = ProjectHistory.objects.get(id=body.get('project_id'))
-        if project_history.Play:
+        if project_history.Activity:
             project_history.End = timezone.now()
-            project_history.Play = False
+            project_history.Activity = False
             project_history.save()
         return HttpResponse(True)
     except Exception:
@@ -57,7 +57,7 @@ def stop_project(request):
 
 
 
-def add(request):
+def add_project_views(request):
 #try:
     user = request.user
     body_unicode = request.body.decode('utf-8')
