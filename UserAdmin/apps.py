@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class UseradminConfig(AppConfig):
+class UserAdminConfig(AppConfig):
     name = 'UserAdmin'

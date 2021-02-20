@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, permission_required
+
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.db import IntegrityError
 from rest_framework.utils import json
 
-from .models import *
+from .Services import add_project, delete_project, edit_project
 
 
 def checkauth(request, url, data=None):
@@ -14,6 +15,11 @@ def checkauth(request, url, data=None):
         else:
             return render(request, 'Errors/ErrAdmin.html')
     return redirect(start)
+
+
+@permission_required('UserCommon.can_add', login_url='asd/')
+def startss(request):
+    return render(request, 'Common/Main.html')
 
 
 def start(request):
@@ -45,43 +51,23 @@ def main(request):
     return render(request, 'Admin/Main.html')
 
 
-def add(request):
-    try:
-        user = request.user
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        new_project = Project(Name=body.get('Name'), Creator=user)
-        new_project.save()
-        return HttpResponse(new_project.id)
-    except IntegrityError:
-        return HttpResponse('Имя уже существует!')
-    except Exception:
-        return HttpResponse('Произошла непредвиденная ошибка!')
+def add_project_views(request):
+    user = request.user
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    return HttpResponse(add_project(body.get('Name'), user))
 
 
-def edit(request):
-    try:
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        print(body)
-        if type(body.get('Name')) == str and body.get('id') > 0:
-            edit_project = Project.objects.get(id=body.get('id'))
-            edit_project.Name = body.get('Name')
-            edit_project.save()
-            return HttpResponse(edit_project.id)
-    except IntegrityError:
-        return HttpResponse('Имя уже существует!')
-    except Exception:
-        return HttpResponse('Произошла непредвиденная ошибка!')
+def edit_project_views(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    return HttpResponse(edit_project(body.get('Name'), body.get('id')))
 
 
-def delete(request):
-    try:
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        delete_project = Project.objects.get(id=body.get('id'))
-        delete_project.delete()
-        return HttpResponse(0)
-    except Exception:
-        return HttpResponse(-1)
+def delete_project_views(request):
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    return HttpResponse(delete_project(body.get('id')))
+
+
 
