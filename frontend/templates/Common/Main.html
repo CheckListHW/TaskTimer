@@ -100,7 +100,7 @@
                         <div class="time_buttons">
                             <button class="button"
                                    v-if="!projectTimer.isPlayed"
-                                   :disabled="projectTimer.isDone || projectTimer.isAddNote"
+                                   :disabled="projectTimer.isDone || projectTimer.isAddNote  || isOneTimerDoing"
                                    @click="start(index)">
                                         <i class="fa fa-play"></i>
                             </button>
@@ -112,6 +112,7 @@
                             </button>
 
                             <button class="button"
+                                    @click="deleteTimer(index)"
                                     :disabled="projectTimer.isAddNote">
                                 <i class="fa fa-trash"></i>
                             </button>

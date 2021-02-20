@@ -34,6 +34,8 @@ new Vue ({
 
         isChoosed: false,
         chosenProject: null,
+
+        isOneTimerDoing: false,
     },
 
     computed: {
@@ -140,6 +142,8 @@ new Vue ({
             var now = new Date();
             this.projectsTimers[index].isPlayed = true;
             this.startTimer(index);
+
+            this.isOneTimerDoing = true;
         },
 
         stop: function(index) {
@@ -151,6 +155,13 @@ new Vue ({
             this.projectsTimers[index].isDone = true;
 
             this.stopTimer(index);
+
+            this.isOneTimerDoing = false;
+        },
+        
+        deleteTimer: function(index) {
+            this.stopTimer(index);
+            this.projectsTimers.splice(index, 1);
         },
 
         prettify: function(value) {
