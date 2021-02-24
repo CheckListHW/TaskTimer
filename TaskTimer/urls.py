@@ -36,6 +36,7 @@ urlpatterns = [
     path('project_active/add', CommonViews.add_project_active_views),
     path('project_active/start', CommonViews.start_project_active_views),
     path('project_active/stop', CommonViews.stop_project_active_views),
+    path('project_active/delete', CommonViews.delete_project_active_views),
     path('project/edit', AdminViews.edit_project_views),
     path('project/delete', AdminViews.delete_project_views),
     path('admin/', admin.site.urls),

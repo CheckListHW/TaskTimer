@@ -103,9 +103,7 @@ new Vue ({
                 isDone: false,
                 isPlayed: false,
             }
-
-
-            this.projectsTimers.push(newProject);
+            this.projectsTimers.unshift(newProject);
 
             this.chosenProject = null;
         },
@@ -159,7 +157,18 @@ new Vue ({
             this.isOneTimerDoing = false;
         },
         
-        deleteTimer: function(index) {
+        deleteTimer:async function(index) {
+            console.log(this.projectsTimers[index])
+            delete_project = await axiospost('project_active/delete', {
+                project_id: this.projectsTimers[index].id,
+            })
+            if (delete_project<0){
+              Toast.add({
+                        text: 'Проект не удален! Перезагрузите страницу',
+                        color: '#ff0000',
+                        delay: 100000,
+                    });
+            }
             this.stopTimer(index);
             this.projectsTimers.splice(index, 1);
         },
@@ -219,7 +228,6 @@ new Vue ({
         let tempProjets = (await axios.get('/api/project')).data
         let tempProjetsActive = (await axios.get('/api/project_history')).data
 
-        console.log(tempProjets)
 
 
         tempProjets.forEach(function (proj) {
@@ -234,7 +242,6 @@ new Vue ({
             var end = projAct.End == null ? new Date() : new Date(projAct.End);
             var done = null != projAct.End;
             var total_time = (end.getHours() - start.getHours())*60 + end.getMinutes()-start.getMinutes()
-            console.log(total_time)
             vm.projectsTimers.push({
                 id: projAct.id,
                 name: projAct.Name,
@@ -260,6 +267,5 @@ new Vue ({
                 isPlayed: projAct.Play,
             })
         })
-        console.log(vm.projectsTimers)
     }
 })

@@ -39,8 +39,21 @@ def add_project_active(project_id: int, user: User) -> Optional[int]:
             project_active.save()
         project_history = ProjectHistory(ProjectActive=project_active,
                                          Name=main_project.Name,
-                                         Play=False)
+                                         Activity=False)
         project_history.save()
         return project_history.id
     except Exception:
+        return -1
+
+
+def delete_project_active(project_id: int) -> Optional[bool]:
+    try:
+        project_active = ProjectHistory.objects.filter(id=project_id)
+        print(project_active)
+        if len(project_active) > 0:
+            project_active.delete()
+        print(0)
+        return 0
+    except Exception:
+        print(-1)
         return -1
