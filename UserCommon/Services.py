@@ -1,6 +1,5 @@
 from typing import Optional
 from django.contrib.auth.models import User
-from UserAdmin.models import models
 from .models import ProjectHistory, ProjectActive
 from django.utils import timezone
 from UserAdmin import models as admin_models
@@ -49,11 +48,8 @@ def add_project_active(project_id: int, user: User) -> Optional[int]:
 def delete_project_active(project_id: int) -> Optional[bool]:
     try:
         project_active = ProjectHistory.objects.filter(id=project_id)
-        print(project_active)
         if len(project_active) > 0:
             project_active.delete()
-        print(0)
         return 0
     except Exception:
-        print(-1)
         return -1

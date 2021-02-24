@@ -24,10 +24,11 @@ class ProjectActiveListView(ModelViewSet):
 
 class ProjectHistoryFilter(filters.FilterSet):
     Owner = filters.NumberFilter()
+    Date = filters.DateFilter()
 
     class Meta:
         model = ProjectHistory
-        fields = ['Owner']
+        fields = ['Owner', 'Date']
 
 
 class ProjectHistoryListView(ModelViewSet):

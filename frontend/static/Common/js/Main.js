@@ -301,20 +301,22 @@ new Vue ({
             }
         },
 
-        newDate: function(day) {
+        newDate: async function(day) {
             if(day != "") {
+                let date = new Date(this.year, this.month, day.index)
                 this.number = day.index;
                 this.currentMonth = this.month;
                 this.currentDay = this.number;
-                this.currentDayWeek = new Date(this.year, this.month, this.number).getDay();
+                this.currentDayWeek = date.getDay();
 
                 this.isOpenCalendar = !this.isOpenCalendar;
 
                 //Здесь подгрузка данных
+                this.upgradeProjectTimer(date)
             }
         },
 
-        decreaseDay: function() {
+        decreaseDay:async function() {
             var date = new Date(this.year, this.month, this.number);
             date.setDate(date.getDate() - 1);
 
@@ -327,12 +329,14 @@ new Vue ({
             this.currentDayWeek = new Date(this.year, this.month, this.number).getDay();
 
             //Здесь подгрузка данных
+            this.upgradeProjectTimer(date)
+
         },
 
         increaseDay: function() {
+            console.log(this.number)
             var date = new Date(this.year, this.month, this.number);
             date.setDate(date.getDate() + 1);
-
             this.month = date.getMonth();
             this.year = date.getFullYear();
             this.number = date.getDate();
@@ -342,7 +346,15 @@ new Vue ({
             this.currentDayWeek = new Date(this.year, this.month, this.number).getDay();
 
             //Здесь подгрузка данных
+            this.upgradeProjectTimer(date)
         },
+        upgradeProjectTimer:async function(date) {
+            //необхадимо для даты без учета UTC
+            let newDate = new Date()
+            newDate.setFullYear(date.getFullYear(), date.getMonth(), date.getDate())
+            let today_db_format = newDate.toISOString().slice(0,10)
+            this.projectsTimers = await get_project_history_specified_day(today_db_format)
+        }
     },
 
     created: async function() {
@@ -353,10 +365,7 @@ new Vue ({
 
         const vm = this;
 
-        let tempProjets = (await axios.get('/api/project')).data
-        let tempProjetsActive = (await axios.get('/api/project_history')).data
-
-
+        let tempProjets = (await axios.get('/api/project/')).data
 
         tempProjets.forEach(function (proj) {
             vm.projects.push({
@@ -365,12 +374,22 @@ new Vue ({
             })
         })
 
-        tempProjetsActive.forEach(await function (projAct) {
+        let today = new Date().toISOString().slice(0, 10)
+        vm.projectsTimers = await get_project_history_specified_day(today)
+    }
+})
+
+
+
+async function get_project_history_specified_day(day) {
+    let tempProjetsHistory = (await axios.get('/api/project_history?Date='+day)).data,
+        returnProjetsHistory = []
+    tempProjetsHistory.forEach(function (projAct) {
             var start = projAct.Start == null ? new Date() : new Date(projAct.Start);
             var end = projAct.End == null ? new Date() : new Date(projAct.End);
             var done = null != projAct.End;
-            var total_time = (end.getHours() - start.getHours())*60 + end.getMinutes()-start.getMinutes()
-            vm.projectsTimers.push({
+            var total_time = (end.valueOf()-start.valueOf())/1000
+            returnProjetsHistory.push({
                 id: projAct.id,
                 name: projAct.Name,
                 //name: tempProjets.find(city => city.id === projAct.Project).Name,
@@ -379,8 +398,7 @@ new Vue ({
                 inputedNote: "",
                 isAddNote: false,
 
-                timer: 11,//total_time,
-                time: 11,//total_time,
+                time: total_time,//total_time,
                 timeStart: {
                     hour: start.getHours(),
                     minutes: start.getMinutes(),
@@ -392,8 +410,8 @@ new Vue ({
                 },
 
                 isDone: done,
-                isPlayed: projAct.Play,
+                isPlayed: projAct.Activity,
             })
         })
-    }
-})
+    return returnProjetsHistory
+}

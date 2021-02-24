@@ -30,7 +30,7 @@ class ProjectHistory(models.Model):
     def save(self, *args, **kwargs):
         if self.Activity is True:
             for project_active in ProjectActive.objects.filter(Owner=self.ProjectActive.Owner):
-                ProjectHistory.objects.filter(Play=True, ProjectActive=project_active)\
-                    .update(Play=False, End=timezone.now())
+                ProjectHistory.objects.filter(Activity=True, ProjectActive=project_active)\
+                    .update(Activity=False, End=timezone.now())
         super(ProjectHistory, self).save(*args, **kwargs)
 
