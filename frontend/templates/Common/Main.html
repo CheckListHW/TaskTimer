@@ -13,20 +13,55 @@
             <div class="tollbar">
                 <div class="data_block">
                     <div class="data_buttons">
-                        <div class="button">
+                        <div class="button"  @click="decreaseDay">
                             <i class="fa fa-angle-left"></i>
                         </div>
-                        <div class="button_out">
+                        <div class="button_out" @click="isOpenCalendar = !isOpenCalendar">
                             <i class="fa fa-calendar"></i>
                         </div>
-                        <div class="button">
+                        <div class="button" @click="increaseDay">
                             <i class="fa fa-angle-right"></i>
                         </div>
                     </div>
 
                     <div class="data_title">
-                        <h1>Суббота, 13 Июня</h1>
+                        <h1>{{fullDay[currentDayWeek]}}, {{currentDay}} {{prettyMonthes[currentMonth]}}</h1>
                     </div>
+
+                    <transition
+                    name="custom-classes-transition"
+                    enter-active-class="animate__animated animate__fadeIn"
+                    leave-active-class="animate__animated animate__fadeOut">
+                        <div class="calendar" v-show="isOpenCalendar">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <td>
+                                            <button class="button_table" @click="decrease"><i class="fa fa-angle-left"></i></button>
+                                        </td>
+                                        <td colspan="5"> {{monthes[month]}} {{year}} </td>
+                                        <td>
+                                            <button class="button_table" @click="increase"><i class="fa fa-angle-right"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr >
+                                        <td v-for="d in day">{{d}}</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="week in calendar()">
+                                        <td class="td_days"
+                                           v-for="(day, index) in week"
+                                           :style="{'color': day.weekend, 'background-color': day.current}"
+                                           @mouseover="show(day)"
+                                           @click="newDate(day)">
+                                            {{ day.index }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </transition>
                 </div>
             </div>
 

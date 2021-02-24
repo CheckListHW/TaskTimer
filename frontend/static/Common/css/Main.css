@@ -169,6 +169,8 @@ body {
 
     color: #fff;
     margin-bottom: 15px;
+
+    position: relative;
 }
 
 .data_buttons {
@@ -489,6 +491,72 @@ body {
 
 .time_buttons button:last-child {
     margin-right: 0;
+}
+
+/* Calendar ===============*/
+
+.calendar {
+    position: absolute;
+
+    top: 44px;
+    z-index: 2;
+}
+
+.table {
+    border-collapse: collapse;
+    float: left;
+
+    width: 300px;
+    background: white;
+
+    table-layout: fixed;
+}
+
+.format-week {
+    float: right;
+}
+
+.table td {
+    text-align: center;
+    padding: 5px;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.td_days:hover {
+    background-color: rgba(36,0,144,0.5);
+    cursor: pointer;
+}
+
+.table thead tr:last-child {
+    background-color: #dedada;
+}
+
+.button_table {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 7px 10px;
+
+    font-size: 14px;
+    color: #fff;
+
+    background: rgba(36,0,144,0.9);
+    opacity: 0.8;
+    transition: background 0.15s linear;
+
+    border: none;
+    outline: none;
+}
+
+.button_table:hover {
+    background: rgba(36,0,144,1);
+    cursor: pointer;
+}
+
+.button_table:active {
+    box-shadow: 0 -4px 6px rgba(0,0,0,0.35) inset;
 }
 
 /* Buttons ===============*/

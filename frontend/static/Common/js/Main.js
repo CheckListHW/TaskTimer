@@ -36,6 +36,20 @@ new Vue ({
         chosenProject: null,
 
         isOneTimerDoing: false,
+
+        isOpenCalendar: false,
+        month: null,
+        year: null,
+        number: null,
+        day:["Пн","Вт","Ср","Чт","Пт","Сб", "Вс"],
+        monthes:["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
+        date: new Date(),
+
+        currentMonth: new Date().getMonth(),
+        currentDay: new Date().getDate(),
+        currentDayWeek: new Date().getDay(),
+        fullDay:[ "Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"],
+        prettyMonthes:["Января","Февраля","Марта","Апреля","Мая","Июня","Июля","Августа","Сентября","Октября","Ноября","Декабря"],
     },
 
     computed: {
@@ -220,9 +234,123 @@ new Vue ({
 
 
         },
+
+        calendar: function() {
+            var days = [];
+            var week = 0;
+            days[week] = [];
+            var dlast = new Date(this.year, this.month + 1, 0).getDate();
+
+            for (let i = 1; i <= dlast; i++) {
+                if (new Date(this.year, this.month, i).getDay() != 1) {
+                    a = {index:i};
+                    days[week].push(a);
+                    if (i == new Date().getDate() && this.year == new Date().getFullYear() && this.month == new Date().getMonth()) {
+                        a.current = 'rgba(36,0,144,0.5)'
+                    };
+                    if (new Date(this.year, this.month, i).getDay() == 6 || new Date(this.year, this.month, i).getDay() == 0) {
+                        a.weekend = '#ff0000'
+                    };
+                }
+                else {
+                    week++;
+                    days[week] = [];
+                    a = {index:i};
+                    days[week].push(a);
+
+                    if ((i == new Date().getDate()) && (this.year == new Date().getFullYear()) && (this.month == new Date().getMonth())) {
+                        a.current = 'rgba(36,0,144,0.5)'
+                    };
+
+                    if (new Date(this.year, this.month, i).getDay() == 6 || new Date(this.year, this.month, i).getDay() == 0) {
+                        a.weekend = '#ff0000'
+                    };
+                }
+            }
+
+            if (days[0].length > 0) {
+                for (let i = days[0].length; i < 7; i++) {
+                    days[0].unshift('');
+                }
+            }
+
+            return days;
+        },
+
+        decrease: function() {
+            this.month--;
+            if (this.month < 0) {
+                this.month = 12;
+                this.month--;
+                this.year--;
+            }
+        },
+
+        increase: function() {
+            this.month++;
+            if (this.month > 11) {
+                this.month = -1;
+                this.month++;
+                this.year++;
+            }
+        },
+
+        show: function(day) {
+            if(day != "") {
+                this.number = day.index;
+            }
+        },
+
+        newDate: function(day) {
+            if(day != "") {
+                this.number = day.index;
+                this.currentMonth = this.month;
+                this.currentDay = this.number;
+                this.currentDayWeek = new Date(this.year, this.month, this.number).getDay();
+
+                this.isOpenCalendar = !this.isOpenCalendar;
+
+                //Здесь подгрузка данных
+            }
+        },
+
+        decreaseDay: function() {
+            var date = new Date(this.year, this.month, this.number);
+            date.setDate(date.getDate() - 1);
+
+            this.month = date.getMonth();
+            this.year = date.getFullYear();
+            this.number = date.getDate();
+
+            this.currentMonth = this.month;
+            this.currentDay = this.number;
+            this.currentDayWeek = new Date(this.year, this.month, this.number).getDay();
+
+            //Здесь подгрузка данных
+        },
+
+        increaseDay: function() {
+            var date = new Date(this.year, this.month, this.number);
+            date.setDate(date.getDate() + 1);
+
+            this.month = date.getMonth();
+            this.year = date.getFullYear();
+            this.number = date.getDate();
+
+            this.currentMonth = this.month;
+            this.currentDay = this.number;
+            this.currentDayWeek = new Date(this.year, this.month, this.number).getDay();
+
+            //Здесь подгрузка данных
+        },
     },
 
     created: async function() {
+        var date = new Date();
+        this.month = date.getMonth();
+        this.year = date.getFullYear();
+        this.number = date.getDate();
+
         const vm = this;
 
         let tempProjets = (await axios.get('/api/project')).data
