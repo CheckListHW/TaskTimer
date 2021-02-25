@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="icons/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+    <link rel="stylesheet" href="css/ReportsList.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+    <title>HarTime</title>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header__inner">
+                <nav class="nav">
+                    <a class="nav_link" href="#">Home</a>
+                    <a class="nav_link selected" href="#">Projects</a>
+                </nav>
+
+                <div class="user">
+                    <a class="user_link" href="#">User Name</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Body -->
+    <div class="main_body">
+        <div class="wrapper" id="reportList">
+            <div class="title">
+                <h1>Отчеты за периоды</h1>
+            </div>
+
+            <div class="date">
+                <div class="date_title">
+                    <h2>Начальная дата</h2>
+                </div>
+                <div class="date_choose">
+                    <div class="form_group">
+                        <select v-model="startdate.year" v-on:change="modify(startdate)">
+                            <option v-for="year in get_years()" name="year" :value="year">{{year}}</option>
+                        </select>
+
+                        <label class="date_label">Год</label>
+                    </div>
+
+                    <div class="form_group">
+                        <select v-model="startdate.month" v-on:change="modify(startdate)">
+                            <option v-for="month in months" name="month" :value="month">{{month + 1}}</option>
+                        </select>
+
+                        <label class="date_label">Месяц</label>
+                    </div>
+
+                    <div class="form_group" >
+                        <select v-model="startdate.day">
+                            <option v-for="day in get_dates(startdate.year, startdate.month)" name="day" :value="day">{{day}}</option>
+                        </select>
+
+                        <label class="day_label">День</label>
+                    </div>
+                </div>
+
+                <div class="date_title">
+                    <h2>Конечная дата</h2>
+                </div>
+                <div class="date_choose">
+                <div class="form_group">
+                    <select v-model="enddate.year" v-on:change="modify(enddate)">
+                        <option v-for="year in get_years()" name="year" :value="year">{{year}}</option>
+                    </select>
+
+                    <label class="date_label">Год</label>
+                </div>
+
+                <div class="form_group">
+                    <select v-model="enddate.month" v-on:change="modify(enddate)">
+                        <option v-for="month in months" name="month" :value="month">{{month + 1}}</option>
+                    </select>
+
+                    <label class="date_label">Месяц</label>
+                </div>
+
+                <div class="form_group" >
+                    <select v-model="enddate.day">
+                        <option v-for="day in get_dates(enddate.year, enddate.month)" name="day" :value="day">{{day}}</option>
+                    </select>
+
+                    <label class="day_label">День</label>
+                </div>
+            </div>
+            </div>
+
+            <transition
+                    name="custom-classes-transition"
+                    enter-active-class="animate__animated animate__fadeIn"
+                    leave-active-class="animate__animated animate__fadeOut">
+                <div class="report_list" v-show="isDateChoose">
+                    <div class="table">
+                        <table class="report_table">
+                            <thead>
+                                <tr>
+                                    <th>№</th>
+                                    <th>ФИО сотрудника</th>
+                                    <th v-for="(project, index) in projects">
+                                        {{project.name}}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    is="report_row"
+                                    v-for="(employee, index) in employees"
+                                    :employee="employee"
+                                    :index="index"
+                                    :key="index"
+                                    :projects="projects"
+                                    :startdate="startdate"
+                                    :enddate="enddate"
+                                ></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </transition>
+        </div>
+    </div>
+
+
+    <script src="js/ReportsList.js"></script>
+</body>
+</html>

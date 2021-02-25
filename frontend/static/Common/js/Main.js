@@ -114,6 +114,12 @@ new Vue ({
                     minutes: now.getMinutes(),
                 },
 
+                date: {
+                    year: now.getFullYear(),
+                    month: now.getMonth(),
+                    day: now.getDate(),
+                },
+
                 isDone: false,
                 isPlayed: false,
             }
