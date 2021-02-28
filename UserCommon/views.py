@@ -1,13 +1,19 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from rest_framework.utils import json
 
 from .Services import *
-from UserAdmin import models as admin_models
 
 
-def main(request):
-    return render(request, 'Common/Main.html')
+@login_required(login_url='/')
+def report_view(request):
+    return render(request, 'Admin/ReportsList.html')
+
+
+@login_required(login_url='/')
+def project_active_view(request):
+    return render(request, 'Common/ProjectActive.html')
 
 
 def start_project_active_views(request):

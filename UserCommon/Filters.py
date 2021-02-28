@@ -1,6 +1,10 @@
+from django.db.models import Q
 from rest_framework.viewsets import ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework as filters
+from functools import reduce
+from django.utils import timezone
+
 
 from .Serializer import *
 
@@ -37,7 +41,17 @@ class ProjectHistoryListView(ModelViewSet):
     filterset_class = ProjectHistoryFilter
 
     def get_queryset(self):
-        return ProjectHistory.objects.all()
+        request_get = self.request.GET
+        start_date = request_get.get('StartDate') if request_get.get('StartDate') is not None else "2010-01-01"
+        end_date = request_get.get('EndDate') if request_get.get('EndDate') is not None else timezone.now().today()
+        print(start_date)
+        print(end_date)
+        user = self.request.user
+        if user.groups.filter(name='common').exists():
+            return ProjectHistory.objects.filter(Owner=user, Date__range=[start_date, end_date]).\
+                order_by("-Activity", "Start").exclude(End=None)
+        return ProjectHistory.objects.filter(Date__range=[start_date, end_date]).exclude(End=None)
+
 
 
 

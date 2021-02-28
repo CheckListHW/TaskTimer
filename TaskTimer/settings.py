@@ -83,9 +83,9 @@ WSGI_APPLICATION = 'TaskTimer.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
+        'ENGINE': 'django.db.backends.mysql',        'OPTIONS': {
             'read_default_file': os.path.join(BASE_DIR, 'my.cnf'),
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
     }
 }
@@ -137,4 +137,5 @@ REST_FRAMEWORK = {
         ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
-# hello my friend
+AUTH_USER_MODEL = 'UserAdmin.CustomUser'
+

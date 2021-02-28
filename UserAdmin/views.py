@@ -1,34 +1,21 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required, permission_required
-
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from rest_framework.utils import json
 
 from .Services import add_project, delete_project, edit_project
+from .TaskTimerSerivices import group_required
 
 
-def checkauth(request, url, data=None):
-    if request.user.is_authenticated:
-        if request.user.groups.get().name == 'admin':
-            return render(request, url, context=data)
-        else:
-            return render(request, 'Errors/ErrAdmin.html')
-    return redirect(start)
-
-
-@permission_required('UserCommon.can_add', login_url='asd/')
-def startss(request):
-    return render(request, 'Common/Main.html')
-
-
+@group_required('admin')
 def report_view(request):
     return render(request, 'admin/ReportsList.html')
 
 
 def start(request):
     user = request.user
-    if request.method == 'POST' and user.is_authenticated == False:
+    if request.method == 'POST' and user.is_authenticated is False:
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
         user = authenticate(username=username.lower(), password=password)
@@ -37,22 +24,20 @@ def start(request):
         else:
             data = {'message': 'Такого пользователя не существует'}
             return render(request, 'Welcome/StartPage.html', data)
-    if user.is_authenticated == True:
-        print(user.groups)
-        if user.groups.get().name == 'admin':
-            return checkauth(request, 'Admin/Main.html')
-        if user.groups.get().name == 'common':
-            return render(request, 'Common/Main.html')
+    if user.is_authenticated:
+        return HttpResponseRedirect('/project/active')
     return render(request, 'Welcome/StartPage.html')
 
 
+@login_required(login_url='/')
 def LogoutView(request):
     logout(request)
     return redirect(start)
 
 
-def main(request):
-    return render(request, 'Admin/Main.html')
+@group_required('admin')
+def project_view(request):
+    return render(request, 'Admin/Project.html')
 
 
 def add_project_views(request):

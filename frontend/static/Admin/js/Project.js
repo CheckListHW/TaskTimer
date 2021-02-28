@@ -49,8 +49,6 @@ new Vue ({
             };
 
             this.projects_list.push(newProject);
-            console.log(this.projects_list)
-
             this.isAdded = false;
             this.enterdName = "";
         },

@@ -30,9 +30,28 @@
         <div class="container">
             <div class="header__inner">
                 <nav class="nav">
-                    <a class="nav_link" href="#">Home</a>
-                    <a class="nav_link selected" href="/">Projects</a>
-                    <a class="nav_link" href="/report">Report</a>
+
+                    <a class="nav_link
+                        {% if request.path == "/project/active" %}
+                            selected
+                        {% endif %}
+                    " href="/project/active">HOME</a>
+
+                    {% if user.groups.all.0.name == "admin" %}
+                        <a class="nav_link
+                                {% if request.path == "/project" %}
+                                    selected
+                                {% endif %}
+                            "
+                        href="/project">PROJECTS</a>
+                    {% endif %}
+
+                    <a class="nav_link
+                        {% if request.path == "/report" %}
+                            selected
+                        {% endif %}
+                    " href="/report">REPORT</a>
+
                 </nav>
 
                 <div class="user">

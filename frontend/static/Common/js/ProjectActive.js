@@ -79,7 +79,6 @@ new Vue ({
         },
 
         addProject: async function() {
-            document.getElementById('user_id').getAttribute('value')
             var now = new Date();
 
             newProjectId = await axiospost('/project_active/add', {
@@ -177,19 +176,21 @@ new Vue ({
             this.isOneTimerDoing = false;
         },
         
-        deleteTimer:async function(index) {
-            console.log(this.projectsTimers[index])
-            delete_project = await axiospost('project_active/delete', {
+        deleteTimer: async function(index) {
+
+            delete_project_mesage = await axiospost('/project_active/delete', {
                 project_id: this.projectsTimers[index].id,
             })
-            if (delete_project<0){
-              Toast.add({
-                        text: 'Проект не удален! Перезагрузите страницу',
+
+            if (isNaN(delete_project_mesage)){
+                Toast.add({
+                        text: delete_project_mesage,
                         color: '#ff0000',
                         delay: 100000,
-                    });
+                });
+                return
             }
-            this.stopTimer(index);
+
             this.projectsTimers.splice(index, 1);
         },
 
@@ -203,7 +204,7 @@ new Vue ({
         },
 
         startTimer: async function(index) {
-            start = await axiospost('project_active/start', {
+            start = await axiospost('/project_active/start', {
                 project_id: this.projectsTimers[index].id,
             })
             if (start){
@@ -224,7 +225,7 @@ new Vue ({
         },
 
         stopTimer:async function(index) {
-            stop = await axiospost('project_active/stop', {
+            stop = await axiospost('/project_active/stop', {
                 project_id: this.projectsTimers[index].id,
             })
             if (stop){
@@ -323,9 +324,8 @@ new Vue ({
         },
 
         decreaseDay:async function() {
-            var date = new Date(this.year, this.month, this.number);
+            var date = new Date(this.year, this.currentMonth, this.currentDay);
             date.setDate(date.getDate() - 1);
-
             this.month = date.getMonth();
             this.year = date.getFullYear();
             this.number = date.getDate();
@@ -336,12 +336,10 @@ new Vue ({
 
             //Здесь подгрузка данных
             this.upgradeProjectTimer(date)
-
         },
 
         increaseDay: function() {
-            console.log(this.number)
-            var date = new Date(this.year, this.month, this.number);
+            var date = new Date(this.year, this.currentMonth, this.currentDay);
             date.setDate(date.getDate() + 1);
             this.month = date.getMonth();
             this.year = date.getFullYear();
@@ -355,11 +353,11 @@ new Vue ({
             this.upgradeProjectTimer(date)
         },
         upgradeProjectTimer:async function(date) {
-            //необхадимо для даты без учета UTC
-            let newDate = new Date()
-            newDate.setFullYear(date.getFullYear(), date.getMonth(), date.getDate())
-            let today_db_format = newDate.toISOString().slice(0,10)
-            this.projectsTimers = await get_project_history_specified_day(today_db_format)
+            //необхадимо для даты без учета UTC и приведению к формату БД
+            const vm = this;
+            let localdate = date.toLocaleDateString('fr-CA')
+            owner = document.getElementById('user_id').getAttribute('value')
+            vm.projectsTimers = await get_project_history(localdate, owner)
         }
     },
 
@@ -379,26 +377,29 @@ new Vue ({
                 name: proj.Name,
             })
         })
+        await vm.upgradeProjectTimer(new Date())
+        vm.isOneTimerDoing = vm.projectsTimers.find(p => p.isPlayed == 1) != null
 
-        let today = new Date().toISOString().slice(0, 10)
-        vm.projectsTimers = await get_project_history_specified_day(today)
     }
 })
 
 
+async function get_project_history(day, Owner=null) {
 
-async function get_project_history_specified_day(day) {
-    let tempProjetsHistory = (await axios.get('/api/project_history?Date='+day)).data,
-        returnProjetsHistory = []
-    tempProjetsHistory.forEach(function (projAct) {
+    let owner_or_null = Owner == null ? '' : '&Owner=' + Owner
+    let tempProjectsHistory = (await axios.get('/api/project_history/?Date='+day+owner_or_null)).data,
+        returnProjectsHistory = []
+
+
+    tempProjectsHistory.forEach(function (projAct) {
             var start = projAct.Start == null ? new Date() : new Date(projAct.Start);
             var end = projAct.End == null ? new Date() : new Date(projAct.End);
-            var done = null != projAct.End;
+            var done = projAct.End != null;
             var total_time = (end.valueOf()-start.valueOf())/1000
-            returnProjetsHistory.push({
+            returnProjectsHistory.push({
                 id: projAct.id,
                 name: projAct.Name,
-                //name: tempProjets.find(city => city.id === projAct.Project).Name,
+                //name: tempProjets.find(p => p.id === projAct.Project).Name,
                 // если сразу вставлять projAct.Note == '', то не будет написанно: Введите заметку...
                 note: projAct.Note == '' ? projAct.Note : '',
                 inputedNote: "",
@@ -419,5 +420,5 @@ async function get_project_history_specified_day(day) {
                 isPlayed: projAct.Activity,
             })
         })
-    return returnProjetsHistory
+    return returnProjectsHistory
 }
