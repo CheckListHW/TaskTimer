@@ -90,18 +90,6 @@ new Vue ({
         },
 
         projects: [
-            {
-                name: "Проект 1"
-            },
-            {
-                name: "Проект 2"
-            },
-            {
-                name: "Проект 3"
-            },
-            {
-                name: "Проект 4"
-            },
         ],
 
         employees: [
@@ -327,4 +315,19 @@ new Vue ({
             return date.getDate();
         }
     },
+
+     created: async function() {
+
+        const vm = this;
+
+        let projects = (await axios.get('/api/project')).data
+
+        projects.forEach(function (project) {
+            var newProject = {
+                id:project.id ,
+                name: project.Name,
+            };
+            vm.projects.push(newProject);
+        })
+    }
 })

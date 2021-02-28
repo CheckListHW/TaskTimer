@@ -1,38 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "Shared/Header.html" %}
+
+{% block content %}
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static "Admin/css/ReportsList.css" %}">
 
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@200;300;400;500;600&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="icons/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
-    <link rel="stylesheet" href="css/ReportsList.css">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
-    <title>HarTime</title>
 </head>
-<body>
-
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header__inner">
-                <nav class="nav">
-                    <a class="nav_link" href="#">Home</a>
-                    <a class="nav_link selected" href="#">Projects</a>
-                </nav>
-
-                <div class="user">
-                    <a class="user_link" href="#">User Name</a>
-                </div>
-            </div>
-        </div>
-    </header>
-
+    {% verbatim %}
     <!-- Main Body -->
     <div class="main_body">
         <div class="wrapper" id="reportList">
@@ -134,8 +108,9 @@
             </transition>
         </div>
     </div>
+    {% endverbatim %}
 
 
-    <script src="js/ReportsList.js"></script>
-</body>
-</html>
+{% load static %}
+    <script src="{% static "Admin/js/ReportsList.js" %} "></script>
+{% endblock %}

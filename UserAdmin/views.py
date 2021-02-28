@@ -22,6 +22,10 @@ def startss(request):
     return render(request, 'Common/Main.html')
 
 
+def report_view(request):
+    return render(request, 'admin/ReportsList.html')
+
+
 def start(request):
     user = request.user
     if request.method == 'POST' and user.is_authenticated == False:
