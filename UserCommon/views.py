@@ -8,11 +8,15 @@ from .Services import *
 
 @login_required(login_url='/')
 def report_view(request):
+
     return render(request, 'Admin/ReportsList.html')
 
 
 @login_required(login_url='/')
 def project_active_view(request):
+    timezone.timezone = 'Asia/Krasnoyarsk'
+    print(timezone.now())
+    print('timezone.now()')
     return render(request, 'Common/ProjectActive.html')
 
 

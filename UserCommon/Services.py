@@ -12,9 +12,10 @@ def start_project_active(project_id: int) -> Optional[bool]:
             project_history.Start = timezone.now()
             project_history.Activity = True
             project_history.save()
+            print(project_history)
         return True
     except Exception:
-        return False
+        return 'Проект не начат! Перезагрузите страницу'
 
 
 def stop_project_active(project_id: int) -> Optional[bool]:
@@ -26,7 +27,7 @@ def stop_project_active(project_id: int) -> Optional[bool]:
             project_history.save()
         return True
     except Exception:
-        return False
+        return 'Проект не оставновлен! Перезагрузите страницу'
 
 
 def add_project_active(project_id: int, user: User) -> Optional[int]:
@@ -39,9 +40,12 @@ def add_project_active(project_id: int, user: User) -> Optional[int]:
         project_history = ProjectHistory(Owner=user, ProjectActive=project_active,
                                          Name=main_project.Name, Activity=False)
         project_history.save()
+        print('x')
+        print(project_history)
+        print(project_history.Start)
         return project_history.id
     except Exception:
-        return -1
+        return 'Проект не добавлена! Произошла ошибка :('
 
 
 def delete_project_active(project_id: int) -> Optional[bool]:
@@ -52,6 +56,6 @@ def delete_project_active(project_id: int) -> Optional[bool]:
                 return 'Перед удалением необходимо остановить таймер'
             else:
                 project_active.delete()
-        return 0
+        return True
     except Exception:
         return 'Проект не удален! Перезагрузите страницу'

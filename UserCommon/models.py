@@ -31,7 +31,7 @@ class ProjectHistory(models.Model):
         Перед созранением активного проекта останавливает остальные"""
     def save(self, *args, **kwargs):
         if self.Activity is True:
-            ProjectHistory.objects.filter(Owner=self.ProjectActive.Owner, Activity=True)\
-                                            .update(Activity=False, End=timezone.now())
+            ProjectHistory.objects.filter(Owner=self.ProjectActive.Owner,
+                                          Activity=True).update(Activity=False, End=timezone.now())
         super(ProjectHistory, self).save(*args, **kwargs)
 
