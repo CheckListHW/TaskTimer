@@ -8,12 +8,10 @@ from .Services import add_project, delete_project, edit_project
 from .TaskTimerSerivices import group_required
 
 
-@group_required('admin')
+@login_required(login_url='/')
 def report_view(request):
-    return render(request, 'admin/ReportsList.html')
+    return render(request, 'Admin/ReportsList.html')
 
-def test_view(request):
-    return render(request, 'test.html')
 
 def start(request):
     user = request.user
@@ -42,6 +40,7 @@ def project_view(request):
     return render(request, 'Admin/Project.html')
 
 
+@login_required(login_url='/')
 def add_project_views(request):
     user = request.user
     body_unicode = request.body.decode('utf-8')
@@ -49,12 +48,14 @@ def add_project_views(request):
     return HttpResponse(add_project(body.get('Name'), user))
 
 
+@login_required(login_url='/')
 def edit_project_views(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
     return HttpResponse(edit_project(body.get('Name'), body.get('id')))
 
 
+@login_required(login_url='/')
 def delete_project_views(request):
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)

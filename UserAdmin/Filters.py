@@ -15,8 +15,9 @@ class UserView(ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     serializer_class = UserSerializer
 
+
     def get_queryset(self):
         user = self.request.user
-        if user.groups.filter(name='common').exists():
-            return CustomUser.objects.filter(id=user.id)
-        return CustomUser.objects.all()
+        if user.groups.filter(name='admin').exists():
+            return CustomUser.objects.filter()
+        return CustomUser.objects.all(id=user.id)

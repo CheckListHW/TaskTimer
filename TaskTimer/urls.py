@@ -15,12 +15,10 @@ router.register('api/project_history', CommonFilters.ProjectHistoryListView, bas
 
 urlpatterns = [
     path('', AdminViews.start),
-    path('test', AdminViews.test_view),
     path('logout', AdminViews.LogoutView),
     path('project', AdminViews.project_view),
-    path('report/all', AdminViews.report_view),
-    path('project/add', AdminViews.add_project_views),
     path('report', CommonViews.report_view),
+    path('project/add', AdminViews.add_project_views),
     path('project/active', CommonViews.project_active_view),
     path('project_active/add', CommonViews.add_project_active_views),
     path('project_active/start', CommonViews.start_project_active_views),

@@ -6,7 +6,8 @@ var Toast = function (element, config) {
     _element = element,
     _config = {
       autohide: true,
-      delay: 5000
+      color: '#ff0000',
+      delay: 10000
     };
   for (var prop in config) {
     _config[prop] = config[prop];
@@ -64,9 +65,9 @@ Toast.create = function (text, color) {
 Toast.add = function (params) {
   var config = {
     text: 'Текст сообщения...',
-    color: '#ffffff',
+    color: '#ff0000',
+    delay: 10000,
     autohide: true,
-    delay: 7000
   };
   if (params !== undefined) {
     for (var item in params) {

@@ -40,12 +40,9 @@ def add_project_active(project_id: int, user: User) -> Optional[int]:
         project_history = ProjectHistory(Owner=user, ProjectActive=project_active,
                                          Name=main_project.Name, Activity=False)
         project_history.save()
-        print('x')
-        print(project_history)
-        print(project_history.Start)
         return project_history.id
     except Exception:
-        return 'Проект не добавлена! Произошла ошибка :('
+        return 'Проект не добавлен! Произошла ошибка :('
 
 
 def delete_project_active(project_id: int) -> Optional[bool]:

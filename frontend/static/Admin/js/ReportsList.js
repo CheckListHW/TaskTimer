@@ -170,14 +170,17 @@ new Vue ({
 
      created: async function() {
 
+
+
         const vm = this;
 
+        vm.enddate = {
+            year: new Date().getFullYear(),
+            month: 1 + new Date().getMonth(),
+            day: new Date().getDay(),
+        }
+
         let projects = (await axios.get('/api/project')).data
-
-        let users = (await axios.get('/api/user')).data
-
-        console.log(users)
-
 
         projects.forEach(function (project) {
             var newProject = {
@@ -194,8 +197,10 @@ new Vue ({
 async function get_project_list(projectActive, user_id) {
     let temp_projectActive = []
 
+    console.log(projectActive)
+
     projectActive.forEach(function (p_a) {
-        if (p_a.Owner === user_id){
+        if (p_a.Owner === user_id & p_a.End != null){
             temp_projectActive.push({
                 name: p_a.Name,
                 time: (Date.parse(p_a.End) - Date.parse(p_a.Start))/1000,

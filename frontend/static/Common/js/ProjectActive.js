@@ -138,58 +138,64 @@ new Vue ({
         addProject: async function() {
             var now = new Date();
 
-            newProjectId = await axiospost('/project_active/add', {
-                project_id: this.chosenProject.id,
-            })
-
-            if (newProjectId < 0){
-                Toast.add({
-                        text: 'Проект не добавлена!',
-                        color: '#ff0000',
-                        delay: 100000,
-                    });
-                return
-            }
-
             if(now.getFullYear() != this.year || now.getMonth() != this.month || now.getDate() != this.number)
             {
                 if(this.notifications.indexOf(this.pushNoteDate) == -1) {
                     this.notifications.push(this.pushNoteDate);
+                    return
                 }
             }
-            else {
-                var newProject = {
-                    id: newProjectId,
-                    name: this.chosenProject.name,
-                    note: "",
-                    inputedNote: "",
-                    isAddNote: false,
 
-                    timer: null,
-                    time: 0,
-                    timeStart: {
-                        hour: now.getHours(),
-                        minutes: now.getMinutes(),
-                    },
-                    timeEnd: {
-                        hour: now.getHours(),
-                        minutes: now.getMinutes(),
-                    },
-                    timeError: false,
+            response_message = await axiospost('/project_active/add', {
+                project_id: this.chosenProject.id,
+            })
 
-                    date: {
-                        year: now.getFullYear(),
-                        month: now.getMonth(),
-                        day: now.getDate(),
-                    },
-
-                    isDone: false,
-                    isPlayed: false,
-                }
-                this.projectsTimers.unshift(newProject);
-
-                this.chosenProject = null;
+            if (response_message > 0){
+                Toast.add({
+                        text: 'Проект: '+this.chosenProject.name+' добавлен!',
+                        color: '#ffe600',
+                        delay: 3000,
+                    });
             }
+            else{
+                Toast.add({
+                        text: response_message,
+                        color: '#ff0000',
+                        delay: 10000,
+                    });
+            }
+
+            var newProject = {
+                id: response_message,
+                name: this.chosenProject.name,
+                note: "",
+                inputedNote: "",
+                isAddNote: false,
+
+                timer: null,
+                time: 0,
+                timeStart: {
+                    hour: now.getHours(),
+                    minutes: now.getMinutes(),
+                },
+                timeEnd: {
+                    hour: now.getHours(),
+                    minutes: now.getMinutes(),
+                },
+                timeError: false,
+
+                date: {
+                    year: now.getFullYear(),
+                    month: now.getMonth(),
+                    day: now.getDate(),
+                },
+
+                isDone: false,
+                isPlayed: false,
+            }
+            this.projectsTimers.unshift(newProject);
+
+            this.chosenProject = null;
         },
 
         showNote: function(index) {
@@ -243,16 +249,21 @@ new Vue ({
         
         deleteTimer: async function(index) {
 
-            delete_project_mesage = await axiospost('/project_active/delete', {
+            let response_message = await axiospost('/project_active/delete', {
                 project_id: this.projectsTimers[index].id,
             })
-
-            if (isNaN(delete_project_mesage)){
+            
+            if (response_message == 'True'){
                 Toast.add({
-                        text: delete_project_mesage,
-                        color: '#ff0000',
-                        delay: 100000,
-                });
+                        text: 'Проект: '+this.projectsTimers[index].name+' окончен!',
+                        color: '#e88888',
+                        delay: 3000,
+                    });
+            }
+            else{
+                Toast.add({
+                        text: response_message,
+                    });
                 return
             }
 
@@ -269,42 +280,51 @@ new Vue ({
         },
 
         startTimer: async function(index) {
-            start = await axiospost('/project_active/start', {
+            let response_message = await axiospost('/project_active/start', {
                 project_id: this.projectsTimers[index].id,
             })
-            if (start){
-               this.projectsTimers[index].timer = setInterval(() => {
-                    this.projectsTimers[index].time = this.projectsTimers[index].time + 1;
-                    var now = new Date();
-                    this.projectsTimers[index].timeEnd.hour = now.getHours();
-                    this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
-                }, 1000)
+            if (response_message == 'True'){
+                Toast.add({
+                        text: 'Проект: '+this.projectsTimers[index].name+' начат!',
+                        color: '#5ac450',
+                        delay: 3000,
+                    });
             }
             else{
                 Toast.add({
-                        text: 'Проект не оставновлен! Перезагрузите страницу',
-                        color: '#ff0000',
-                        delay: 100000,
+                        text: response_message,
                     });
+                return
             }
+
+           this.projectsTimers[index].timer = setInterval(() => {
+                this.projectsTimers[index].time = this.projectsTimers[index].time + 1;
+                var now = new Date();
+                this.projectsTimers[index].timeEnd.hour = now.getHours();
+                this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
+            }, 1000)
         },
 
         stopTimer:async function(index) {
-            stop = await axiospost('/project_active/stop', {
+            let response_message = await axiospost('/project_active/stop', {
                 project_id: this.projectsTimers[index].id,
             })
-            if (stop){
-                clearTimeout(this.projectsTimers[index].timer)
+
+            if (response_message == 'True'){
+                Toast.add({
+                        text: 'Проект: '+this.projectsTimers[index].name+' окончен!',
+                        color: '#37ffd5',
+                        delay: 3000,
+                    });
             }
             else{
                 Toast.add({
-                        text: 'Проект не оставновлен! Перезагрузите страницу',
-                        color: '#ff0000',
-                        delay: 100000,
+                        text: response_message,
                     });
+                return
             }
 
-
+            clearTimeout(this.projectsTimers[index].timer)
         },
 
         calendar: function() {
@@ -417,6 +437,7 @@ new Vue ({
             //Здесь подгрузка данных
             this.upgradeProjectTimer(date)
         },
+
         upgradeProjectTimer:async function(date) {
             //необхадимо для даты без учета UTC и приведению к формату БД
             const vm = this;
@@ -450,6 +471,7 @@ new Vue ({
             }
             this.$forceUpdate();
         },
+
         updateEndValue(index) {
             if (this.projectsTimers[index].timeEnd.minutes >= 60) {
                 this.projectsTimers[index].timeEnd.minutes = 0;
