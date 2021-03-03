@@ -174,6 +174,11 @@ new Vue ({
 
         let projects = (await axios.get('/api/project')).data
 
+        let users = (await axios.get('/api/user')).data
+
+        console.log(users)
+
+
         projects.forEach(function (project) {
             var newProject = {
                 id:project.id ,

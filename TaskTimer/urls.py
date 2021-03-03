@@ -15,6 +15,7 @@ router.register('api/project_history', CommonFilters.ProjectHistoryListView, bas
 
 urlpatterns = [
     path('', AdminViews.start),
+    path('test', AdminViews.test_view),
     path('logout', AdminViews.LogoutView),
     path('project', AdminViews.project_view),
     path('report/all', AdminViews.report_view),

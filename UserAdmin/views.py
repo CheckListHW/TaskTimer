@@ -12,6 +12,8 @@ from .TaskTimerSerivices import group_required
 def report_view(request):
     return render(request, 'admin/ReportsList.html')
 
+def test_view(request):
+    return render(request, 'test.html')
 
 def start(request):
     user = request.user

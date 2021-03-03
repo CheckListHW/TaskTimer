@@ -423,7 +423,7 @@ new Vue ({
             let localdate = date.toLocaleDateString('fr-CA')
             owner = document.getElementById('user_id').getAttribute('value')
             vm.projectsTimers = await get_project_history(localdate, owner)
-        }
+        },
 
         dropdown: function(e){
             var id = this.editTimeIndex;
@@ -482,6 +482,7 @@ new Vue ({
     },
 
     created: async function() {
+
         var date = new Date();
         this.month = date.getMonth();
         this.year = date.getFullYear();
@@ -512,10 +513,10 @@ new Vue ({
 
 async function get_project_history(day, Owner=null) {
 
+
     let owner_or_null = Owner == null ? '' : '&Owner=' + Owner
     let tempProjectsHistory = (await axios.get('/api/project_history/?Date='+day+owner_or_null)).data,
         returnProjectsHistory = []
-
 
     tempProjectsHistory.forEach(function (projAct) {
             var start = projAct.Start == null ? new Date() : new Date(projAct.Start);
@@ -548,3 +549,4 @@ async function get_project_history(day, Owner=null) {
         })
     return returnProjectsHistory
 }
+
