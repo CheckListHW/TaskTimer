@@ -22,10 +22,17 @@ def stop_project_active(project_id: int) -> Optional[bool]:
     try:
         project_history = ProjectHistory.objects.get(id=project_id)
         if project_history.Activity:
-            project_history.End = timezone.now()
+            now_time = timezone.now()
+            # if now_time.hour > 21 or project_history.Start.day != now_time.day:
+            #   now_time = datetime(project_history.Start.year, month=project_history.Start.month,
+            #                    day=project_history.Start.day, hour=23, minute=55)
+            if now_time.timestamp() - project_history.Start.timestamp() >= 0:
+                project_history.End = now_time
+            else:
+                project_history.End = project_history.Start
             project_history.Activity = False
             project_history.save()
-        return True
+            return True
     except Exception:
         return 'Проект не оставновлен! Перезагрузите страницу'
 

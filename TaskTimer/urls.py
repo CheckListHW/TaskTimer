@@ -17,7 +17,7 @@ urlpatterns = [
     path('', AdminViews.start),
     path('logout', AdminViews.LogoutView),
     path('project', AdminViews.project_view),
-    path('report', CommonViews.report_view),
+    path('report', AdminViews.report_view),
     path('project/add', AdminViews.add_project_views),
     path('project/active', CommonViews.project_active_view),
     path('project_active/add', CommonViews.add_project_active_views),

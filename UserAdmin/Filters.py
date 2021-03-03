@@ -19,5 +19,5 @@ class UserView(ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.groups.filter(name='admin').exists():
-            return CustomUser.objects.filter()
-        return CustomUser.objects.all(id=user.id)
+            return CustomUser.objects.all()
+        return CustomUser.objects.filter(id=user.id)

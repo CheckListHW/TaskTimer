@@ -225,16 +225,49 @@ new Vue ({
             }
         },
 
-        start: function(index) {
+        start:async function(index) {
+            let response_message = await axiospost('/project_active/start', {
+                project_id: this.projectsTimers[index].id,
+            })
+            if (response_message == 'True'){
+                Toast.add({
+                        text: 'Проект: '+this.projectsTimers[index].name+' начат!',
+                        color: '#5ac450',
+                        delay: 3000,
+                    });
+            }
+            else{
+                Toast.add({
+                        text: response_message,
+                    });
+                return
+            }
+
             const vm =  this;
             var now = new Date();
             this.projectsTimers[index].isPlayed = true;
             this.startTimer(index);
-
             this.isOneTimerDoing = true;
         },
 
-        stop: function(index) {
+        stop:async function(index) {
+            let response_message = await axiospost('/project_active/stop', {
+                project_id: this.projectsTimers[index].id,
+            })
+
+            if (response_message == 'True'){
+                Toast.add({
+                        text: 'Проект: '+this.projectsTimers[index].name+' окончен!',
+                        color: '#37ffd5',
+                        delay: 3000,
+                    });
+            }
+            else{
+                Toast.add({
+                        text: response_message,
+                    });
+                return
+            }
             var now = new Date();
             this.projectsTimers[index].timeEnd.hour = now.getHours();
             this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
@@ -279,52 +312,19 @@ new Vue ({
             }
         },
 
-        startTimer: async function(index) {
-            let response_message = await axiospost('/project_active/start', {
-                project_id: this.projectsTimers[index].id,
-            })
-            if (response_message == 'True'){
-                Toast.add({
-                        text: 'Проект: '+this.projectsTimers[index].name+' начат!',
-                        color: '#5ac450',
-                        delay: 3000,
-                    });
-            }
-            else{
-                Toast.add({
-                        text: response_message,
-                    });
-                return
-            }
-
-           this.projectsTimers[index].timer = setInterval(() => {
-                this.projectsTimers[index].time = this.projectsTimers[index].time + 1;
-                var now = new Date();
-                this.projectsTimers[index].timeEnd.hour = now.getHours();
-                this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
-            }, 1000)
+        stopTimer: function(index) {
+            clearTimeout(this.projectsTimers[index].timer)
         },
 
-        stopTimer:async function(index) {
-            let response_message = await axiospost('/project_active/stop', {
-                project_id: this.projectsTimers[index].id,
-            })
+        startTimer: function(index) {
+           this.projectsTimers[index].timer = setInterval(()=>this.tik_timer_iteration(index), 60000)
+        },
 
-            if (response_message == 'True'){
-                Toast.add({
-                        text: 'Проект: '+this.projectsTimers[index].name+' окончен!',
-                        color: '#37ffd5',
-                        delay: 3000,
-                    });
-            }
-            else{
-                Toast.add({
-                        text: response_message,
-                    });
-                return
-            }
-
-            clearTimeout(this.projectsTimers[index].timer)
+        tik_timer_iteration: function(index){
+            this.projectsTimers[index].time += 60;
+            var now = new Date();
+            this.projectsTimers[index].timeEnd.hour = now.getHours();
+            this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
         },
 
         calendar: function() {
@@ -444,6 +444,14 @@ new Vue ({
             let localdate = date.toLocaleDateString('fr-CA')
             owner = document.getElementById('user_id').getAttribute('value')
             vm.projectsTimers = await get_project_history(localdate, owner)
+            vm.continue_timer()
+        },
+
+        continue_timer: function(e){
+            let continue_project = this.projectsTimers.find(f=>f.isPlayed == true)
+            if (continue_project != null){
+                this.start(continue_project.number)
+            }
         },
 
         dropdown: function(e){
@@ -505,6 +513,7 @@ new Vue ({
 
     created: async function() {
 
+
         var date = new Date();
         this.month = date.getMonth();
         this.year = date.getFullYear();
@@ -523,8 +532,8 @@ new Vue ({
             })
         })
         await vm.upgradeProjectTimer(new Date())
-        vm.isOneTimerDoing = vm.projectsTimers.find(p => p.isPlayed == 1) != null
 
+        vm.isOneTimerDoing = vm.projectsTimers.find(p => p.isPlayed == 1) != null
     },
 
     destroyed: function() {
@@ -534,8 +543,7 @@ new Vue ({
 
 
 async function get_project_history(day, Owner=null) {
-
-
+    let number = -1
     let owner_or_null = Owner == null ? '' : '&Owner=' + Owner
     let tempProjectsHistory = (await axios.get('/api/project_history/?Date='+day+owner_or_null)).data,
         returnProjectsHistory = []
@@ -545,7 +553,9 @@ async function get_project_history(day, Owner=null) {
             var end = projAct.End == null ? new Date() : new Date(projAct.End);
             var done = projAct.End != null;
             var total_time = (end.valueOf()-start.valueOf())/1000
+            number += 1
             returnProjectsHistory.push({
+                number: number,
                 id: projAct.id,
                 name: projAct.Name,
                 //name: tempProjets.find(p => p.id === projAct.Project).Name,
