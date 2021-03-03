@@ -8,9 +8,15 @@ body {
 }
 
 *,
-*:before,
-*:after {
+*: before,
+*: after {
     box-sizing: border-box;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Scrollbar ===============*/
@@ -30,6 +36,10 @@ body {
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     background-color: #282828;
+}
+
+input:active, input:focus {
+    outline: none
 }
 
 /* Container ===============*/
@@ -410,8 +420,8 @@ body {
 }
 
 .note_window textarea {
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    height: 70%;
     resize: none;
 
     background: rgba(244,244,244,1);
@@ -425,7 +435,7 @@ body {
     outline: none
 }
 
-/* ===========================*/
+/* Time Period ===========================*/
 
 .time_period {
     display: flex;
@@ -435,6 +445,13 @@ body {
     margin-right: 20px;
 
     width: 115px;
+    height: 39px;
+
+    position: relative;
+}
+
+.error_time {
+    border: 1px solid rgba(255,0,0,0.6)
 }
 
 .time_period p {
@@ -490,6 +507,38 @@ body {
 }
 
 .time_buttons button:last-child {
+    margin-right: 0;
+}
+
+/* Time Edit Window ===============*/
+
+.time_edit_window {
+    display: flex;
+    align-items: center;
+
+    height: 39px;
+    position: absolute;
+
+    padding: 0 5px;
+
+    background: rgba(40,40,40,1);
+    box-shadow: 0 2px 4px rgba(255,255,255,0.2);
+}
+
+.input_edit_time {
+    width: 30px;
+    margin-right: 2px;
+
+    text-align: center;
+    right:
+}
+
+.time_edit_window label {
+    margin-right: 5px;
+    margin-bottom: 0;
+}
+
+.time_edit_window label:last-child {
     margin-right: 0;
 }
 
@@ -602,6 +651,57 @@ body {
     box-shadow: 0 -4px 6px rgba(0,0,0,0.35) inset;
 }
 
+/* Notification ===============*/
+
+.notes {
+    position: fixed;
+    z-index: 100;
+
+    top: 1em;
+    right: 1em;
+    width: 320px;
+}
+
+.notification {
+    width: 320px;
+    margin-bottom: 10px;
+}
+
+.notice {
+    background: #fff;
+    box-shadow: 0 0 1em -.5em #000, -.5em 1em 5em -1em rgba(0,0,0,.7);
+
+    padding: 1em;
+    position: relative;
+
+    border-left: .5em solid red;
+}
+
+.close {
+    cursor: pointer;
+
+    position: absolute;
+    top: .5em;
+    right: .5em;
+
+    stroke: #ccc;
+}
+
+.close:hover {
+    stroke: #000;
+}
+
+.title {
+    font-size: 18px;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.body {
+    color: #333;
+    font-size: 14px;
+}
+
 /* Animation ===============*/
 
 .animate__animated.animate__slideInDown {
@@ -613,9 +713,9 @@ body {
 }
 
 .animate__animated.animate__zoomIn {
-    --animate-duration: 400ms;
+    --animate-duration: 300ms;
 }
 
 .animate__animated.animate__zoomOut {
-    --animate-duration: 400ms;
+    --animate-duration: 300ms;
 }

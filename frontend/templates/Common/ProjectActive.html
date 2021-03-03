@@ -122,8 +122,32 @@
                             </div>
                         </transition>
 
-                        <div class="time_period">
-                            <p>{{prettify(projectTimer.timeStart.hour)}}:{{prettify(projectTimer.timeStart.minutes)}} - {{prettify(projectTimer.timeEnd.hour)}}:{{prettify(projectTimer.timeEnd.minutes)}}</p>
+                        <div class="time_period" :class="{error_time: projectTimer.timeError}" :ref="'dropdown' + index">
+                            <p @click="editTime(index)">{{prettify(projectTimer.timeStart.hour)}}:{{prettify(projectTimer.timeStart.minutes)}} - {{prettify(projectTimer.timeEnd.hour)}}:{{prettify(projectTimer.timeEnd.minutes)}}</p>
+
+                            <transition
+                               name="custom-classes-transition"
+                               enter-active-class="animate__animated animate__zoomIn"
+                               leave-active-class="animate__animated animate__zoomOut"
+                            >
+                                <div class="time_edit_window" v-show="projectTimer.isChangeTime">
+                                    <input type="number" class="input_edit_time"
+                                           v-model="projectTimer.timeStart.hour">
+                                    <label>ч</label>
+                                    <input type="number" class="input_edit_time"
+                                           v-model="projectTimer.timeStart.minutes"
+                                           @input="updateStartValue(index)">
+                                    <label>м</label>
+                                    <label> - </label>
+                                    <input type="number" class="input_edit_time"
+                                           v-model="projectTimer.timeEnd.hour">
+                                    <label>ч</label>
+                                    <input type="number" class="input_edit_time"
+                                           v-model="projectTimer.timeEnd.minutes"
+                                           @input="updateEndValue(index)">
+                                    <label>м</label>
+                                </div>
+                            </transition>
                         </div>
 
                         <div class="time">
@@ -154,6 +178,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="notes">
+                <notification v-for="(note, index) in notifications" :note="note" :del_note="deleteNotification" :key="index"></notification>
             </div>
         </div>
     </div>

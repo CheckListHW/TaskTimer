@@ -114,7 +114,7 @@ new Vue ({
             else {
                 return false;
             }
-        }
+        },
     },
 
     methods: {

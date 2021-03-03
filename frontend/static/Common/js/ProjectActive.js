@@ -25,6 +25,27 @@ Vue.component ('pretty_time', {
     }
 })
 
+Vue.component('notification', {
+    props: ['note', 'show', 'del_note'],
+    template:
+      `
+        <div class="notification">
+            <div class="notice">
+                <svg @click="del_note(note)" class="close" width="20" height="20" viewbox="0 0 20 20" stroke-width="2">
+                    <line x1="3" y1="3" x2="17" y2="17"></line>
+                    <line x1="3" y1="17" x2="17" y2="3"></line>
+                </svg>
+
+                <div class="title">
+                    {{note.title}}
+                </div>
+
+                <div class="body">{{note.body}}</div>
+            </div>
+        </div>
+      `,
+});
+
 new Vue ({
     el: '#projectList',
     data: {
@@ -50,6 +71,42 @@ new Vue ({
         currentDayWeek: new Date().getDay(),
         fullDay:[ "Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"],
         prettyMonthes:["Января","Февраля","Марта","Апреля","Мая","Июня","Июля","Августа","Сентября","Октября","Ноября","Декабря"],
+
+        pushNoteTime: {
+            title: 'Ошибка времени',
+            body: 'Время начала проекта больше времени конца проекта',
+        },
+        pushNoteDate: {
+            title: 'Ошибка добавления проекта',
+            body: 'Вернитесь на сегодняшнюю дату и затем добавьте проект',
+        },
+        notifications: [],
+    },
+
+    watch: {
+        projectsTimers:  {
+            handler(val, oldVal) {
+                if(this.editTimeIndex >= 0) {
+                    var prj = this.projectsTimers[this.editTimeIndex];
+                    if(prj.timeStart.hour > prj.timeEnd.hour) {
+                        prj.timeError = true;
+                        if(this.notifications.indexOf(this.pushNoteTime) == -1) {
+                            this.notifications.push(this.pushNoteTime);
+                        }
+                    }
+                    else if(prj.timeStart.hour == prj.timeEnd.hour && prj.timeStart.minutes > prj.timeEnd.minutes) {
+                        prj.timeError = true;
+                        if(this.notifications.indexOf(this.pushNoteTime) == -1) {
+                            this.notifications.push(this.pushNoteTime);
+                        }
+                    }
+                    else {
+                        prj.timeError = false;
+                    }
+                }
+            },
+            deep: true
+        }
     },
 
     computed: {
@@ -94,37 +151,45 @@ new Vue ({
                 return
             }
 
-
-            var newProject = {
-                id: newProjectId,
-                name: this.chosenProject.name,
-                note: "",
-                inputedNote: "",
-                isAddNote: false,
-
-                timer: null,
-                time: 0,
-                timeStart: {
-                    hour: now.getHours(),
-                    minutes: now.getMinutes(),
-                },
-                timeEnd: {
-                    hour: now.getHours(),
-                    minutes: now.getMinutes(),
-                },
-
-                date: {
-                    year: now.getFullYear(),
-                    month: now.getMonth(),
-                    day: now.getDate(),
-                },
-
-                isDone: false,
-                isPlayed: false,
+            if(now.getFullYear() != this.year || now.getMonth() != this.month || now.getDate() != this.number)
+            {
+                if(this.notifications.indexOf(this.pushNoteDate) == -1) {
+                    this.notifications.push(this.pushNoteDate);
+                }
             }
-            this.projectsTimers.unshift(newProject);
+            else {
+                var newProject = {
+                    id: newProjectId,
+                    name: this.chosenProject.name,
+                    note: "",
+                    inputedNote: "",
+                    isAddNote: false,
 
-            this.chosenProject = null;
+                    timer: null,
+                    time: 0,
+                    timeStart: {
+                        hour: now.getHours(),
+                        minutes: now.getMinutes(),
+                    },
+                    timeEnd: {
+                        hour: now.getHours(),
+                        minutes: now.getMinutes(),
+                    },
+                    timeError: false,
+
+                    date: {
+                        year: now.getFullYear(),
+                        month: now.getMonth(),
+                        day: now.getDate(),
+                    },
+
+                    isDone: false,
+                    isPlayed: false,
+                }
+                this.projectsTimers.unshift(newProject);
+
+                this.chosenProject = null;
+            }
         },
 
         showNote: function(index) {
@@ -359,6 +424,61 @@ new Vue ({
             owner = document.getElementById('user_id').getAttribute('value')
             vm.projectsTimers = await get_project_history(localdate, owner)
         }
+
+        dropdown: function(e){
+            var id = this.editTimeIndex;
+
+            if(id >= 0) {
+                var string = "dropdown" + id;
+                var el = this.$refs[string];
+                var target = e.target;
+
+                if (el !== target && !el[0].contains(target)) {
+                    this.projectsTimers[id].isChangeTime = false;
+                    this.projectsTimers[id].timeStart.hour = parseInt(this.projectsTimers[id].timeStart.hour);
+                    this.projectsTimers[id].timeStart.minutes = parseInt(this.projectsTimers[id].timeStart.minutes);
+                    this.projectsTimers[id].timeEnd.hour = parseInt(this.projectsTimers[id].timeEnd.hour);
+                    this.projectsTimers[id].timeEnd.minutes = parseInt(this.projectsTimers[id].timeEnd.minutes);
+                    this.editTimeIndex = -1;
+                }
+            }
+        },
+
+        updateStartValue(index) {
+            if (this.projectsTimers[index].timeStart.minutes >= 60) {
+                this.projectsTimers[index].timeStart.minutes = 0;
+            }
+            this.$forceUpdate();
+        },
+        updateEndValue(index) {
+            if (this.projectsTimers[index].timeEnd.minutes >= 60) {
+                this.projectsTimers[index].timeEnd.minutes = 0;
+            }
+            this.$forceUpdate();
+        },
+
+        editTime: function(index) {
+            if(this.editNoteIndex >= 0) {
+                this.projectsTimers[this.editNoteIndex].isAddNote = false;
+            }
+
+            var id = this.editTimeIndex;
+
+            if(id >= 0) {
+                this.projectsTimers[id].isChangeTime = false;
+                this.projectsTimers[index].isChangeTime = true;
+                this.editTimeIndex = index;
+            }
+            else {
+                this.projectsTimers[index].isChangeTime = true;
+                this.editTimeIndex = index;
+            }
+        },
+
+        deleteNotification: function(note) {
+            var id = this.notifications.indexOf(note);
+            this.notifications.splice(id, 1);
+        }
     },
 
     created: async function() {
@@ -366,6 +486,8 @@ new Vue ({
         this.month = date.getMonth();
         this.year = date.getFullYear();
         this.number = date.getDate();
+
+        document.addEventListener('click', this.dropdown);
 
         const vm = this;
 
@@ -380,6 +502,10 @@ new Vue ({
         await vm.upgradeProjectTimer(new Date())
         vm.isOneTimerDoing = vm.projectsTimers.find(p => p.isPlayed == 1) != null
 
+    },
+
+    destroyed: function() {
+        document.removeEventListener('click', this.dropdown);
     }
 })
 
