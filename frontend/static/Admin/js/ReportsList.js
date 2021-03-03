@@ -55,6 +55,11 @@ Vue.component('report_row', {
             for(var i = 0; i < array.length; i++) {
                 var pDate = new Date(array[i].date.year, array[i].date.month, array[i].date.day);
 
+                    console.log('push')
+                    console.log(pDate)
+                    console.log(sDate)
+                    console.log(eDate)
+
                 if(pDate >= sDate && pDate <= eDate) {
                     result.push(array[i]);
                 }
@@ -93,7 +98,7 @@ new Vue ({
             month: 2,
             day: 1,
         },
-
+        users:[],
         projects: [],
 
         employees: [],
@@ -121,17 +126,17 @@ new Vue ({
         update_reports:async function(StartDate, EndDate){
             const vm = this;
 
-            let users = (await axios.get('/api/user')).data
             let projectActive = (await axios.get('/api/project_history/?'+StartDate+'&'+EndDate)).data
-            let new_employees = []
-            for(let i = 0; i < users.length;i++){
-                new_employees.push({
-                    name: users[i].first_name+' '+users[i].last_name+' '+users[i].patronymic,
-                    projectsList: await get_project_list(projectActive, users[i].id),
-                })
-            }
-            vm.employees = new_employees
+            vm.employees = []
 
+
+            vm.users.forEach(function (user) {
+               vm.employees.push({
+                    name: user.first_name+' '+user.last_name+' '+user.patronymic,
+                    projectsList: get_project_list(projectActive, user.id),
+                })
+            })
+            console.log( vm.employees)
         },
 
         get_years: function () {
@@ -167,18 +172,23 @@ new Vue ({
             return date.getDate();
         }
     },
-
-     created: async function() {
-
-
-
+    created: async function() {
         const vm = this;
+
+        vm.users = (await axios.get('/api/user')).data
+
+        vm.startdate = {
+            year: new Date().getFullYear(),
+            month: new Date().getMonth(),
+            day: new Date().getDay()-1,
+        }
 
         vm.enddate = {
             year: new Date().getFullYear(),
-            month: 1 + new Date().getMonth(),
+            month: new Date().getMonth(),
             day: new Date().getDay(),
         }
+
 
         let projects = (await axios.get('/api/project')).data
 
@@ -194,13 +204,12 @@ new Vue ({
 })
 
 
-async function get_project_list(projectActive, user_id) {
+function get_project_list(projectActive, user_id) {
     let temp_projectActive = []
-
-    console.log(projectActive)
 
     projectActive.forEach(function (p_a) {
         if (p_a.Owner === user_id & p_a.End != null){
+            let date_parse = new Date(Date.parse(p_a.Date))
             temp_projectActive.push({
                 name: p_a.Name,
                 time: (Date.parse(p_a.End) - Date.parse(p_a.Start))/1000,
@@ -218,16 +227,16 @@ async function get_project_list(projectActive, user_id) {
                 },
 
                 date: {
-                    year: 2021,
-                    month: 1,
-                    day: 16,
+                    year: date_parse.getFullYear(),
+                    month: date_parse.getMonth(),
+                    day: date_parse.getDay(),
                 },
-
 
                 isDone: true,
                 isPlayed: true,
             })
         }
     })
+
     return temp_projectActive
 }
