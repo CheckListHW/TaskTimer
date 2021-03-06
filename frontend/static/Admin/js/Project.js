@@ -51,6 +51,10 @@ new Vue ({
             this.projects_list.push(newProject);
             this.isAdded = false;
             this.enterdName = "";
+
+            if(this.activeProject >= 0) {
+                this.activeProject++;
+            }
         },
 
         cancel: function() {
