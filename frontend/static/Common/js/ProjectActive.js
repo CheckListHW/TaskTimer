@@ -136,16 +136,6 @@ new Vue ({
         },
 
         addProject: async function() {
-            var now = new Date();
-
-            if(now.getFullYear() != this.year || now.getMonth() != this.month || now.getDate() != this.number)
-            {
-                if(this.notifications.indexOf(this.pushNoteDate) == -1) {
-                    this.notifications.push(this.pushNoteDate);
-                    return
-                }
-            }
-
             response_message = await axiospost('/project_active/add', {
                 project_id: this.chosenProject.id,
             })
@@ -163,6 +153,17 @@ new Vue ({
                         color: '#ff0000',
                         delay: 10000,
                     });
+                return
+            }
+
+            var now = new Date();
+
+            if(now.getFullYear() != this.year || now.getMonth() != this.month || now.getDate() != this.number)
+            {
+                if(this.notifications.indexOf(this.pushNoteDate) == -1) {
+                    this.notifications.push(this.pushNoteDate);
+                    return
+                }
             }
 
             var newProject = {
@@ -204,6 +205,11 @@ new Vue ({
         },
 
         addNote: function(index) {
+            axiospost('api/project_active/edit',{
+                id: this.projectsTimers[index].id,
+                Note: this.projectsTimers[index].inputedNote,
+
+            })
             var str = this.projectsTimers[index].inputedNote;
 
             this.projectsTimers[index].isAddNote = false;
@@ -288,7 +294,7 @@ new Vue ({
             
             if (response_message == 'True'){
                 Toast.add({
-                        text: 'Проект: '+this.projectsTimers[index].name+' окончен!',
+                        text: 'Проект: '+this.projectsTimers[index].name+' удален!',
                         color: '#e88888',
                         delay: 3000,
                     });

@@ -1,11 +1,11 @@
-from typing import Optional
+from typing import Optional, Union
 from django.contrib.auth.models import User
 from .models import ProjectHistory, ProjectActive
 from django.utils import timezone
 from UserAdmin import models as admin_models
 
 
-def start_project_active(project_id: int) -> Optional[bool]:
+def start_project_active(project_id: int) -> Optional[Union[bool, str]]:
     try:
         project_history = ProjectHistory.objects.get(id=project_id)
         if project_history.Start is None:
@@ -18,8 +18,8 @@ def start_project_active(project_id: int) -> Optional[bool]:
         return 'Проект не начат! Перезагрузите страницу'
 
 
-def stop_project_active(project_id: int) -> Optional[bool]:
-    try:
+def stop_project_active(project_id: int) -> Optional[Union[bool, str]]:
+    #try:
         project_history = ProjectHistory.objects.get(id=project_id)
         if project_history.Activity:
             now_time = timezone.now()
@@ -33,11 +33,11 @@ def stop_project_active(project_id: int) -> Optional[bool]:
             project_history.Activity = False
             project_history.save()
             return True
-    except Exception:
+    #except Exception:
         return 'Проект не оставновлен! Перезагрузите страницу'
 
 
-def add_project_active(project_id: int, user: User) -> Optional[int]:
+def add_project_active(project_id: int, user: User) -> Optional[Union[int, str]]:
     try:
         main_project = admin_models.Project.objects.get(id=project_id)
         project_active, created = ProjectActive.objects.get_or_create(Owner=user, Project=main_project,
@@ -52,7 +52,21 @@ def add_project_active(project_id: int, user: User) -> Optional[int]:
         return 'Проект не добавлен! Произошла ошибка :('
 
 
-def delete_project_active(project_id: int) -> Optional[bool]:
+def edit_project_active(project_id: int, project_info, user: User) -> Optional[Union[int, str]]:
+    try:
+        project_active = ProjectHistory.objects.filter(id=project_id)
+        for p_a in project_active:
+            p_a.Note = project_info.get('Note')
+            p_a.Start = project_info.get('Start')
+            p_a.End = project_info.get('End')
+            p_a.Date = project_info.get('Date')
+            p_a.save()
+        return True
+    except Exception:
+        return 'Проект не изменен! Произошла ошибка :('
+
+
+def delete_project_active(project_id: int) -> Optional[Union[bool, str]]:
     try:
         project_active = ProjectHistory.objects.filter(id=project_id)
         for p_a in project_active:
@@ -63,3 +77,5 @@ def delete_project_active(project_id: int) -> Optional[bool]:
         return True
     except Exception:
         return 'Проект не удален! Перезагрузите страницу'
+
+

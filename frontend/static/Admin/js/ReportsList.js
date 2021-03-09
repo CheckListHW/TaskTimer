@@ -69,6 +69,8 @@ Vue.component('report_row', {
             var summArray = Object.fromEntries(modifiedArray.map(item => [item.name, 0]));
             modifiedArray.forEach(item => {summArray[item.name] += item.time})
 
+            console.log(modifiedArray)
+
             if(summArray[element] != null) {
                 return summArray[element];
             }

@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import user_passes_test
+from rest_framework.utils import json
 
 
 def group_required(*group_names):
@@ -11,3 +12,8 @@ def group_required(*group_names):
         return False
 
     return user_passes_test(in_groups, login_url='/')
+
+
+def parse_request(request):
+    body_unicode = request.body.decode('utf-8')
+    return json.loads(body_unicode)

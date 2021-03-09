@@ -4,6 +4,9 @@ from TaskTimer import settings
 from UserAdmin import models as AdminModels
 from django.contrib.auth.models import User
 from django.utils import timezone
+from dateutil import tz
+import datetime
+MyTimezone = tz.gettz(settings.TIME_ZONE)  # Note: ambiguous time support
 
 
 class ProjectActive(models.Model):
@@ -30,6 +33,9 @@ class ProjectHistory(models.Model):
     """У Пользователя одновременно может быть актиным только один проект(Activity - активность).
         Перед созранением активного проекта останавливает остальные"""
     def save(self, *args, **kwargs):
+        if self.End is not None:
+            if self.End.date() != self.Start.date():
+                self.End = self.Start.replace(hour=23, minute=59, tzinfo=MyTimezone)
         if self.Activity is True:
             ProjectHistory.objects.filter(Owner=self.ProjectActive.Owner,
                                           Activity=True).update(Activity=False, End=timezone.now())

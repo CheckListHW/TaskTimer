@@ -48,7 +48,7 @@ new Vue ({
                 id:newProjectId,
             };
 
-            this.projects_list.push(newProject);
+            this.projects_list.unshift(newProject);
             this.isAdded = false;
             this.enterdName = "";
 
