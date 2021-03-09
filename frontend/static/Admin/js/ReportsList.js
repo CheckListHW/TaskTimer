@@ -55,11 +55,6 @@ Vue.component('report_row', {
             for(var i = 0; i < array.length; i++) {
                 var pDate = new Date(array[i].date.year, array[i].date.month, array[i].date.day);
 
-                    console.log('push')
-                    console.log(pDate)
-                    console.log(sDate)
-                    console.log(eDate)
-
                 if(pDate >= sDate && pDate <= eDate) {
                     result.push(array[i]);
                 }
@@ -136,7 +131,6 @@ new Vue ({
                     projectsList: get_project_list(projectActive, user.id),
                 })
             })
-            console.log( vm.employees)
         },
 
         get_years: function () {
@@ -172,21 +166,25 @@ new Vue ({
             return date.getDate();
         }
     },
+
     created: async function() {
         const vm = this;
 
         vm.users = (await axios.get('/api/user')).data
 
+
+        date = new Date()
         vm.startdate = {
-            year: new Date().getFullYear(),
-            month: new Date().getMonth(),
-            day: new Date().getDay()-1,
+            year: date.getFullYear(),
+            month: date.getMonth(),
+            day: 9,
         }
 
+
         vm.enddate = {
-            year: new Date().getFullYear(),
-            month: new Date().getMonth(),
-            day: new Date().getDay(),
+            year: date.getFullYear(),
+            month: date.getMonth(),
+            day: 9,
         }
 
 
@@ -229,7 +227,7 @@ function get_project_list(projectActive, user_id) {
                 date: {
                     year: date_parse.getFullYear(),
                     month: date_parse.getMonth(),
-                    day: date_parse.getDay(),
+                    day: date_parse.getDate(),
                 },
 
                 isDone: true,
