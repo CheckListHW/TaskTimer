@@ -1,3 +1,6 @@
+const TOTAL_TIME_EMP = 'Итого по сотруднику',
+    TOTAL_TIME_PROJECT = 'Итого по проекту'
+
 Vue.component ('pretty_time', {
     props: ['value'],
 
@@ -17,7 +20,10 @@ Vue.component ('pretty_time', {
             var data = value.split(':');
             var hours = data[0];
             var minutes = data[1];
-            return hours + "ч " + minutes+ "мин";
+            if (hours == 0 & minutes == 0){
+                return "-"
+            }
+            return hours + ":" + minutes;
         }
     }
 })
@@ -55,7 +61,7 @@ Vue.component('report_row', {
             for(var i = 0; i < array.length; i++) {
                 var pDate = new Date(array[i].date.year, array[i].date.month, array[i].date.day);
 
-                if(pDate >= sDate && pDate <= eDate) {
+                if((pDate >= sDate && pDate <= eDate)) {
                     result.push(array[i]);
                 }
             }
@@ -66,10 +72,19 @@ Vue.component('report_row', {
         projectTime: function(element, array) {
             var modifiedArray = this.findProjects(array);
 
+            //Подсчет суммы по сотруднику
+            if (element === TOTAL_TIME_EMP){
+                let totalTime = 0
+                modifiedArray.forEach(item => {totalTime += item.time})
+                return totalTime
+            }
+            //Подсчет суммы по сотруднику
+
+
             var summArray = Object.fromEntries(modifiedArray.map(item => [item.name, 0]));
             modifiedArray.forEach(item => {summArray[item.name] += item.time})
 
-            console.log(modifiedArray)
+
 
             if(summArray[element] != null) {
                 return summArray[element];
@@ -132,6 +147,10 @@ new Vue ({
                     name: user.first_name+' '+user.last_name+' '+user.patronymic,
                     projectsList: get_project_list(projectActive, user.id),
                 })
+            })
+            vm.employees.push({
+                name: TOTAL_TIME_PROJECT,
+                projectsList: get_project_list(projectActive),
             })
         },
 
@@ -199,44 +218,66 @@ new Vue ({
             };
             vm.projects.push(newProject);
         })
-
+        vm.projects.push( {
+            id:0,
+            name: TOTAL_TIME_EMP,
+        })
     }
 })
 
 
-function get_project_list(projectActive, user_id) {
+function get_project_list(projectActive, user_id = null) {
     let temp_projectActive = []
+    const P_A_TEMPLATE = {
+        name: null,
+        time: 0,
+        note: "",
+        inputedNote: "",
+        isAddNote: false,
+
+        timer: null,
+        timeStart: {
+            minutes: 0,
+        },
+
+        timeEnd: {
+            hour: 0,
+            minutes: 0,
+        },
+
+        date: {
+            year: null,
+            month: null,
+            day: null,
+        },
+
+        isDone: true,
+        isPlayed: true,
+    }
 
     projectActive.forEach(function (p_a) {
-        if (p_a.Owner === user_id & p_a.End != null){
+        if ((user_id === null || p_a.Owner === user_id) & p_a.End != null){
             let date_parse = new Date(Date.parse(p_a.Date))
-            temp_projectActive.push({
-                name: p_a.Name,
-                time: (Date.parse(p_a.End) - Date.parse(p_a.Start))/1000,
-                note: "",
-                inputedNote: "",
-                isAddNote: false,
-
-                timer: null,
-                timeStart: {
-                    minutes: 0,
-                },
-                timeEnd: {
-                    hour: 0,
-                    minutes: 0,
-                },
-
-                date: {
-                    year: date_parse.getFullYear(),
-                    month: date_parse.getMonth(),
-                    day: date_parse.getDate(),
-                },
-
-                isDone: true,
-                isPlayed: true,
-            })
+            let new_p_a = Object.assign({}, P_A_TEMPLATE);
+            new_p_a.name =  p_a.Name
+            new_p_a.time = (Date.parse(p_a.End) - Date.parse(p_a.Start))/1000
+            new_p_a.date =   {
+                year: date_parse.getFullYear(),
+                month: date_parse.getMonth(),
+                day: date_parse.getDate(),
+            }
+            new_p_a.name =  p_a.Name
+            new_p_a.name =  p_a.Name
+            temp_projectActive.push(new_p_a)
         }
     })
+
+    /*let totaltime = 0
+    temp_projectActive.forEach(item => {totaltime+=item.time})
+    let new_p_a = Object.assign({}, P_A_TEMPLATE);
+    new_p_a.name = TOTAL_TIME_EMP
+    new_p_a.time = totaltime
+    temp_projectActive.push(new_p_a)*/
 
     return temp_projectActive
 }

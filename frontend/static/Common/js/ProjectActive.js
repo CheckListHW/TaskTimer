@@ -499,6 +499,7 @@ new Vue ({
             }
 
             var id = this.editTimeIndex;
+                console.log(id)
 
             if(id >= 0) {
                 this.projectsTimers[id].isChangeTime = false;
