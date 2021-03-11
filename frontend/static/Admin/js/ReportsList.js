@@ -1,5 +1,6 @@
 const TOTAL_TIME_EMP = 'Итого по сотруднику',
-    TOTAL_TIME_PROJECT = 'Итого по проекту'
+    TOTAL_TIME_PROJECT = 'Итого по проекту',
+    USER_TYPE = document.getElementById('user_group').name
 
 Vue.component ('pretty_time', {
     props: ['value'],
@@ -10,7 +11,7 @@ Vue.component ('pretty_time', {
         computed_time() {
             var time = this.value / 3600;
             var hours = parseInt(time);
-            var minutes = Math.round((time - hours) * 60);
+            var minutes = Math.ceil((time - hours) * 60);
             return hours + ":" + minutes;
         }
     },
@@ -73,18 +74,15 @@ Vue.component('report_row', {
             var modifiedArray = this.findProjects(array);
 
             //Подсчет суммы по сотруднику
-            if (element === TOTAL_TIME_EMP){
+            if (element === TOTAL_TIME_EMP & USER_TYPE === 'admin'){
                 let totalTime = 0
                 modifiedArray.forEach(item => {totalTime += item.time})
                 return totalTime
             }
             //Подсчет суммы по сотруднику
 
-
             var summArray = Object.fromEntries(modifiedArray.map(item => [item.name, 0]));
             modifiedArray.forEach(item => {summArray[item.name] += item.time})
-
-
 
             if(summArray[element] != null) {
                 return summArray[element];
@@ -112,6 +110,7 @@ new Vue ({
         },
         users:[],
         projects: [],
+        const_projects: [],
 
         employees: [],
     },
@@ -140,7 +139,7 @@ new Vue ({
 
             let projectActive = (await axios.get('/api/project_history/?'+StartDate+'&'+EndDate)).data
             vm.employees = []
-
+            vm.projects = []
 
             vm.users.forEach(function (user) {
                vm.employees.push({
@@ -148,10 +147,29 @@ new Vue ({
                     projectsList: get_project_list(projectActive, user.id),
                 })
             })
-            vm.employees.push({
-                name: TOTAL_TIME_PROJECT,
-                projectsList: get_project_list(projectActive),
+
+            if (USER_TYPE === 'admin'){
+                vm.employees.push({
+                    name: TOTAL_TIME_PROJECT,
+                    projectsList: get_project_list(projectActive),
+                })
+            }
+            let project_dict = {}
+
+            vm.employees.forEach(function (employee) {
+                employee.projectsList.forEach(function (project) {
+                    project_dict[project.name] = project.name
+                })
             })
+
+
+            for (let i = 0; i<vm.const_projects.length;i++){
+                if (project_dict[vm.const_projects[i].name] != null){
+                    vm.projects.push(vm.const_projects[i])
+                }
+            }
+
+
         },
 
         get_years: function () {
@@ -216,11 +234,13 @@ new Vue ({
                 id:project.id ,
                 name: project.Name,
             };
-            vm.projects.push(newProject);
+            vm.const_projects.push(newProject);
         })
-        vm.projects.push( {
-            id:0,
-            name: TOTAL_TIME_EMP,
+
+        if (USER_TYPE === 'admin')
+            vm.const_projects.push( {
+                id:0,
+                name: TOTAL_TIME_EMP,
         })
     }
 })
@@ -271,6 +291,7 @@ function get_project_list(projectActive, user_id = null) {
             temp_projectActive.push(new_p_a)
         }
     })
+
 
     /*let totaltime = 0
     temp_projectActive.forEach(item => {totaltime+=item.time})
