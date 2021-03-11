@@ -5,8 +5,7 @@ from UserAdmin import models as AdminModels
 from django.contrib.auth.models import User
 from django.utils import timezone
 from dateutil import tz
-import datetime
-MyTimezone = tz.gettz(settings.TIME_ZONE)  # Note: ambiguous time support
+MyTimezone = tz.gettz(settings.TIME_ZONE)
 
 
 class ProjectActive(models.Model):

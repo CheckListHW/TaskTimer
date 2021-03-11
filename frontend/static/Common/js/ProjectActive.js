@@ -76,10 +76,12 @@ new Vue ({
             title: 'Ошибка времени',
             body: 'Время начала проекта больше времени конца проекта',
         },
+
         pushNoteDate: {
             title: 'Ошибка добавления проекта',
             body: 'Вернитесь на сегодняшнюю дату и затем добавьте проект',
         },
+
         notifications: [],
     },
 
@@ -137,7 +139,7 @@ new Vue ({
 
         addProject: async function() {
             response_message = await axiospost('/project_active/add', {
-                project_id: this.chosenProject.id,
+                id: this.chosenProject.id,
             })
 
             if (response_message > 0){
@@ -204,12 +206,13 @@ new Vue ({
             this.projectsTimers[index].inputedNote = this.projectsTimers[index].note;
         },
 
-        addNote: function(index) {
-            axiospost('api/project_active/edit',{
+        addNote:async function(index) {
+            let message = await axiospost('/project_active/edit/note',{
                 id: this.projectsTimers[index].id,
                 Note: this.projectsTimers[index].inputedNote,
-
             })
+
+            console.log(message)
             var str = this.projectsTimers[index].inputedNote;
 
             this.projectsTimers[index].isAddNote = false;
@@ -233,7 +236,7 @@ new Vue ({
 
         start:async function(index) {
             let response_message = await axiospost('/project_active/start', {
-                project_id: this.projectsTimers[index].id,
+                id: this.projectsTimers[index].id,
             })
             if (response_message == 'True'){
                 Toast.add({
@@ -258,7 +261,7 @@ new Vue ({
 
         stop:async function(index) {
             let response_message = await axiospost('/project_active/stop', {
-                project_id: this.projectsTimers[index].id,
+                id: this.projectsTimers[index].id,
             })
 
             if (response_message == 'True'){
@@ -289,7 +292,7 @@ new Vue ({
         deleteTimer: async function(index) {
 
             let response_message = await axiospost('/project_active/delete', {
-                project_id: this.projectsTimers[index].id,
+                id: this.projectsTimers[index].id,
             })
             
             if (response_message == 'True'){
@@ -494,22 +497,26 @@ new Vue ({
         },
 
         editTime: function(index) {
+            const vm = this;
             if(this.editNoteIndex >= 0) {
-                this.projectsTimers[this.editNoteIndex].isAddNote = false;
+                vm.projectsTimers[vm.editNoteIndex].isAddNote = false;
             }
 
-            var id = this.editTimeIndex;
-                console.log(id)
+            var id = vm.editTimeIndex;
+            console.log(vm.projectsTimers[index])
+            vm.projectsTimers[index].isChangeTime = true;
 
-            if(id >= 0) {
-                this.projectsTimers[id].isChangeTime = false;
-                this.projectsTimers[index].isChangeTime = true;
-                this.editTimeIndex = index;
+            console.log(vm.projectsTimers)
+
+            /*if(id >= 0) {
+                vm.projectsTimers[id].isChangeTime = false;
+                vm.projectsTimers[index].isChangeTime = true;
+                vm.editTimeIndex = index;
             }
             else {
-                this.projectsTimers[index].isChangeTime = true;
-                this.editTimeIndex = index;
-            }
+                vm.projectsTimers[index].isChangeTime = true;
+                vm.editTimeIndex = index;
+            }*/
         },
 
         deleteNotification: function(note) {
@@ -541,12 +548,22 @@ new Vue ({
         await vm.upgradeProjectTimer(new Date())
 
         vm.isOneTimerDoing = vm.projectsTimers.find(p => p.isPlayed == 1) != null
-    },
 
+        let until_day_end = 86400-((date.getHours()*60)+date.getMinutes())*60+date.getSeconds()
+        setTimeout(night_update, (until_day_end-60)*1000);
+    },
     destroyed: function() {
         document.removeEventListener('click', this.dropdown);
     }
 })
+
+function night_update() {
+    Toast.add({text: 'Через 60 страница перезагрузится и активная задача перенесется на следущий день',
+                color: '#16d1d7',
+                delay: 60000})
+    setTimeout(window.location.reload, 60000);
+}
+
 
 
 async function get_project_history(day, Owner=null) {
@@ -567,10 +584,11 @@ async function get_project_history(day, Owner=null) {
                 name: projAct.Name,
                 //name: tempProjets.find(p => p.id === projAct.Project).Name,
                 // если сразу вставлять projAct.Note == '', то не будет написанно: Введите заметку...
-                note: projAct.Note == '' ? projAct.Note : '',
+                note: projAct.Note != null ? projAct.Note : '',
                 inputedNote: "",
                 isAddNote: false,
 
+                isChangeTime: false,
                 time: total_time,//total_time,
                 timeStart: {
                     hour: start.getHours(),

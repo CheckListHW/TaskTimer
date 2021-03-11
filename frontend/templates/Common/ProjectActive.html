@@ -135,19 +135,17 @@
                                 <div class="time_edit_window" v-show="projectTimer.isChangeTime ">
                                     <input type="number" class="input_edit_time"
                                            v-model="projectTimer.timeStart.hour">
-                                    <label>ч</label>
+                                    <label>:</label>
                                     <input type="number" class="input_edit_time"
                                            v-model="projectTimer.timeStart.minutes"
                                            @input="updateStartValue(index)">
-                                    <label>м</label>
                                     <label> - </label>
                                     <input type="number" class="input_edit_time"
                                            v-model="projectTimer.timeEnd.hour">
-                                    <label>ч</label>
+                                    <label>:</label>
                                     <input type="number" class="input_edit_time"
                                            v-model="projectTimer.timeEnd.minutes"
                                            @input="updateEndValue(index)">
-                                    <label>м</label>
                                 </div>
                             </transition>
                         </div>

@@ -3,6 +3,10 @@ from django.contrib.auth.models import User
 from .models import ProjectHistory, ProjectActive
 from django.utils import timezone
 from UserAdmin import models as admin_models
+from TaskTimer import settings
+from dateutil import tz
+
+MyTimezone = tz.gettz(settings.TIME_ZONE)
 
 
 def start_project_active(project_id: int) -> Optional[Union[bool, str]]:
@@ -19,22 +23,22 @@ def start_project_active(project_id: int) -> Optional[Union[bool, str]]:
 
 
 def stop_project_active(project_id: int) -> Optional[Union[bool, str]]:
-    #try:
-        project_history = ProjectHistory.objects.get(id=project_id)
-        if project_history.Activity:
-            now_time = timezone.now()
-            # if now_time.hour > 21 or project_history.Start.day != now_time.day:
-            #   now_time = datetime(project_history.Start.year, month=project_history.Start.month,
-            #                    day=project_history.Start.day, hour=23, minute=55)
-            if now_time.timestamp() - project_history.Start.timestamp() >= 0:
-                project_history.End = now_time
-            else:
-                project_history.End = project_history.Start
-            project_history.Activity = False
-            project_history.save()
-            return True
-    #except Exception:
-        return 'Проект не оставновлен! Перезагрузите страницу'
+    # try:
+    project_history = ProjectHistory.objects.get(id=project_id)
+    if project_history.Activity:
+        now_time = timezone.now()
+        # if now_time.hour > 21 or project_history.Start.day != now_time.day:
+        #   now_time = datetime(project_history.Start.year, month=project_history.Start.month,
+        #                    day=project_history.Start.day, hour=23, minute=55)
+        if now_time.timestamp() - project_history.Start.timestamp() >= 0:
+            project_history.End = now_time
+        else:
+            project_history.End = project_history.Start
+        project_history.Activity = False
+        project_history.save()
+        return True
+    # except Exception:
+    return 'Проект не оставновлен! Перезагрузите страницу'
 
 
 def add_project_active(project_id: int, user: User) -> Optional[Union[int, str]]:
@@ -52,14 +56,33 @@ def add_project_active(project_id: int, user: User) -> Optional[Union[int, str]]
         return 'Проект не добавлен! Произошла ошибка :('
 
 
-def edit_project_active(project_id: int, project_info, user: User) -> Optional[Union[int, str]]:
+def edit_note_project_active(project_id: int, Note) -> Optional[Union[int, str]]:
     try:
         project_active = ProjectHistory.objects.filter(id=project_id)
         for p_a in project_active:
-            p_a.Note = project_info.get('Note')
-            p_a.Start = project_info.get('Start')
-            p_a.End = project_info.get('End')
-            p_a.Date = project_info.get('Date')
+            p_a.Note = Note if Note is not None else p_a.Note
+            p_a.save()
+        return True
+    except Exception:
+        return 'Проект не изменен! Произошла ошибка :('
+
+
+def edit_start_end_project_active(project_id: int, start_time, end_time) -> Optional[Union[int, str]]:
+    try:
+        project_active = ProjectHistory.objects.filter(id=project_id)
+        for p_a in project_active:
+            project_active_date = ProjectHistory.objects.filter(Date=p_a.Date)
+            p_a.Start = p_a.Start.replace(hour=start_time.get('Hour'), minute=start_time.get('Minute'))
+            p_a.End = p_a.End.replace(hour=end_time.get('Hour'), minute=end_time.get('Minute'))
+            for p_a_d in project_active_date:
+                if (p_a_d.Start < p_a.Start & p_a.Start > p_a_d.End) or (p_a_d.Start < p_a.End & p_a.End > p_a_d.End):
+                    return 'Указанное время входит в промежуток:'+p_a_d.Start.hour+':'+p_a_d.Start.Minute+\
+                           '-'+p_a_d.End.hour+':'+p_a_d.End.Minute+'.Проекта: '+p_a_d.Name+\
+                           '. Измените введенное время'
+                if (p_a.Start < p_a_d.Start & p_a_d.Start > p_a.End) or (p_a_d.Start < p_a_d.End & p_a_d.End > p_a.End):
+                    return 'В указанный промежуток входит проект:'+ p_a_d.Name+'. Со временем'+\
+                           p_a_d.Start.hour+':'+p_a_d.Start.Minute+'-'+p_a_d.End.hour+':'+p_a_d.End.Minute+\
+                           '. Измените введенное время'
             p_a.save()
         return True
     except Exception:
@@ -79,3 +102,16 @@ def delete_project_active(project_id: int) -> Optional[Union[bool, str]]:
         return 'Проект не удален! Перезагрузите страницу'
 
 
+def project_active() -> None:
+    for p_h in ProjectHistory.objects.filter(Activity=True):
+        utc_start = p_h.Start.astimezone().date()
+        if (timezone.localtime().date() - utc_start).days > 0:
+            p_h.End = p_h.Start.replace(hour=23, minute=59, second=59, tzinfo=MyTimezone)
+            p_h.Activity = False
+            p_h.save()
+            new_p_h = ProjectHistory(Owner=p_h.Owner, ProjectActive=p_h.ProjectActive,
+                                     Name=p_h.Name, Date=timezone.localtime().date(),
+                                     Start=timezone.localtime().replace(hour=0, minute=0, second=59, tzinfo=MyTimezone),
+                                     Note=p_h.Note, Activity=True)
+            new_p_h.save()
+    return
