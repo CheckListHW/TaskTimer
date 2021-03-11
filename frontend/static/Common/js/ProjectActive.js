@@ -496,6 +496,49 @@ new Vue ({
             this.$forceUpdate();
         },
 
+        SaveTime: async function(index) {
+            const vm = this;
+            let start = document.getElementById('timeStartInput'+index).value.split(':');
+            let end = document.getElementById('timeEndInput'+index).value.split(':');
+
+            let response_message = await axiospost('/project_active/edit/time',{
+                id: vm.projectsTimers[index].id,
+                Start: {
+                    hour: parseInt(start[0]),
+                    minute: parseInt(start[1]),
+                },
+                End:{
+                    hour: parseInt(end[0]),
+                    minute: parseInt(end[1]),
+                },
+            })
+
+            if (response_message != 'True'){
+                Toast.add({
+                    text: response_message,
+                    delay: 21000
+                })
+                return
+            }
+            console.log(response_message)
+
+            if (start.length > 1){
+                vm.projectsTimers[index].timeStart.hour = parseInt(start[0])
+                vm.projectsTimers[index].timeStart.minutes = parseInt(start[1])
+            }
+
+            if (end.length > 1){
+                vm.projectsTimers[index].timeEnd.hour = parseInt(end[0])
+                vm.projectsTimers[index].timeEnd.minutes = parseInt(end[1])
+            }
+
+
+
+
+            vm.projectsTimers[index].isChangeTime = false;
+            console.log('save')
+        },
+
         editTime: function(index) {
             const vm = this;
             if(this.editNoteIndex >= 0) {
@@ -503,10 +546,7 @@ new Vue ({
             }
 
             var id = vm.editTimeIndex;
-            console.log(vm.projectsTimers[index])
             vm.projectsTimers[index].isChangeTime = true;
-
-            console.log(vm.projectsTimers)
 
             /*if(id >= 0) {
                 vm.projectsTimers[id].isChangeTime = false;
@@ -589,7 +629,7 @@ async function get_project_history(day, Owner=null) {
                 isAddNote: false,
 
                 isChangeTime: false,
-                time: total_time,//total_time,
+                time: total_time,
                 timeStart: {
                     hour: start.getHours(),
                     minutes: start.getMinutes(),

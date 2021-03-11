@@ -133,19 +133,17 @@
                                leave-active-class="animate__animated animate__zoomOut"
                             >
                                 <div class="time_edit_window" v-show="projectTimer.isChangeTime ">
-                                    <input type="number" class="input_edit_time"
-                                           v-model="projectTimer.timeStart.hour">
-                                    <label>:</label>
-                                    <input type="number" class="input_edit_time"
-                                           v-model="projectTimer.timeStart.minutes"
+
+
+
+                                    <input type="time" :id="'timeStartInput'+index"
                                            @input="updateStartValue(index)">
                                     <label> - </label>
-                                    <input type="number" class="input_edit_time"
-                                           v-model="projectTimer.timeEnd.hour">
-                                    <label>:</label>
-                                    <input type="number" class="input_edit_time"
-                                           v-model="projectTimer.timeEnd.minutes"
+                                    <input type="time" :id="'timeEndInput'+index"
                                            @input="updateEndValue(index)">
+
+                                    <input type="button" class="save_bt" value="&#9989"
+                                           @click="SaveTime(index)">
                                 </div>
                             </transition>
                         </div>

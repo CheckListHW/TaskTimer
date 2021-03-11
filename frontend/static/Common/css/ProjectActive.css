@@ -8,8 +8,8 @@ body {
 }
 
 *,
-*: before,
-*: after {
+*:before,
+*:after {
     box-sizing: border-box;
 }
 
@@ -530,7 +530,6 @@ input:active, input:focus {
     margin-right: 2px;
 
     text-align: center;
-    right:
 }
 
 .time_edit_window label {
@@ -718,4 +717,8 @@ input:active, input:focus {
 
 .animate__animated.animate__zoomOut {
     --animate-duration: 300ms;
+}
+
+.save_bt {
+    background: none;
 }
