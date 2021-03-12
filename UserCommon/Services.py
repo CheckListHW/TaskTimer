@@ -73,22 +73,38 @@ def edit_start_end_project_active(project_id: int, start_time, end_time) -> Opti
         print(project_active)
         for p_a in project_active:
             project_active_date = ProjectHistory.objects.filter(Date=p_a.Date).exclude(id=project_id)
-            p_a.Start = p_a.Start.replace(hour=start_time.get('hour'), minute=start_time.get('minute'))
-            p_a.End = p_a.End.replace(hour=end_time.get('hour'), minute=end_time.get('minute'))
+            p_a.Start = p_a.Start.replace(tzinfo=MyTimezone, hour=start_time.get('hour') if start_time.get('hour')
+                                                                         is not None else p_a.Start.hour,
+                                          minute=start_time.get('minute') if start_time.get('hour')
+                                                                             is not None else p_a.Start.minute,)
+            p_a.End = p_a.End.replace(tzinfo=MyTimezone, hour=end_time.get('hour') if end_time.get('hour')
+                                                                         is not None else p_a.End.hour,
+                                          minute=end_time.get('minute') if end_time.get('hour')
+                                                                             is not None else p_a.End.minute,)
             if p_a.Start > p_a.End:
                 return 'Не верные данные начало позже конца!'
             for p_a_d in project_active_date:
-                if ((p_a_d.Start < p_a.Start) & (p_a.Start > p_a_d.End)) or ((p_a_d.Start < p_a.End) & (p_a.End > p_a_d.End)):
+                print(p_a.Name)
+                print(p_a.Start)
+                print(p_a.End)
+                print(p_a_d.Name)
+                print(p_a_d.Start)
+                print(p_a_d.End)
+                if ((p_a_d.Start < p_a.Start) & (p_a.Start < p_a_d.End)) or ((p_a_d.Start < p_a.End) & (p_a.End < p_a_d.End)):
                     return 'Указанное время входит в промежуток: '+\
                            str(p_a_d.Start.astimezone().hour)+':'+str(p_a_d.Start.astimezone().minute)+\
                            '-'+str(p_a_d.End.astimezone().hour)+':'+str(p_a_d.End.astimezone().minute)+\
                            '. Проекта: '+p_a_d.Name+'. Измените введенное время'
-                if ((p_a.Start < p_a_d.Start) & (p_a_d.Start > p_a.End)) or ((p_a_d.Start < p_a_d.End) & (p_a_d.End > p_a.End)):
+                if ((p_a.Start < p_a_d.Start) & (p_a_d.Start < p_a.End)) or ((p_a.Start < p_a_d.End) & (p_a_d.End < p_a.End)):
                     return 'В указанный промежуток входит проект: '+p_a_d.Name+'. Со временем'+\
                            str(p_a_d.Start.astimezone().hour)+':'+str(p_a_d.Start.astimezone().minute)+\
                            '-'+str(p_a_d.End.astimezone().hour)+':'+str(p_a_d.End.astimezone().minute)+\
                            '. Измените введенное время'
+            p_a.Start.replace(tzinfo=None)
+            p_a.End.replace(tzinfo=None)
             p_a.save()
+
+
         return True
     #except Exception:
         return 'Проект не изменен! Произошла ошибка :('
@@ -116,7 +132,7 @@ def project_active() -> None:
             p_h.save()
             new_p_h = ProjectHistory(Owner=p_h.Owner, ProjectActive=p_h.ProjectActive,
                                      Name=p_h.Name, Date=timezone.localtime().date(),
-                                     Start=timezone.localtime().replace(hour=0, minute=0, second=59, tzinfo=MyTimezone),
+                                     Start=timezone.localtime().replace(hour=0, minute=0, second=0, tzinfo=MyTimezone),
                                      Note=p_h.Note, Activity=True)
             new_p_h.save()
     return

@@ -16,7 +16,6 @@ greenlet==1.0.0
 idna==2.10
 itsdangerous==1.1.0
 Jinja2==2.11.3
--e git://github.com/locustio/locust.git@fddfefe7ef1082bc5284cd2dd8477221484dfb0c#egg=locust
 MarkupSafe==1.1.1
 msgpack==1.0.2
 mysqlclient==2.0.3
