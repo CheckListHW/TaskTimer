@@ -182,7 +182,7 @@ new Vue ({
                     isDone: false,
                     isPlayed: false,
                 }
-                this.projectsTimers.unshift(newProject);
+                this.projectsTimers.push(newProject);
 
                 this.chosenProject = null;
             }
