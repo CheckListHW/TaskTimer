@@ -63,8 +63,8 @@ new Vue ({
         chosenProject: null,
         editTimeIndex: -1,
         editNoteIndex: -1,
-        startEditTime: 0,
-        endEditTime: 0,
+        startEditTime: "00:00",
+        endEditTime: "00:00",
 
         isOneTimerDoing: false,
 
