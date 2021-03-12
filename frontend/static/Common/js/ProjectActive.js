@@ -126,10 +126,40 @@ new Vue ({
 
             if(now.getFullYear() != this.year || now.getMonth() != this.month || now.getDate() != this.number)
             {
-                if(this.notifications.indexOf(this.pushNoteDate) == -1) {
-                    this.notifications.push(this.pushNoteDate);
-                    return
+                //Тут короче чето тоже с БД надо сделать как в else
+
+                var newProject = {
+                    name: this.chosenProject.name,
+
+                    note: "",
+                    inputedNote: "",
+                    isAddNote: false,
+                    isChangeTime: false,
+
+                    timer: null,
+                    time: 0,
+                    timeStart: {
+                        hour: now.getHours(),
+                        minutes: now.getMinutes(),
+                    },
+                    timeEnd: {
+                        hour: now.getHours(),
+                        minutes: now.getMinutes(),
+                    },
+                    timeError: false,
+
+                    date: {
+                        year: now.getFullYear(),
+                        month: now.getMonth(),
+                        day: now.getDate(),
+                    },
+
+                    isDone: true,
+                    isPlayed: true,
                 }
+                this.projectsTimers.push(newProject);
+
+                this.chosenProject = null;
             }
             else {
                 response_message = await axiospost('/project_active/add', {
