@@ -167,38 +167,39 @@ new Vue ({
                     return
                 }
             }
+            else {
+                var newProject = {
+                    id: response_message,
+                    name: this.chosenProject.name,
+                    note: "",
+                    inputedNote: "",
+                    isAddNote: false,
 
-            var newProject = {
-                id: response_message,
-                name: this.chosenProject.name,
-                note: "",
-                inputedNote: "",
-                isAddNote: false,
+                    timer: null,
+                    time: 0,
+                    timeStart: {
+                        hour: now.getHours(),
+                        minutes: now.getMinutes(),
+                    },
+                    timeEnd: {
+                        hour: now.getHours(),
+                        minutes: now.getMinutes(),
+                    },
+                    timeError: false,
 
-                timer: null,
-                time: 0,
-                timeStart: {
-                    hour: now.getHours(),
-                    minutes: now.getMinutes(),
-                },
-                timeEnd: {
-                    hour: now.getHours(),
-                    minutes: now.getMinutes(),
-                },
-                timeError: false,
+                    date: {
+                        year: now.getFullYear(),
+                        month: now.getMonth(),
+                        day: now.getDate(),
+                    },
 
-                date: {
-                    year: now.getFullYear(),
-                    month: now.getMonth(),
-                    day: now.getDate(),
-                },
+                    isDone: false,
+                    isPlayed: false,
+                }
+                this.projectsTimers.unshift(newProject);
 
-                isDone: false,
-                isPlayed: false,
+                this.chosenProject = null;
             }
-            this.projectsTimers.unshift(newProject);
-
-            this.chosenProject = null;
         },
 
         showNote: function(index) {
