@@ -85,32 +85,6 @@ new Vue ({
         notifications: [],
     },
 
-    watch: {
-        projectsTimers:  {
-            handler(val, oldVal) {
-                if(this.editTimeIndex >= 0) {
-                    var prj = this.projectsTimers[this.editTimeIndex];
-                    if(prj.timeStart.hour > prj.timeEnd.hour) {
-                        prj.timeError = true;
-                        if(this.notifications.indexOf(this.pushNoteTime) == -1) {
-                            this.notifications.push(this.pushNoteTime);
-                        }
-                    }
-                    else if(prj.timeStart.hour == prj.timeEnd.hour && prj.timeStart.minutes > prj.timeEnd.minutes) {
-                        prj.timeError = true;
-                        if(this.notifications.indexOf(this.pushNoteTime) == -1) {
-                            this.notifications.push(this.pushNoteTime);
-                        }
-                    }
-                    else {
-                        prj.timeError = false;
-                    }
-                }
-            },
-            deep: true
-        }
-    },
-
     computed: {
         nameChosenProject: function() {
             if(this.chosenProject == null) {
@@ -174,6 +148,7 @@ new Vue ({
                     note: "",
                     inputedNote: "",
                     isAddNote: false,
+                    isChangeTime: false,
 
                     timer: null,
                     time: 0,
@@ -478,6 +453,26 @@ new Vue ({
                     this.projectsTimers[id].timeStart.minutes = parseInt(this.projectsTimers[id].timeStart.minutes);
                     this.projectsTimers[id].timeEnd.hour = parseInt(this.projectsTimers[id].timeEnd.hour);
                     this.projectsTimers[id].timeEnd.minutes = parseInt(this.projectsTimers[id].timeEnd.minutes);
+
+                    if(this.editTimeIndex >= 0) {
+                        var prj = this.projectsTimers[this.editTimeIndex];
+                        if(prj.timeStart.hour > prj.timeEnd.hour) {
+                            prj.timeError = true;
+                            if(this.notifications.indexOf(this.pushNoteTime) == -1) {
+                                this.notifications.push(this.pushNoteTime);
+                            }
+                        }
+                        else if(prj.timeStart.hour == prj.timeEnd.hour && prj.timeStart.minutes > prj.timeEnd.minutes) {
+                            prj.timeError = true;
+                            if(this.notifications.indexOf(this.pushNoteTime) == -1) {
+                                this.notifications.push(this.pushNoteTime);
+                            }
+                        }
+                        else {
+                            prj.timeError = false;
+                        }
+                    }
+
                     this.editTimeIndex = -1;
                 }
             }
