@@ -118,29 +118,8 @@ new Vue ({
         },
 
         addProject: async function() {
-            response_message = await axiospost('/project_active/add', {
-                id: this.chosenProject.id,
-            })
 
-            if (response_message > 0){
-                Toast.add({
-                        text: 'Проект: '+this.chosenProject.name+' добавлен!',
-                        color: '#ffe600',
-                        delay: 3000,
-                    });
-            }
-            else{
-                Toast.add({
-                        text: response_message,
-                        color: '#ff0000',
-                        delay: 10000,
-                    });
-                return
-            }
-
-            var now = new Date();
-
-            if(now.getFullYear() != this.year || now.getMonth() != this.month || now.getDate() != this.number)
+             if(now.getFullYear() != this.year || now.getMonth() != this.month || now.getDate() != this.number)
             {
                 if(this.notifications.indexOf(this.pushNoteDate) == -1) {
                     this.notifications.push(this.pushNoteDate);
@@ -148,6 +127,28 @@ new Vue ({
                 }
             }
             else {
+                response_message = await axiospost('/project_active/add', {
+                    id: this.chosenProject.id,
+                })
+                if (response_message > 0){
+                    Toast.add({
+                            text: 'Проект: '+this.chosenProject.name+' добавлен!',
+                            color: '#ffe600',
+                            delay: 3000,
+                    });
+                }
+                else{
+                    Toast.add({
+                        text: response_message,
+                        color: '#ff0000',
+                        delay: 10000,
+                    });
+                    return
+                }
+
+                var now = new Date();
+
+
                 var newProject = {
                     id: response_message,
                     name: this.chosenProject.name,
