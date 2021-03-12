@@ -156,15 +156,17 @@
 
                         <div class="time_buttons">
                             <button class="button"
-                                   v-if="!projectTimer.isPlayed"
-                                   :disabled="projectTimer.isDone || projectTimer.isAddNote  || isOneTimerDoing"
-                                   @click="start(index)">
+                                    v-if="!projectTimer.isPlayed"
+                                    v-show="!projectTimer.isDone"
+                                    :disabled="projectTimer.isAddNote || isOneTimerDoing"
+                                    @click="start(index)">
                                         <i class="fa fa-play"></i>
                             </button>
-                            <button class="button"
-                                   v-else
-                                   @click="stop(index)"
-                                   :disabled="projectTimer.isAddNote">
+                            <button :class="{played_button: projectTimer.isPlayed, button: !projectTimer.isPlayed}"
+                                    v-show="!projectTimer.isDone"
+                                    v-else
+                                    @click="stop(index)"
+                                    :disabled="projectTimer.isAddNote">
                                         <i class="fa fa-stop"></i>
                             </button>
 

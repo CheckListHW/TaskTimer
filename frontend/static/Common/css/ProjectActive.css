@@ -312,10 +312,10 @@ input:active, input:focus {
 }
 
 .button_add_timer button:disabled {
-    background-color: rgba(36,0,144,0.6);
+    background: rgba(36,0,144,0.6);
 }
 .button_add_timer button:disabled:hover {
-    opacity: 0.8;
+    background: rgba(36,0,144,0.6);
     cursor: default;
 }
 
@@ -492,10 +492,10 @@ input:active, input:focus {
 }
 
 .time_buttons button:disabled {
-    background-color: rgba(36,0,144,0.6);
+    background: rgba(36,0,144,0.6);
 }
 .time_buttons button:disabled:hover {
-    opacity: 0.8;
+    background: rgba(36,0,144,0.6);
     cursor: default;
 }
 .time_buttons button:disabled:active {
@@ -616,17 +616,36 @@ input:active, input:focus {
 
     font-size: 14px;
 
-    background: #240090;
-    opacity: 0.8;
-    transition: opacity 0.15s linear;
+    background: rgba(36,0,144,0.8);
+    transition: background 0.15s linear;
 }
 
 .button:hover {
-    opacity: 1;
+    background: rgba(36,0,144,1);
     cursor: pointer;
 }
 
 .button:active {
+    box-shadow: 0 -4px 6px rgba(0,0,0,0.35) inset;
+}
+
+.played_button {
+    display: flex;
+    justify-content: center;
+    padding: 7px 10px;
+
+    font-size: 14px;
+
+    background: rgba(255,0,0,0.8);
+    transition: background 0.15s linear;
+}
+
+.played_button:hover {
+    background: red;
+    cursor: pointer;
+}
+
+.played_button:active {
     box-shadow: 0 -4px 6px rgba(0,0,0,0.35) inset;
 }
 
