@@ -224,6 +224,9 @@ new Vue ({
             var string = "textarea" + index;
             var el = this.$refs[string];
 
+            console.log(el);
+            console.log(el[0]);
+
             if(id >= 0) {
                 this.projectsTimers[id].isAddNote = false;
                 this.projectsTimers[index].isAddNote = true;
@@ -257,6 +260,7 @@ new Vue ({
             this.projectsTimers[index].isAddNote = false;
             this.projectsTimers[index].note = str.substring(0, str.length - 1);
             this.projectsTimers[index].inputedNote = "";
+            this.editNoteIndex = -1;
         },
 
         closeNote: function(index) {

@@ -115,7 +115,7 @@
                                leave-active-class="animate__animated animate__zoomOut"
                             >
                                 <div class="note_window" v-show="projectTimer.isAddNote">
-                                    <textarea id="textarea" placeholder="Введите заметку..."
+                                    <textarea :ref="'textarea' + index" placeholder="Введите заметку..."
                                               v-model="projectTimer.inputedNote"
                                               @keyup.enter="addNote(index)"
                                               @keyup.esc="closeNote(index)"
