@@ -221,16 +221,27 @@ new Vue ({
         showNote: function(index) {
             var id = this.editNoteIndex;
 
+            var string = "textarea" + index;
+            var el = this.$refs[string];
+
             if(id >= 0) {
                 this.projectsTimers[id].isAddNote = false;
                 this.projectsTimers[index].isAddNote = true;
                 this.projectsTimers[index].inputedNote = this.projectsTimers[index].note;
                 this.editNoteIndex = index;
+
+                this.$nextTick(function(){
+                    el[0].focus();
+                });
             }
             else {
                 this.projectsTimers[index].isAddNote = true;
                 this.projectsTimers[index].inputedNote = this.projectsTimers[index].note;
                 this.editNoteIndex = index;
+
+                this.$nextTick(function(){
+                    el[0].focus();
+                });
             }
         },
 
@@ -493,6 +504,7 @@ new Vue ({
 
         dropdown: function(e){
             var id = this.editTimeIndex;
+            var idNote = this.editNoteIndex;
 
             if(id >= 0) {
                 var string = "dropdown" + id;
@@ -544,6 +556,26 @@ new Vue ({
                     }
 
                     this.editTimeIndex = -1;
+                }
+            }
+            else if (idNote >= 0) {
+                var string = "noteW" + idNote;
+                var el = this.$refs[string];
+                var target = e.target;
+
+                if (el !== target && !el[0].contains(target)) {
+                    var elem = this.projectsTimers[idNote];
+                    elem.isAddNote = false;
+                    this.addNote(idNote);
+                }
+            }
+            else if(this.isChoosed) {
+                var el = this.$refs["list"];
+                console.log(el);
+                var target = e.target;
+
+                if (el !== target && !el.contains(target)) {
+                    this.isChoosed = false;
                 }
             }
         },

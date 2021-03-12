@@ -65,7 +65,7 @@
                 </div>
             </div>
 
-            <div class="add_new_timer">
+            <div class="add_new_timer" ref="list">
                 <div class="choose_block" @click="isChoosed = !isChoosed">
                     <p>{{nameChosenProject}}</p>
                 </div>
@@ -106,23 +106,24 @@
                     </div>
 
                     <div class="time_main_block">
-                        <div class="time_note" @click="showNote(index)">
+                        <div class="time_note" @click="showNote(index)" :ref="'noteW' + index">
                             <p>{{noteText(index)}}</p>
+
+                            <transition
+                               name="custom-classes-transition"
+                               enter-active-class="animate__animated animate__zoomIn"
+                               leave-active-class="animate__animated animate__zoomOut"
+                            >
+                                <div class="note_window" v-show="projectTimer.isAddNote">
+                                    <textarea id="textarea" placeholder="Введите заметку..."
+                                              v-model="projectTimer.inputedNote"
+                                              @keyup.enter="addNote(index)"
+                                              @keyup.esc="closeNote(index)"
+                                              >
+                                    </textarea>
+                                </div>
+                            </transition>
                         </div>
-                        <transition
-                           name="custom-classes-transition"
-                           enter-active-class="animate__animated animate__zoomIn"
-                           leave-active-class="animate__animated animate__zoomOut"
-                        >
-                            <div class="note_window" v-show="projectTimer.isAddNote">
-                                <textarea id="textarea" placeholder="Введите заметку..."
-                                          v-model="projectTimer.inputedNote"
-                                          @keyup.enter="addNote(index)"
-                                          @keyup.esc="closeNote(index)"
-                                          >
-                                </textarea>
-                            </div>
-                        </transition>
 
                         <div class="time_period" :class="{error_time: projectTimer.timeError}" :ref="'dropdown' + index">
                             <p @click="editTime(index)">{{prettify(projectTimer.timeStart.hour)}}:{{prettify(projectTimer.timeStart.minutes)}} - {{prettify(projectTimer.timeEnd.hour)}}:{{prettify(projectTimer.timeEnd.minutes)}}</p>
