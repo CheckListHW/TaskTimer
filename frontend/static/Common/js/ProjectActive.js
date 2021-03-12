@@ -61,6 +61,8 @@ new Vue ({
 
         isChoosed: false,
         chosenProject: null,
+        editTimeIndex: -1,
+        editNoteIndex: -1,
 
         isOneTimerDoing: false,
 
@@ -118,8 +120,9 @@ new Vue ({
         },
 
         addProject: async function() {
+            var now = new Date();
 
-             if(now.getFullYear() != this.year || now.getMonth() != this.month || now.getDate() != this.number)
+            if(now.getFullYear() != this.year || now.getMonth() != this.month || now.getDate() != this.number)
             {
                 if(this.notifications.indexOf(this.pushNoteDate) == -1) {
                     this.notifications.push(this.pushNoteDate);
@@ -145,9 +148,6 @@ new Vue ({
                     });
                     return
                 }
-
-                var now = new Date();
-
 
                 var newProject = {
                     id: response_message,
@@ -185,8 +185,19 @@ new Vue ({
         },
 
         showNote: function(index) {
-            this.projectsTimers[index].isAddNote = true;
-            this.projectsTimers[index].inputedNote = this.projectsTimers[index].note;
+            var id = this.editNoteIndex;
+
+            if(id >= 0) {
+                this.projectsTimers[id].isAddNote = false;
+                this.projectsTimers[index].isAddNote = true;
+                this.projectsTimers[index].inputedNote = this.projectsTimers[index].note;
+                this.editNoteIndex = index;
+            }
+            else {
+                this.projectsTimers[index].isAddNote = true;
+                this.projectsTimers[index].inputedNote = this.projectsTimers[index].note;
+                this.editNoteIndex = index;
+            }
         },
 
         addNote:async function(index) {
@@ -201,11 +212,13 @@ new Vue ({
             this.projectsTimers[index].isAddNote = false;
             this.projectsTimers[index].note = str.substring(0, str.length - 1);
             this.projectsTimers[index].inputedNote = "";
+            this.editNoteIndex = -1;
         },
 
         closeNote: function(index) {
             this.projectsTimers[index].isAddNote = false;
             this.projectsTimers[index].inputedNote = "";
+            this.editNoteIndex = -1;
         },
 
         noteText: function(index) {
@@ -448,6 +461,7 @@ new Vue ({
 
         dropdown: function(e){
             var id = this.editTimeIndex;
+            console.log(id);
 
             if(id >= 0) {
                 var string = "dropdown" + id;
@@ -549,9 +563,8 @@ new Vue ({
             }
 
             var id = vm.editTimeIndex;
-            vm.projectsTimers[index].isChangeTime = true;
 
-            /*if(id >= 0) {
+            if(id >= 0) {
                 vm.projectsTimers[id].isChangeTime = false;
                 vm.projectsTimers[index].isChangeTime = true;
                 vm.editTimeIndex = index;
@@ -559,7 +572,7 @@ new Vue ({
             else {
                 vm.projectsTimers[index].isChangeTime = true;
                 vm.editTimeIndex = index;
-            }*/
+            }
         },
 
         deleteNotification: function(note) {
