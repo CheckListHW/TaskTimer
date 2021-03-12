@@ -5,8 +5,10 @@ Vue.component ('pretty_time', {
         computed_time() {
             var time = this.value / 3600;
             var hours = parseInt(time);
-            var minutes = Math.round((time - hours) * 60);
-            return hours + ":" + minutes;
+            var minutes = Math.floor((time - hours) * 60);
+            var time2 = this.value / 60;
+            var secondes = Math.round((time2 - (minutes + hours * 60)) * 60);
+            return hours + ":" + minutes + ":" + secondes;
         }
     },
     filters: {
@@ -14,13 +16,17 @@ Vue.component ('pretty_time', {
             var data = value.split(':');
             var hours = data[0];
             var minutes = data[1];
+            var secondes = data[2];
             if (hours < 10) {
                 hours = "0" + hours;
             }
             if (minutes < 10) {
                 minutes = "0" + minutes;
             }
-            return hours + ":" + minutes;
+            if (secondes < 10) {
+                secondes = "0" + secondes;
+            }
+            return hours + ":" + minutes + ":" + secondes;
         }
     }
 })

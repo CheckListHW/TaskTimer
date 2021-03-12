@@ -358,7 +358,7 @@ input:active, input:focus {
     padding: 0px 10px;
 
     height: 80%;
-    width: 50%;
+    width: 400px;
 }
 
 .project_timer_title h2 {
@@ -376,9 +376,9 @@ input:active, input:focus {
 .time_main_block {
     display: flex;
     align-items: center;
+    flex: 1;
 
     height: 80%;
-    width: 50%;
 }
 
 .time_note {
@@ -388,7 +388,7 @@ input:active, input:focus {
     margin-right: 20px;
     padding: 0px 10px;
 
-    width: 200px;
+    width: 300px;
     height: 70%;
 }
 
@@ -410,12 +410,12 @@ input:active, input:focus {
 
 .note_window {
     display: flex;
-    width: 260px;
+    width: 360px;
     height: 100px;
 
     position: absolute;
     top: 15px;
-    left: 515px;
+    left: 395px;
     z-index: 1;
 }
 
@@ -444,7 +444,7 @@ input:active, input:focus {
 
     margin-right: 20px;
 
-    width: 115px;
+    width: 145px;
     height: 39px;
 
     position: relative;
@@ -464,7 +464,7 @@ input:active, input:focus {
     align-items: center;
     justify-content: center;
 
-    width: 100px;
+    width: 140px;
 }
 
 .time p {
