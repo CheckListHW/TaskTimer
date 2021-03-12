@@ -149,6 +149,8 @@ new Vue ({
                     return
                 }
 
+
+
                 var newProject = {
                     id: response_message,
                     name: this.chosenProject.name,
@@ -212,13 +214,11 @@ new Vue ({
             this.projectsTimers[index].isAddNote = false;
             this.projectsTimers[index].note = str.substring(0, str.length - 1);
             this.projectsTimers[index].inputedNote = "";
-            this.editNoteIndex = -1;
         },
 
         closeNote: function(index) {
             this.projectsTimers[index].isAddNote = false;
             this.projectsTimers[index].inputedNote = "";
-            this.editNoteIndex = -1;
         },
 
         noteText: function(index) {
@@ -322,11 +322,11 @@ new Vue ({
         },
 
         startTimer: function(index) {
-           this.projectsTimers[index].timer = setInterval(()=>this.tik_timer_iteration(index), 60000)
+           this.projectsTimers[index].timer = setInterval(()=>this.tik_timer_iteration(index), 1000)
         },
 
         tik_timer_iteration: function(index){
-            this.projectsTimers[index].time += 60;
+            this.projectsTimers[index].time += 1;
             var now = new Date();
             this.projectsTimers[index].timeEnd.hour = now.getHours();
             this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
@@ -461,7 +461,6 @@ new Vue ({
 
         dropdown: function(e){
             var id = this.editTimeIndex;
-            console.log(id);
 
             if(id >= 0) {
                 var string = "dropdown" + id;

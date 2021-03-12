@@ -25,6 +25,10 @@ def add_project_active_views(request):
     return HttpResponse(add_project_active(parse_request(request).get('id'), request.user))
 
 
+def add_date_project_active_views(request):
+    return HttpResponse(add_date_project_active(parse_request(request).get('id'), parse_request(request).get('date'), request.user))
+
+
 def edit_start_end_project_active_views(request):
     return HttpResponse(edit_start_end_project_active(parse_request(request).get('id'),
                                                  parse_request(request).get('Start'),

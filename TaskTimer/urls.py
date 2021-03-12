@@ -21,6 +21,7 @@ urlpatterns = [
     path('project/add', AdminViews.add_project_views),
     path('project/active', CommonViews.project_active_view),
     path('project_active/add', CommonViews.add_project_active_views),
+    path('project_active/add/date', CommonViews.add_date_project_active_views),
     path('project_active/edit/note', CommonViews.edit_note_project_active_views),
     path('project_active/edit/time', CommonViews.edit_start_end_project_active_views),
     path('project_active/start', CommonViews.start_project_active_views),
