@@ -525,22 +525,13 @@ input:active, input:focus {
     box-shadow: 0 2px 4px rgba(255,255,255,0.2);
 }
 
-.input_edit_time {
-    width: 30px;
-    margin-right: 2px;
-
-    text-align: center;
-}
-
-.time_edit_window label {
+.time_edit_window input:first-child {
     margin-right: 5px;
-    margin-bottom: 0;
 }
 
-.time_edit_window label:last-child {
-    margin-right: 0;
+.time_edit_window input:last-child {
+    margin-left: 5px;
 }
-
 /* Calendar ===============*/
 
 .calendar {

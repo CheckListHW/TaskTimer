@@ -63,6 +63,8 @@ new Vue ({
         chosenProject: null,
         editTimeIndex: -1,
         editNoteIndex: -1,
+        startEditTime: 0,
+        endEditTime: 0,
 
         isOneTimerDoing: false,
 
@@ -461,7 +463,6 @@ new Vue ({
 
         dropdown: function(e){
             var id = this.editTimeIndex;
-            console.log(id);
 
             if(id >= 0) {
                 var string = "dropdown" + id;
@@ -469,11 +470,25 @@ new Vue ({
                 var target = e.target;
 
                 if (el !== target && !el[0].contains(target)) {
-                    this.projectsTimers[id].isChangeTime = false;
-                    this.projectsTimers[id].timeStart.hour = parseInt(this.projectsTimers[id].timeStart.hour);
-                    this.projectsTimers[id].timeStart.minutes = parseInt(this.projectsTimers[id].timeStart.minutes);
-                    this.projectsTimers[id].timeEnd.hour = parseInt(this.projectsTimers[id].timeEnd.hour);
-                    this.projectsTimers[id].timeEnd.minutes = parseInt(this.projectsTimers[id].timeEnd.minutes);
+                    var elem = this.projectsTimers[id];
+
+                    var dataStart = this.startEditTime.split(':');
+                    var hoursStart = dataStart[0];
+                    var minutesStart = dataStart[1];
+
+                    var dataEnd = this.endEditTime.split(':');
+                    var hoursEnd = dataEnd[0];
+                    var minutesEnd = dataEnd[1];
+
+                    elem.isChangeTime = false;
+                    elem.timeStart.hour = parseInt(hoursStart);
+                    elem.timeStart.minutes = parseInt(minutesStart);
+                    elem.timeEnd.hour = parseInt(hoursEnd);
+                    elem.timeEnd.minutes = parseInt(minutesEnd);
+
+                    elem.time = hoursEnd*3600 + minutesEnd * 60 - hoursStart *3600 - minutesStart * 60;
+
+                    //Вот тут гдето надо сохранять новое время elem.time
 
                     if(this.editTimeIndex >= 0) {
                         var prj = this.projectsTimers[this.editTimeIndex];
@@ -481,12 +496,16 @@ new Vue ({
                             prj.timeError = true;
                             if(this.notifications.indexOf(this.pushNoteTime) == -1) {
                                 this.notifications.push(this.pushNoteTime);
+                                elem.time = 0;
+                                //Вот тут если время введено неверно
                             }
                         }
                         else if(prj.timeStart.hour == prj.timeEnd.hour && prj.timeStart.minutes > prj.timeEnd.minutes) {
                             prj.timeError = true;
                             if(this.notifications.indexOf(this.pushNoteTime) == -1) {
                                 this.notifications.push(this.pushNoteTime);
+                                elem.time = 0;
+                                //Вот тут если время введено неверно
                             }
                         }
                         else {
@@ -563,15 +582,24 @@ new Vue ({
             }
 
             var id = vm.editTimeIndex;
+            var elem = this.projectsTimers[index];
 
             if(id >= 0) {
-                vm.projectsTimers[id].isChangeTime = false;
-                vm.projectsTimers[index].isChangeTime = true;
-                vm.editTimeIndex = index;
+                this.projectsTimers[id].isChangeTime = false;
+
+                this.startEditTime = this.prettify(elem.timeStart.hour) + ":" + this.prettify(elem.timeStart.minutes);
+                this.endEditTime = this.prettify(elem.timeEnd.hour) + ":" + this.prettify(elem.timeEnd.minutes);
+
+                this.projectsTimers[index].isChangeTime = true;
+                this.editTimeIndex = index;
             }
             else {
-                vm.projectsTimers[index].isChangeTime = true;
-                vm.editTimeIndex = index;
+                this.projectsTimers[index].isChangeTime = true;
+
+                this.startEditTime = this.prettify(elem.timeStart.hour) + ":" + this.prettify(elem.timeStart.minutes);
+                this.endEditTime = this.prettify(elem.timeEnd.hour) + ":" + this.prettify(elem.timeEnd.minutes);
+
+                this.editTimeIndex = index;
             }
         },
 
