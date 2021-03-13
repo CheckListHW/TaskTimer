@@ -603,6 +603,11 @@ new Vue ({
             let start = document.getElementById('timeStartInput'+index).value.split(':');
             let end = document.getElementById('timeEndInput'+index).value.split(':');
 
+            if (start.length < 2 & end.length < 2){
+                vm.projectsTimers[index].isChangeTime = false;
+                return
+            }
+
             let response_message = await axiospost('/project_active/edit/time',{
                 id: vm.projectsTimers[index].id,
                 Start: {
@@ -634,11 +639,7 @@ new Vue ({
                 vm.projectsTimers[index].timeEnd.minutes = parseInt(end[1])
             }
 
-
-
-
             vm.projectsTimers[index].isChangeTime = false;
-            console.log('save')
         },
 
         editTime: function(index) {

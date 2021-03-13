@@ -63,8 +63,10 @@ def add_date_project_active(project_id: int, date, user: User) -> Optional[Union
                                                                       Name=main_project.Name)
         if not created:
             project_active.save()
-        date_p_h = timezone.localdate().replace(year=date.year, month=date.month, day=date.day)
-        project_history = ProjectHistory(Owner=user, ProjectActive=project_active, Date=date_p_h,
+        date_p_h = timezone.localtime().replace(year=date.year, month=date.month, day=date.day,
+                                                hour=0, minute=0, second=0, microsecond=0)
+        project_history = ProjectHistory(Owner=user, ProjectActive=project_active, Date=date_p_h.date(),
+                                         Start=date_p_h, End=date_p_h,
                                          Name=main_project.Name, Activity=False)
         project_history.save()
         return project_history.id
@@ -74,10 +76,10 @@ def add_date_project_active(project_id: int, date, user: User) -> Optional[Union
 
 def edit_note_project_active(project_id: int, Note) -> Optional[Union[int, str]]:
     try:
-        project_active = ProjectHistory.objects.filter(id=project_id)
-        for p_a in project_active:
-            p_a.Note = Note if Note is not None else p_a.Note
-            p_a.save()
+        project_history = ProjectHistory.objects.filter(id=project_id)
+        for p_h in project_history:
+            p_h.Note = Note if Note is not None else p_h.Note
+            p_h.save()
         return True
     except Exception:
         return 'Проект не изменен! Произошла ошибка :('
@@ -85,45 +87,50 @@ def edit_note_project_active(project_id: int, Note) -> Optional[Union[int, str]]
 
 def edit_start_end_project_active(project_id: int, start_time, end_time) -> Optional[Union[int, str]]:
     # try:
-    project_active = ProjectHistory.objects.filter(id=project_id)
-    for p_a in project_active:
+    for p_h in ProjectHistory.objects.filter(id=project_id):
 
-        if p_a.Start is None or p_a.End is None:
-            return 'Нельзя менять время у еще не запущенного проекта'
+        if p_h.Start is None or p_h.End is None:
+            return 'Время можно менять только у остановленных таймеров'
 
-        project_active_date = ProjectHistory.objects.filter(Date=p_a.Date).exclude(id=project_id)
-        p_a.Start = p_a.Start.replace(tzinfo=MyTimezone, hour=start_time.get('hour') if start_time.get('hour')
-                                                                                        is not None else p_a.Start.hour,
+        p_h.Start = p_h.Start.replace(tzinfo=MyTimezone, hour=start_time.get('hour') if start_time.get('hour')
+                                                                                        is not None else p_h.Start.hour,
                                       minute=start_time.get('minute') if start_time.get('hour')
-                                                                         is not None else p_a.Start.minute, )
+                                                                         is not None else p_h.Start.minute, )
 
-        p_a.End = p_a.End.replace(tzinfo=MyTimezone, hour=end_time.get('hour') if end_time.get('hour')
-                                                                                  is not None else p_a.End.hour,
+        p_h.End = p_h.End.replace(tzinfo=MyTimezone, hour=end_time.get('hour') if end_time.get('hour')
+                                                                                  is not None else p_h.End.hour,
                                   minute=end_time.get('minute') if end_time.get('hour')
-                                                                   is not None else p_a.End.minute, )
-        if p_a.Start > p_a.End:
+                                                                   is not None else p_h.End.minute, )
+        if p_h.Start > p_h.End:
             return 'Не верные данные начало позже конца!'
 
-        if p_a.Start > timezone.now() or p_a.End > timezone.now():
+        if p_h.Start > timezone.now() or p_h.End > timezone.now():
             return 'Нельзя записывать проекты в будущее'
 
-        for p_a_d in project_active_date:
+        for a_p_h in ProjectHistory.objects.filter(Owner=p_h.Owner, Activity=True):
+            if p_h.Start > a_p_h.Start or p_h.End > a_p_h.Start:
+                return 'Наложение времени с текущим запущенным проектом'
 
-            if ((p_a_d.Start < p_a.Start) & (p_a.Start < p_a_d.End)) or \
-                    ((p_a_d.Start < p_a.End) & (p_a.End < p_a_d.End)):
-                return 'Указанное время входит в промежуток: {}:{}-{}:{}. Проекта: {}. Измените введенное время'\
-                    .format(p_a_d.Start.astimezone().hour, p_a_d.Start.astimezone().minute,
-                            p_a_d.End.astimezone().hour, p_a_d.End.astimezone().minute, p_a_d.Name)
+        project_history_date = ProjectHistory.objects.filter(Date=p_h.Date, Owner=p_h.Owner) \
+            .exclude(id=project_id).exclude(Start=None).exclude(End=None)
 
-            if ((p_a.Start < p_a_d.Start) & (p_a_d.Start < p_a.End)) or \
-                    ((p_a.Start < p_a_d.End) & (p_a_d.End < p_a.End)):
-                return 'В указанный промежуток входит проект: {}. Со временем:  {}:{}-{}:{}. Измените введенное время'\
-                    .format(p_a_d.Name, p_a_d.Start.astimezone().hour, p_a_d.Start.astimezone().minute,
-                            p_a_d.End.astimezone().hour, p_a_d.End.astimezone().minute)
+        for p_h_d in project_history_date:
+            
+            if ((p_h_d.Start < p_h.Start) & (p_h.Start < p_h_d.End)) or \
+                    ((p_h_d.Start < p_h.End) & (p_h.End < p_h_d.End)):
+                return 'Указанное время входит в промежуток: {}:{}-{}:{}. Проекта: {}. Измените введенное время' \
+                    .format(p_h_d.Start.astimezone().hour, p_h_d.Start.astimezone().minute,
+                            p_h_d.End.astimezone().hour, p_h_d.End.astimezone().minute, p_h_d.Name)
 
-        p_a.Start.replace(tzinfo=None)
-        p_a.End.replace(tzinfo=None)
-        p_a.save()
+            if ((p_h.Start < p_h_d.Start) & (p_h_d.Start < p_h.End)) or \
+                    ((p_h.Start < p_h_d.End) & (p_h_d.End < p_h.End)):
+                return 'В указанный промежуток входит проект: {}. Со временем:  {}:{}-{}:{}. Измените введенное время' \
+                    .format(p_h_d.Name, p_h_d.Start.astimezone().hour, p_h_d.Start.astimezone().minute,
+                            p_h_d.End.astimezone().hour, p_h_d.End.astimezone().minute)
+
+        p_h.Start.replace(tzinfo=None)
+        p_h.End.replace(tzinfo=None)
+        p_h.save()
 
     return True
     # except Exception:
@@ -133,8 +140,8 @@ def edit_start_end_project_active(project_id: int, start_time, end_time) -> Opti
 def delete_project_active(project_id: int) -> Optional[Union[bool, str]]:
     try:
         project_active = ProjectHistory.objects.filter(id=project_id)
-        for p_a in project_active:
-            if p_a.Activity:
+        for p_h in project_active:
+            if p_h.Activity:
                 return 'Перед удалением необходимо остановить таймер'
             else:
                 project_active.delete()
@@ -147,6 +154,7 @@ def project_active() -> None:
     for p_h in ProjectHistory.objects.filter(Activity=True):
         utc_start = p_h.Start.astimezone().date()
         if (timezone.localtime().date() - utc_start).days > 0:
+            ProjectHistory.objects.filter(Start=None, End=None).delete()
             p_h.End = p_h.Start.replace(hour=23, minute=59, second=59, tzinfo=MyTimezone)
             p_h.Activity = False
             p_h.save()
