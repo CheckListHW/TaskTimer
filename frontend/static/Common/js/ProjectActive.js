@@ -122,16 +122,45 @@ new Vue ({
         },
 
         addProject: async function() {
+
+            const vm = this;
             var now = new Date();
 
             if(now.getFullYear() != this.year || now.getMonth() != this.month || now.getDate() != this.number)
             {
                 //Тут короче чето тоже с БД надо сделать как в else
 
-                var newProject = {
-                    name: this.chosenProject.name,
+                response_message = await axiospost('/project_active/add/date', {
+                    id: this.chosenProject.id,
+                    date:{
+                        year:vm.year,
+                        month:vm.month+1,
+                        day:vm.number,
+                    }
+                })
 
+                if (response_message > 0){
+                    Toast.add({
+                        text: 'Проект: '+this.chosenProject.name+' добавлен!',
+                        color: '#ffe600',
+                        delay: 3000,
+                    });
+                }
+                else{
+                    Toast.add({
+                        text: response_message,
+                        color: '#ff0000',
+                        delay: 10000,
+                    });
+                    return
+                }
+
+
+                var newProject = {
+                    id: response_message,
+                    name: this.chosenProject.name,
                     note: "",
+
                     inputedNote: "",
                     isAddNote: false,
                     isChangeTime: false,
@@ -157,6 +186,7 @@ new Vue ({
                     isDone: true,
                     isPlayed: true,
                 }
+
                 this.projectsTimers.push(newProject);
 
                 this.chosenProject = null;
@@ -180,8 +210,6 @@ new Vue ({
                     });
                     return
                 }
-
-
 
                 var newProject = {
                     id: response_message,
@@ -224,8 +252,6 @@ new Vue ({
             var string = "textarea" + index;
             var el = this.$refs[string];
 
-            console.log(el);
-            console.log(el[0]);
 
             if(id >= 0) {
                 this.projectsTimers[id].isAddNote = false;
@@ -254,7 +280,6 @@ new Vue ({
                 Note: this.projectsTimers[index].inputedNote,
             })
 
-            console.log(message)
             var str = this.projectsTimers[index].inputedNote;
 
             this.projectsTimers[index].isAddNote = false;
@@ -506,7 +531,7 @@ new Vue ({
             }
         },
 
-        dropdown: function(e){
+        dropdown: async function(e){
             var id = this.editTimeIndex;
             var idNote = this.editNoteIndex;
 
@@ -534,7 +559,27 @@ new Vue ({
 
                     elem.time = hoursEnd*3600 + minutesEnd * 60 - hoursStart *3600 - minutesStart * 60;
 
-                    //Вот тут гдето надо сохранять новое время elem.time
+
+                    console.log(elem.timeStart)
+                    console.log(elem.timeEnd)
+                    let response_message = await axiospost('/project_active/edit/time',{
+                        id: elem.id,
+                        Start: {
+                            hour: elem.timeStart.hour,
+                            minute: elem.timeStart.minutes,
+                        },
+                        End:{
+                            hour: elem.timeEnd.hour,
+                            minute: elem.timeEnd.minutes,
+                        },
+                    })
+
+                    if (response_message != 'True'){
+                        Toast.add({
+                            text: response_message,
+                            delay: 21000
+                        })
+                    }
 
                     if(this.editTimeIndex >= 0) {
                         var prj = this.projectsTimers[this.editTimeIndex];
@@ -543,7 +588,6 @@ new Vue ({
                             if(this.notifications.indexOf(this.pushNoteTime) == -1) {
                                 this.notifications.push(this.pushNoteTime);
                                 elem.time = 0;
-                                //Вот тут если время введено неверно
                             }
                         }
                         else if(prj.timeStart.hour == prj.timeEnd.hour && prj.timeStart.minutes > prj.timeEnd.minutes) {
@@ -551,7 +595,6 @@ new Vue ({
                             if(this.notifications.indexOf(this.pushNoteTime) == -1) {
                                 this.notifications.push(this.pushNoteTime);
                                 elem.time = 0;
-                                //Вот тут если время введено неверно
                             }
                         }
                         else {
@@ -575,7 +618,6 @@ new Vue ({
             }
             else if(this.isChoosed) {
                 var el = this.$refs["list"];
-                console.log(el);
                 var target = e.target;
 
                 if (el !== target && !el.contains(target)) {
@@ -627,7 +669,6 @@ new Vue ({
                 })
                 return
             }
-            console.log(response_message)
 
             if (start.length > 1){
                 vm.projectsTimers[index].timeStart.hour = parseInt(start[0])

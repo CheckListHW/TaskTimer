@@ -57,20 +57,20 @@ def add_project_active(project_id: int, user: User) -> Optional[Union[int, str]]
 
 
 def add_date_project_active(project_id: int, date, user: User) -> Optional[Union[int, str]]:
-    try:
+    #try:
         main_project = admin_models.Project.objects.get(id=project_id)
         project_active, created = ProjectActive.objects.get_or_create(Owner=user, Project=main_project,
                                                                       Name=main_project.Name)
         if not created:
             project_active.save()
-        date_p_h = timezone.localtime().replace(year=date.year, month=date.month, day=date.day,
+        date_p_h = timezone.localtime().replace(year=date.get('year'), month=date.get('month'), day=date.get('day'),
                                                 hour=0, minute=0, second=0, microsecond=0)
         project_history = ProjectHistory(Owner=user, ProjectActive=project_active, Date=date_p_h.date(),
                                          Start=date_p_h, End=date_p_h,
                                          Name=main_project.Name, Activity=False)
         project_history.save()
         return project_history.id
-    except Exception:
+    #except Exception:
         return 'Проект не добавлен! Произошла ошибка :('
 
 
@@ -88,22 +88,27 @@ def edit_note_project_active(project_id: int, Note) -> Optional[Union[int, str]]
 def edit_start_end_project_active(project_id: int, start_time, end_time) -> Optional[Union[int, str]]:
     # try:
     for p_h in ProjectHistory.objects.filter(id=project_id):
-
+        print(p_h)
         if p_h.Start is None or p_h.End is None:
             return 'Время можно менять только у остановленных таймеров'
 
         p_h.Start = p_h.Start.replace(tzinfo=MyTimezone, hour=start_time.get('hour') if start_time.get('hour')
                                                                                         is not None else p_h.Start.hour,
-                                      minute=start_time.get('minute') if start_time.get('hour')
+                                      minute=start_time.get('minute') if start_time.get('minute')
                                                                          is not None else p_h.Start.minute, )
 
         p_h.End = p_h.End.replace(tzinfo=MyTimezone, hour=end_time.get('hour') if end_time.get('hour')
                                                                                   is not None else p_h.End.hour,
-                                  minute=end_time.get('minute') if end_time.get('hour')
+                                  minute=end_time.get('minute') if end_time.get('minute')
                                                                    is not None else p_h.End.minute, )
         if p_h.Start > p_h.End:
             return 'Не верные данные начало позже конца!'
 
+        print(start_time)
+        print(end_time)
+        print(p_h.Start)
+        print(p_h.End)
+        print(timezone.now())
         if p_h.Start > timezone.now() or p_h.End > timezone.now():
             return 'Нельзя записывать проекты в будущее'
 
@@ -128,10 +133,7 @@ def edit_start_end_project_active(project_id: int, start_time, end_time) -> Opti
                     .format(p_h_d.Name, p_h_d.Start.astimezone().hour, p_h_d.Start.astimezone().minute,
                             p_h_d.End.astimezone().hour, p_h_d.End.astimezone().minute)
 
-        p_h.Start.replace(tzinfo=None)
-        p_h.End.replace(tzinfo=None)
         p_h.save()
-
     return True
     # except Exception:
     return 'Проект не изменен! Произошла ошибка :('

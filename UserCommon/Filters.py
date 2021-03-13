@@ -48,7 +48,7 @@ class ProjectHistoryListView(ModelViewSet):
         if user.groups.filter(name='admin').exists():
             return ProjectHistory.objects.filter(Date__range=[start_date, end_date]).exclude(End=None)
         return ProjectHistory.objects.filter(Owner=user, Date__range=[start_date, end_date]).\
-                order_by("-Activity", "Start")
+                order_by("-Activity", "-Start")
 
 
 
