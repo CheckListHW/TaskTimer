@@ -46,7 +46,7 @@ class ProjectHistoryListView(ModelViewSet):
         end_date = request_get.get('EndDate') if request_get.get('EndDate') is not None else timezone.now().today()
         user = self.request.user
         if user.groups.filter(name='admin').exists():
-            return ProjectHistory.objects.filter(Date__range=[start_date, end_date]).exclude(End=None)
+            return ProjectHistory.objects.filter(Date__range=[start_date, end_date])
         return ProjectHistory.objects.filter(Owner=user, Date__range=[start_date, end_date]).\
                 order_by("-Activity", "-Start")
 

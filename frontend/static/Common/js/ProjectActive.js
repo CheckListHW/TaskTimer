@@ -122,7 +122,6 @@ new Vue ({
         },
 
         addProject: async function() {
-
             const vm = this;
             var now = new Date();
 
@@ -130,6 +129,7 @@ new Vue ({
             {
                 //Тут короче чето тоже с БД надо сделать как в else
 
+                console.log('date')
                 response_message = await axiospost('/project_active/add/date', {
                     id: this.chosenProject.id,
                     date:{
@@ -192,6 +192,7 @@ new Vue ({
                 this.chosenProject = null;
             }
             else {
+                console.log('add')
                 response_message = await axiospost('/project_active/add', {
                     id: this.chosenProject.id,
                 })
@@ -640,49 +641,6 @@ new Vue ({
             this.$forceUpdate();
         },
 
-        SaveTime: async function(index) {
-            const vm = this;
-            let start = document.getElementById('timeStartInput'+index).value.split(':');
-            let end = document.getElementById('timeEndInput'+index).value.split(':');
-
-            if (start.length < 2 & end.length < 2){
-                vm.projectsTimers[index].isChangeTime = false;
-                return
-            }
-
-            let response_message = await axiospost('/project_active/edit/time',{
-                id: vm.projectsTimers[index].id,
-                Start: {
-                    hour: parseInt(start[0]),
-                    minute: parseInt(start[1]),
-                },
-                End:{
-                    hour: parseInt(end[0]),
-                    minute: parseInt(end[1]),
-                },
-            })
-
-            if (response_message != 'True'){
-                Toast.add({
-                    text: response_message,
-                    delay: 21000
-                })
-                return
-            }
-
-            if (start.length > 1){
-                vm.projectsTimers[index].timeStart.hour = parseInt(start[0])
-                vm.projectsTimers[index].timeStart.minutes = parseInt(start[1])
-            }
-
-            if (end.length > 1){
-                vm.projectsTimers[index].timeEnd.hour = parseInt(end[0])
-                vm.projectsTimers[index].timeEnd.minutes = parseInt(end[1])
-            }
-
-            vm.projectsTimers[index].isChangeTime = false;
-        },
-
         editTime: function(index) {
             const vm = this;
             if(this.editNoteIndex >= 0) {
@@ -774,8 +732,6 @@ async function get_project_history(day, Owner=null) {
                 number: number,
                 id: projAct.id,
                 name: projAct.Name,
-                //name: tempProjets.find(p => p.id === projAct.Project).Name,
-                // если сразу вставлять projAct.Note == '', то не будет написанно: Введите заметку...
                 note: projAct.Note != null ? projAct.Note : '',
                 inputedNote: "",
                 isAddNote: false,

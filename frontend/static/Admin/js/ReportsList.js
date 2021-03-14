@@ -101,16 +101,19 @@ new Vue ({
         months: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
 
         startdate: {
-            year: DATE_MAIN.getFullYear(),
-            month: DATE_MAIN.getMonth(),
-            day:1,// date.getDate(),
+            year: null,
+            month: null,
+            day: null,
         },
 
         enddate: {
-            year: DATE_MAIN.getFullYear(),
-            month: DATE_MAIN.getMonth(),
-            day: DATE_MAIN.getDate(),
+            year: null,
+            month: null,
+            day: null,
         },
+
+        inputStart: null,
+        inputEnd: null,
 
         users:[],
         projects: [],
@@ -122,17 +125,33 @@ new Vue ({
     computed: {
         isDateChoose: function() {
             const vm = this;
-            let StartDate = new Date(vm.startdate.year, vm.startdate.month, vm.startdate.day)
-            let StartDateDb = StartDate.toLocaleDateString('fr-CA')
-            let EndDate = new Date(vm.enddate.year, vm.enddate.month, vm.enddate.day)
-            let EndDateDb = EndDate.toLocaleDateString('fr-CA')
 
-            console.log(StartDate)
-            console.log(EndDate)
+            if (vm.inputEnd < vm.inputStart){
+                vm.inputStart = vm.inputEnd
+            }
 
-            vm.update_reports('StartDate='+StartDateDb, 'EndDate='+EndDateDb)
+            document.getElementById("startDate").setAttribute('max', vm.inputEnd)
+
+            let startParseTime = new Date()
+            startParseTime.setTime(Date.parse(vm.inputStart))
+
+            this.startdate = {
+                year: startParseTime.getFullYear(),
+                month: startParseTime.getMonth(),
+                day: startParseTime.getDate(),
+            }
+
+            let endParseTime = new Date()
+            endParseTime.setTime(Date.parse(vm.inputEnd))
+
+            this.enddate = {
+                year: endParseTime.getFullYear(),
+                month: endParseTime.getMonth(),
+                day: endParseTime.getDate(),
+            }
 
             if(this.startdate.year > 0 && this.startdate.month >= 0 && this.startdate.day > 0 && this.enddate.year > 0 && this.enddate.month >= 0 && this.enddate.day > 0) {
+                vm.update_reports('StartDate='+vm.inputStart, 'EndDate='+vm.inputEnd)
                 return true;
             }
             else {
@@ -170,42 +189,11 @@ new Vue ({
                 })
             })
 
-
             for (let i = 0; i<vm.const_projects.length;i++){
                 if (project_dict[vm.const_projects[i].name] != null){
                     vm.projects.push(vm.const_projects[i])
                 }
             }
-
-
-        },
-
-        get_years: function () {
-            var today = new Date();
-            var count = 10;
-            var start_year = today.getFullYear() - count;
-
-            var array = Array(count + 1).fill().map((e, i) => i + start_year);
-
-            return array;
-        },
-
-        get_dates: function (year, month) {
-            if(year && (month + 1)) {
-                var array = [];
-                var max_date = this.get_final_date(year, month);
-                if(max_date) {
-                    array = Array(max_date).fill().map((e, i) => i + 1);
-                }
-
-                return array;
-            } else {
-                return [];
-            }
-        },
-
-        modify: function (date) {
-            var day = this.get_final_date(date.year, date.month);
         },
 
         get_final_date: function (year, month) {
@@ -217,34 +205,42 @@ new Vue ({
     created: async function() {
         const vm = this;
 
-        vm.users = (await axios.get('/api/user')).data
+        vm.users = (await axios.get('/api/user/')).data
 
-
-
-
-        let projects = (await axios.get('/api/project')).data
+        let projects = (await axios.get('/api/project/')).data
 
         projects.forEach(function (project) {
-            var newProject = {
+            vm.const_projects.push({
                 id:project.id ,
                 name: project.Name,
-            };
-            vm.const_projects.push(newProject);
+            });
         })
 
         if (USER_TYPE === 'admin')
-            vm.const_projects.push( {
+            vm.const_projects.push({
                 id:0,
                 name: TOTAL_TIME_EMP,
         })
 
-        let StartDate = new Date(vm.startdate.year, vm.startdate.month, vm.startdate.day)
-        let StartDateDb = StartDate.toLocaleDateString('fr-CA')
-        let EndDate = new Date(vm.enddate.year, vm.enddate.month, vm.enddate.day)
-        let EndDateDb = EndDate.toLocaleDateString('fr-CA')
+        vm.startdate.year = DATE_MAIN.getFullYear()
+        vm.startdate.month = DATE_MAIN.getMonth()
+        vm.startdate.day = 1
+
+        vm.enddate.year = DATE_MAIN.getFullYear()
+        vm.enddate.month = DATE_MAIN.getMonth()
+        vm.enddate.day = DATE_MAIN.getDate()
+
+        let StartDateDb = new Date(vm.startdate.year, vm.startdate.month, vm.startdate.day).toLocaleDateString('fr-CA')
+        let EndDateDb = new Date(vm.enddate.year, vm.enddate.month, vm.enddate.day).toLocaleDateString('fr-CA')
+
+        vm.inputEnd = EndDateDb
+        vm.inputStart = EndDateDb
+
+        document.getElementById("startDate").setAttribute('max', EndDateDb)
+        document.getElementById("endDate").setAttribute('max', EndDateDb)
 
         vm.update_reports('StartDate='+StartDateDb, 'EndDate='+EndDateDb)
-    }
+    },
 })
 
 
@@ -283,7 +279,7 @@ function get_project_list(projectActive, user_id = null) {
             let new_p_a = Object.assign({}, P_A_TEMPLATE);
             new_p_a.name =  p_a.Name
             new_p_a.time = (Date.parse(p_a.End) - Date.parse(p_a.Start))/1000
-            new_p_a.date =   {
+            new_p_a.date = {
                 year: date_parse.getFullYear(),
                 month: date_parse.getMonth(),
                 day: date_parse.getDate(),
@@ -293,14 +289,6 @@ function get_project_list(projectActive, user_id = null) {
             temp_projectActive.push(new_p_a)
         }
     })
-
-
-    /*let totaltime = 0
-    temp_projectActive.forEach(item => {totaltime+=item.time})
-    let new_p_a = Object.assign({}, P_A_TEMPLATE);
-    new_p_a.name = TOTAL_TIME_EMP
-    new_p_a.time = totaltime
-    temp_projectActive.push(new_p_a)*/
 
     return temp_projectActive
 }

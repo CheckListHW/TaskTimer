@@ -18,60 +18,22 @@
                 <div class="date_title">
                     <h2>Начальная дата</h2>
                 </div>
+
                 <div class="date_choose">
                     <div class="form_group">
-                        <select v-model="startdate.year" v-on:change="modify(startdate)">
-                            <option v-for="year in get_years()" name="year" :value="year">{{year}}</option>
-                        </select>
-
-                        <label class="date_label">Год</label>
-                    </div>
-
-                    <div class="form_group">
-                        <select v-model="startdate.month" v-on:change="modify(startdate)">
-                            <option v-for="month in months" name="month" :value="month">{{month + 1}}</option>
-                        </select>
-
-                        <label class="date_label">Месяц</label>
-                    </div>
-
-                    <div class="form_group" >
-                        <select v-model="startdate.day">
-                            <option v-for="day in get_dates(startdate.year, startdate.month)" name="day" :value="day">{{day}}</option>
-                        </select>
-
-                        <label class="day_label">День</label>
+                            <input type="date" id="startDate" v-model="inputStart">
                     </div>
                 </div>
 
                 <div class="date_title">
                     <h2>Конечная дата</h2>
                 </div>
+
                 <div class="date_choose">
-                <div class="form_group">
-                    <select v-model="enddate.year" v-on:change="modify(enddate)">
-                        <option v-for="year in get_years()" name="year" :value="year">{{year}}</option>
-                    </select>
-
-                    <label class="date_label">Год</label>
+                    <div class="form_group">
+                        <input type="date" id="endDate" v-model="inputEnd">
+                    </div>
                 </div>
-
-                <div class="form_group">
-                    <select v-model="enddate.month" v-on:change="modify(enddate)">
-                        <option v-for="month in months" name="month" :value="month">{{month + 1}}</option>
-                    </select>
-
-                    <label class="date_label">Месяц</label>
-                </div>
-
-                <div class="form_group" >
-                    <select v-model="enddate.day">
-                        <option v-for="day in get_dates(enddate.year, enddate.month)" name="day" :value="day">{{day}}</option>
-                    </select>
-
-                    <label class="day_label">День</label>
-                </div>
-            </div>
             </div>
 
             <transition
