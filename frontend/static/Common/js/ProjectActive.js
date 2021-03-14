@@ -129,7 +129,6 @@ new Vue ({
             {
                 //Тут короче чето тоже с БД надо сделать как в else
 
-                console.log('date')
                 response_message = await axiospost('/project_active/add/date', {
                     id: this.chosenProject.id,
                     date:{
@@ -192,7 +191,6 @@ new Vue ({
                 this.chosenProject = null;
             }
             else {
-                console.log('add')
                 response_message = await axiospost('/project_active/add', {
                     id: this.chosenProject.id,
                 })
@@ -561,8 +559,6 @@ new Vue ({
                     elem.time = hoursEnd*3600 + minutesEnd * 60 - hoursStart *3600 - minutesStart * 60;
 
 
-                    console.log(elem.timeStart)
-                    console.log(elem.timeEnd)
                     let response_message = await axiospost('/project_active/edit/time',{
                         id: elem.id,
                         Start: {
