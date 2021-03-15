@@ -6,8 +6,6 @@ import sys
 
 
 def main():
-    sys.stdout = open('log.txt', 'w')
-    sys.stderr = open('logerror.txt', 'w')
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TaskTimer.settings')
     try:
         from django.core.management import execute_from_command_line
