@@ -56,47 +56,57 @@ Vue.component('report_row', {
         },
 
         findProjects: function(array) {
-            var result = [];
-            var sDate = new Date(this.startdate.year, this.startdate.month, this.startdate.day);
-            var eDate = new Date(this.enddate.year, this.enddate.month, this.enddate.day);
-
-            for(var i = 0; i < array.length; i++) {
-                var pDate = new Date(array[i].date.year, array[i].date.month, array[i].date.day);
-
-                if((pDate >= sDate && pDate <= eDate)) {
-                    result.push(array[i]);
-                }
-            }
-
-            return result;
+            return outFindProjects(array, this.startdate, this.enddate)
         },
 
         projectTime: function(element, array) {
-            var modifiedArray = this.findProjects(array);
-
-            //Подсчет суммы по сотруднику
-            if (element === TOTAL_TIME_EMP & USER_TYPE === 'admin'){
-                let totalTime = 0
-                modifiedArray.forEach(item => {totalTime += item.time})
-                return totalTime
-            }
-            //Подсчет суммы по сотруднику
-
-            var summArray = Object.fromEntries(modifiedArray.map(item => [item.name, 0]));
-            modifiedArray.forEach(item => {summArray[item.name] += item.time})
-
-            if(summArray[element] != null) {
-                return summArray[element];
-            }
-            else {
-                return 0;
-            }
+            return outProjectTime(element, array, this.startdate, this.enddate)
         },
     }
 });
 
+function outFindProjects(array, startDate, endDate) {
+    var result = [];
+    var sDate = new Date(startDate.year, startDate.month, startDate.day);
+    var eDate = new Date(endDate.year, endDate.month,  endDate.day);
+
+    for(var i = 0; i < array.length; i++) {
+        var pDate = new Date(array[i].date.year, array[i].date.month, array[i].date.day);
+
+        if((pDate >= sDate && pDate <= eDate)) {
+            result.push(array[i]);
+        }
+    }
+
+    return result;
+}
+
+function outProjectTime(element, array, startDate, endDate) {
+    var modifiedArray = outFindProjects(array, startDate, endDate);
+
+
+    //Подсчет суммы по сотруднику
+    if (element === TOTAL_TIME_EMP & USER_TYPE === 'admin'){
+        let totalTime = 0
+        modifiedArray.forEach(item => {totalTime += item.time})
+        return totalTime
+    }
+    //Подсчет суммы по сотруднику
+
+    var sumArray = Object.fromEntries(modifiedArray.map(item => [item.name, 0]));
+    modifiedArray.forEach(item => {sumArray[item.name] += item.time})
+
+    if(sumArray[element] != null) {
+        return sumArray[element];
+    }
+    else {
+        return 0;
+    }
+}
+
 new Vue ({
     el: '#reportList',
+
     data: {
         months: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
 
@@ -194,6 +204,44 @@ new Vue ({
                     vm.projects.push(vm.const_projects[i])
                 }
             }
+
+            if (USER_TYPE === 'admin'){
+                vm.projects.push({
+                    id:0,
+                    name: TOTAL_TIME_EMP,
+                })
+            }
+
+        },
+
+        saveReport: function(){
+            var headers = {
+                number: '№'.replace(/,/g, ''), // remove commas to avoid errors
+                name: "ФИО сотрудника",
+            };
+
+            const vm = this;
+
+            vm.projects.forEach(function (item) {
+                headers[item.name] = item.name
+            })
+
+            var itemsFormatted = [];
+
+            vm.employees.forEach((item, i) => {
+                itemsFormatted.push({
+                    number: i+1,
+                    model: item.name.replace(/,/g, ''),
+                });
+                item.projectsList.forEach(function (pL) {
+                    itemsFormatted[i][pL.name] = parseInt(outProjectTime(pL.name, item.projectsList, vm.startdate, vm.enddate))
+                })
+                itemsFormatted[i][TOTAL_TIME_EMP] =parseInt(outProjectTime(TOTAL_TIME_EMP, item.projectsList, vm.startdate, vm.enddate))
+            });
+
+            var fileTitle = 'Report_'+vm.inputStart+'_'+vm.inputEnd;
+
+            exportCSVFile(headers, itemsFormatted, fileTitle)
         },
 
         get_final_date: function (year, month) {
@@ -233,13 +281,16 @@ new Vue ({
         let StartDateDb = new Date(vm.startdate.year, vm.startdate.month, vm.startdate.day).toLocaleDateString('fr-CA')
         let EndDateDb = new Date(vm.enddate.year, vm.enddate.month, vm.enddate.day).toLocaleDateString('fr-CA')
 
+        vm.inputStart = StartDateDb
         vm.inputEnd = EndDateDb
-        vm.inputStart = EndDateDb
 
         document.getElementById("startDate").setAttribute('max', EndDateDb)
         document.getElementById("endDate").setAttribute('max', EndDateDb)
 
         vm.update_reports('StartDate='+StartDateDb, 'EndDate='+EndDateDb)
+
+
+
     },
 })
 

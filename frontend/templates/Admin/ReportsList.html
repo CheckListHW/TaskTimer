@@ -4,6 +4,8 @@
 <head>
     {% load static %}
     <link rel="stylesheet" href="{% static "Admin/css/ReportsList.css" %}">
+    <script src="{% static "Shared/js/json_to_csv.js" %} "></script>
+
 
 </head>
     {% verbatim %}
@@ -32,6 +34,12 @@
                 <div class="date_choose">
                     <div class="form_group">
                         <input type="date" id="endDate" v-model="inputEnd">
+                    </div>
+                </div>
+
+                <div class="date_choose">
+                    <div class="form_group">
+                        <input type="button" id="saveReport" value="Сохранить csv" @click="saveReport">
                     </div>
                 </div>
             </div>
