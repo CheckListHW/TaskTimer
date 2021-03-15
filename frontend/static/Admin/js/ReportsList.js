@@ -233,15 +233,28 @@ new Vue ({
                     number: i+1,
                     model: item.name.replace(/,/g, ''),
                 });
-                item.projectsList.forEach(function (pL) {
-                    itemsFormatted[i][pL.name] = parseInt(outProjectTime(pL.name, item.projectsList, vm.startdate, vm.enddate))
+                 vm.projects.forEach(function (pL) {
+                    itemsFormatted[i][pL.name] = vm.timeFromSecond(outProjectTime(pL.name, item.projectsList, vm.startdate, vm.enddate))
                 })
-                itemsFormatted[i][TOTAL_TIME_EMP] =parseInt(outProjectTime(TOTAL_TIME_EMP, item.projectsList, vm.startdate, vm.enddate))
+                itemsFormatted[i][TOTAL_TIME_EMP] = vm.timeFromSecond(outProjectTime(TOTAL_TIME_EMP, item.projectsList, vm.startdate, vm.enddate))
             });
+
+            console.log(itemsFormatted)
 
             var fileTitle = 'Report_'+vm.inputStart+'_'+vm.inputEnd;
 
             exportCSVFile(headers, itemsFormatted, fileTitle)
+        },
+
+        timeFromSecond: function(totalSecond){
+            if (isNaN(totalSecond) || totalSecond == 0){
+                return '-'
+            }
+            var time = totalSecond/ 3600
+            var hours = parseInt(time);
+            var minutes = Math.ceil((time - hours) * 60);
+            let second = parseInt(totalSecond % 60)
+            return hours + ' : ' + minutes + ' : ' + second;
         },
 
         get_final_date: function (year, month) {
