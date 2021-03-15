@@ -22,7 +22,7 @@ SECRET_KEY = '8q_)*t*-5sntua&a-s55noaf#t2=4b=gw$rt#3h+-tmfi-61v='
 DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'cheklist.ru.com', 'www.cheklist.ru.com', 'testserver',
-                 'www.tasktimer.ru.com', 'tasktimer.ru.com']
+                 'www.tasktimier.heriott', 'tasktimier.heriott']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
