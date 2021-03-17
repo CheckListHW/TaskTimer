@@ -355,7 +355,7 @@ body {
     width: 100%;
     color: #fff;
     overflow: auto;
-    max-height: 494px;
+    max-height: calc(100vh - 237px);
 }
 
 .report_table {
