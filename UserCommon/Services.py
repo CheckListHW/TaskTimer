@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Optional, Union
 from django.contrib.auth.models import User
 from .models import ProjectHistory, ProjectActive
@@ -147,15 +148,29 @@ def delete_project_active(project_id: int) -> Optional[Union[bool, str]]:
 
 def project_active() -> None:
     for p_h in ProjectHistory.objects.filter(Activity=True):
+        print(p_h.Date)
+        print(p_h.End)
         utc_start = p_h.Start.astimezone().date()
+        print()
         if (timezone.localtime().date() - utc_start).days > 0:
+            print(timezone.localtime().date())
+            print(utc_start)
             ProjectHistory.objects.filter(Start=None, End=None).delete()
-            p_h.End = p_h.Start.replace(hour=23, minute=59, second=59, tzinfo=MyTimezone)
+            p_h.End = datetime(p_h.Start.astimezone().year, month=p_h.Start.astimezone().month,
+                               day=p_h.Start.astimezone().day, hour=23, minute=59, second=59,
+                               microsecond=0, tzinfo=MyTimezone)
             p_h.Activity = False
-            p_h.save()
+            datetime_next_day_project = datetime((p_h.Start.astimezone().date() + timedelta(days=1)).year,
+                                                month=(p_h.Start.astimezone().date() + + timedelta(days=1)).month,
+                                                day=(p_h.Start.astimezone().date() + timedelta(days=1)).day,
+                                                hour=0, minute=0, second=0,
+                                                microsecond=1, tzinfo=MyTimezone)
+
             new_p_h = ProjectHistory(Owner=p_h.Owner, ProjectActive=p_h.ProjectActive,
-                                     Name=p_h.Name, Date=timezone.localtime().date(),
-                                     Start=timezone.localtime().replace(hour=0, minute=0, second=0, tzinfo=MyTimezone),
+                                     Name=p_h.Name, Date=datetime_next_day_project.date(),
+                                     Start=datetime_next_day_project,
                                      Note=p_h.Note, Activity=True)
+            p_h.save()
             new_p_h.save()
+            print(new_p_h)
     return

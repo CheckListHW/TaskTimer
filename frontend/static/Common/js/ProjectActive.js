@@ -393,14 +393,21 @@ new Vue ({
         },
 
         startTimer: function(index) {
-           this.projectsTimers[index].timer = setInterval(()=>this.tik_timer_iteration(index), 1000)
+            interval_id = setInterval(()=>this.tik_timer_iteration(index), 1000)
+            this.projectsTimers[index].timer = interval_id
+            for (let i = 1; i < interval_id; i++)
+                window.clearInterval(i);
         },
 
         tik_timer_iteration: function(index){
-            this.projectsTimers[index].time += 1;
-            var now = new Date();
-            this.projectsTimers[index].timeEnd.hour = now.getHours();
-            this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
+            if (this.projectsTimers[index].isPlayed){
+                console.log(this.projectsTimers[index])
+                this.projectsTimers[index].time += 1;
+                var now = new Date();
+                this.projectsTimers[index].timeEnd.hour = now.getHours();
+                this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
+            }
+
         },
 
         calendar: function() {
@@ -540,6 +547,7 @@ new Vue ({
                 var target = e.target;
 
                 if (el !== target && !el[0].contains(target)) {
+                    console.log('ad')
                     var elem = this.projectsTimers[id];
 
                     var dataStart = this.startEditTime.split(':');
@@ -672,8 +680,6 @@ new Vue ({
     },
 
     created: async function() {
-
-
         var date = new Date();
         this.month = date.getMonth();
         this.year = date.getFullYear();
@@ -694,6 +700,7 @@ new Vue ({
         await vm.upgradeProjectTimer(new Date())
 
         vm.isOneTimerDoing = vm.projectsTimers.find(p => p.isPlayed == 1) != null
+        console.log(vm.isOneTimerDoing)
 
         let until_day_end = 86400-((date.getHours()*60)+date.getMinutes())*60+date.getSeconds()
         setTimeout(night_update, (until_day_end-60)*1000);
@@ -724,6 +731,7 @@ async function get_project_history(day, Owner=null) {
             var done = projAct.End != null;
             var total_time = (end.valueOf()-start.valueOf())/1000
             number += 1
+            console.log(end)
             returnProjectsHistory.push({
                 number: number,
                 id: projAct.id,
@@ -748,6 +756,6 @@ async function get_project_history(day, Owner=null) {
                 isPlayed: projAct.Activity,
             })
         })
-    return returnProjectsHistory
+    return  returnProjectsHistory
 }
 

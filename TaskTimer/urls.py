@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework.routers import SimpleRouter
 
+from django.conf.urls.static import static
+from django.conf import settings
+
 from UserAdmin import views as AdminViews
 from UserCommon import views as CommonViews
 from UserAdmin import Filters as AdminFilters
@@ -30,6 +33,6 @@ urlpatterns = [
     path('project/edit', AdminViews.edit_project_views),
     path('project/delete', AdminViews.delete_project_views),
     path('admin/', admin.site.urls),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += router.urls
