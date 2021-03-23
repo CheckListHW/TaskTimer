@@ -148,23 +148,17 @@ def delete_project_active(project_id: int) -> Optional[Union[bool, str]]:
 
 def project_active() -> None:
     for p_h in ProjectHistory.objects.filter(Activity=True):
-        print(p_h.Date)
-        print(p_h.End)
         utc_start = p_h.Start.astimezone().date()
-        print()
         if (timezone.localtime().date() - utc_start).days > 0:
-            print(timezone.localtime().date())
-            print(utc_start)
             ProjectHistory.objects.filter(Start=None, End=None).delete()
             p_h.End = datetime(p_h.Start.astimezone().year, month=p_h.Start.astimezone().month,
                                day=p_h.Start.astimezone().day, hour=23, minute=59, second=59,
                                microsecond=0, tzinfo=MyTimezone)
             p_h.Activity = False
-            datetime_next_day_project = datetime((p_h.Start.astimezone().date() + timedelta(days=1)).year,
-                                                month=(p_h.Start.astimezone().date() + + timedelta(days=1)).month,
-                                                day=(p_h.Start.astimezone().date() + timedelta(days=1)).day,
-                                                hour=0, minute=0, second=0,
-                                                microsecond=1, tzinfo=MyTimezone)
+            start_plus_day = p_h.Start.astimezone().date() + timedelta(days=1)
+            datetime_next_day_project = datetime(start_plus_day.year, month=start_plus_day.month, day=start_plus_day.day,
+                                                 hour=0, minute=0, second=0,
+                                                 microsecond=1, tzinfo=MyTimezone)
 
             new_p_h = ProjectHistory(Owner=p_h.Owner, ProjectActive=p_h.ProjectActive,
                                      Name=p_h.Name, Date=datetime_next_day_project.date(),
@@ -172,5 +166,5 @@ def project_active() -> None:
                                      Note=p_h.Note, Activity=True)
             p_h.save()
             new_p_h.save()
-            print(new_p_h)
+            project_active()
     return

@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.db import models
 
 from TaskTimer import settings
@@ -5,11 +7,13 @@ from UserAdmin import models as AdminModels
 from django.contrib.auth.models import User
 from django.utils import timezone
 from dateutil import tz
+
 MyTimezone = tz.gettz(settings.TIME_ZONE)
 
 
 class ProjectActive(models.Model):
     """ Активные проекты пользователя """
+
     class Meta:
         unique_together = (('Owner', 'Project'),)
 
@@ -31,12 +35,14 @@ class ProjectHistory(models.Model):
 
     """У Пользователя одновременно может быть актиным только один проект(Activity - активность).
         Перед созранением активного проекта останавливает остальные"""
+
     def save(self, *args, **kwargs):
         if self.End is not None:
-            if self.End.date() != self.Start.date():
-                self.End = self.Start.replace(hour=23, minute=59, tzinfo=MyTimezone)
+            if self.End.astimezone().date() != self.Start.astimezone().date():
+                end_time = self.Start.astimezone().date()
+                self.End = datetime(end_time.year, month=end_time.month, day=end_time.day,
+                                    hour=23, minute=59, second=59, microsecond=1, tzinfo=MyTimezone)
         if self.Activity is True:
             ProjectHistory.objects.filter(Owner=self.ProjectActive.Owner,
                                           Activity=True).update(Activity=False, End=timezone.now())
         super(ProjectHistory, self).save(*args, **kwargs)
-
