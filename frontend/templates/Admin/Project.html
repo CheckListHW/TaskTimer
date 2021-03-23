@@ -19,7 +19,7 @@
                 <div class="projects_list_window">
 
                     <div class="add_project">
-                        <div class="add" @click="isAdded = !isAdded">
+                        <div class="button add" @click="isAdded = !isAdded">
                             Добавить проект <i class="fa fa-plus"></i>
                         </div>
 
@@ -33,11 +33,11 @@
                                     placeholder="Введите название нового проекта..."
                                     v-model="enterdName"
                                 >
-                                <div class="add_new" @click="addNewProject">
+                                <div class="button add_new" @click="addNewProject">
                                     Создать
                                 </div>
 
-                                <div class="cancel" @click="cancel">
+                                <div class="button_out cancel" @click="cancel">
                                     Отмена
                                 </div>
                             </div>
@@ -57,11 +57,11 @@
                             </div>
 
                             <div class="menu" v-show="project.menuVisible">
-                                <div class="edit" @click="editProject(index)">
+                                <div class="button edit" @click="editProject(index)">
                                     <i class="fa fa-pencil"></i>
                                 </div>
 
-                                <div class="delete" @click="deleteProject(index)">
+                                <div class="button_out delete" @click="deleteProject(index)">
                                     <i class="fa fa-trash-o"></i>
                                 </div>
                             </div>
@@ -82,11 +82,11 @@
                         </div>
 
                         <div class="edit_buttons">
-                            <div class="save_edit" @click="saveEdit">
+                            <div class="button save_edit" @click="saveEdit">
                                 Сохранить
                             </div>
 
-                            <div class="cancel_edit" @click="cancelEdit">
+                            <div class="button_out cancel_edit" @click="cancelEdit">
                                 Отмена
                             </div>
                         </div>

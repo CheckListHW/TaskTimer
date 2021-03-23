@@ -4,7 +4,7 @@ body {
     font-size: 14px;
     -webkit-font-smoothing: antialiased;
 
-    background-color: #000;
+    background-color: rgba(251,238,193,0.5);
 }
 
 *,
@@ -24,18 +24,18 @@ input[type="number"]::-webkit-inner-spin-button {
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
-    background-color: #282828;
+    background-color: #8D8741;
 }
 
 ::-webkit-scrollbar-thumb {
     width: 6px;
     height: 6px;
-    background-color: #240090;
+    background-color: #8D8741;
 }
 
 ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    background-color: #282828;
+    background-color: #8D8741;
 }
 
 input:active, input:focus {
@@ -60,7 +60,9 @@ input:active, input:focus {
     top: 0;
     left: 0;
 
-    /*box-shadow: 0 0 7px;*/
+    background: rgba(101,157,189,0.5);
+
+    box-shadow: 0 0 7px;
 }
 
 .header__inner {
@@ -83,7 +85,7 @@ input:active, input:focus {
 }
 
 .selected {
-    box-shadow: 0 -3px 0 0 #240090 inset;
+    box-shadow: 0 -3px 0 0 #D3E3FC inset;
 }
 
 .nav_link {
@@ -95,11 +97,8 @@ input:active, input:focus {
 
     position: relative;
 
-    color: #fff;
+    color: #000;
     text-decoration: none;
-    opacity: 0.75;
-
-    transition: opacity 0.1s linear;
 
     z-index: 9999;
 }
@@ -112,7 +111,7 @@ input:active, input:focus {
     width: 0px;
     height: 65px;
 
-    background: #240090;
+    background: #D3E3FC;
 
     transition: all .5s ease;
     z-index: -1;
@@ -124,9 +123,8 @@ input:active, input:focus {
 }
 
 .nav_link:hover {
-    color: #fff;
+    color: #000;
     text-decoration: none;
-    opacity: 1;
 }
 
 /* User ===============*/
@@ -139,15 +137,15 @@ input:active, input:focus {
 }
 
 .user_link {
-    color: #3500D3;
+    color: #BC986A;
     text-decoration: none;
-    opacity: 0.85;
+    opacity: 0.8;
 
     transition: opacity 0.1s linear;
 }
 
 .user_link:hover {
-    color: #3500D3;
+    color: #BC986A;
     text-decoration: none;
     opacity: 1;
 }
@@ -174,10 +172,11 @@ input:active, input:focus {
 
 /* Data Block ===============*/
 
+
 .data_block {
     display: flex;
 
-    color: #fff;
+    color: #000;
     margin-bottom: 15px;
 
     position: relative;
@@ -197,7 +196,7 @@ input:active, input:focus {
 
 .data_title h1 {
     text-transform: uppercase;
-    color: #fff;
+    color: #000;
     font-size: 22px;
 
     margin: 0;
@@ -214,8 +213,8 @@ input:active, input:focus {
 
     height: 70px;
 
-    color: #fff;
-    background: rgba(40,40,40,0.65);
+    color: #000;
+    background: rgba(188,152,106,0.85);
 
     margin-bottom: 15px;
 }
@@ -235,7 +234,7 @@ input:active, input:focus {
 }
 
 .choose_block:hover {
-    background: rgba(255,255,255,0.15);
+    background: rgba(101,157,189,0.3);
     cursor: pointer;
 }
 
@@ -253,25 +252,29 @@ input:active, input:focus {
     display: flex;
     flex-direction: column;
 
-    padding: 10px 15px 10px 10px;
-
     width: 300px;
-    height: 200px;
-    max-height: 200px;
+    height: 189px;
+    max-height: 189px;
 
     position: absolute;
-    margin-top: 300px;
-    background: rgba(40,40,40,1);
+    margin-top: 289px;
+    background: #FBEEC1;
     z-index: 1;
+
+    box-shadow: 0 0 5px;
 }
 
 .choose_title {
     width: 100%;
+    padding: 10px 15px 10px 10px;
+    background: rgba(101,157,189,1);
 }
 
 .choose_title h3 {
     font-size: 16px;
     padding: 0 0 0 5px;
+
+    margin-bottom: 0;
 }
 
 .choose_projects_list {
@@ -285,13 +288,13 @@ input:active, input:focus {
     display: flex;
     align-items: center;
 
-    padding: 0 10px 0 5px;
+    padding: 0 10px 0 10px;
 
     min-height: 30px;
 }
 
 .choose_project:hover {
-    background: rgba(255,255,255,0.1);
+    background: rgba(211,227,252,0.7);
 
     cursor: pointer;
 }
@@ -307,15 +310,15 @@ input:active, input:focus {
 
 .button_add_timer button {
     align-items: center;
-    color: #fff;
+    color: #000;
     border: 0;
 }
 
 .button_add_timer button:disabled {
-    background: rgba(36,0,144,0.6);
+    background: rgba(101,157,189,0.6);
 }
 .button_add_timer button:disabled:hover {
-    background: rgba(36,0,144,0.6);
+    background: rgba(101,157,189,0.6);
     cursor: default;
 }
 
@@ -332,7 +335,7 @@ input:active, input:focus {
     width: 100%;
     /*max-height: 100px;*/
 
-    color: #fff;
+    color: #000;
     z-index: 0;
 }
 
@@ -348,7 +351,7 @@ input:active, input:focus {
     width: 100%;
     height: 70px;
 
-    background: rgba(40,40,40,0.65);
+    background: rgba(188,152,106,0.85);
 }
 
 .project_timer_title {
@@ -393,7 +396,7 @@ input:active, input:focus {
 }
 
 .time_note:hover {
-    background: rgba(40,40,40,1);
+    background: rgba(101,157,189,0.3);
     cursor: pointer;
 }
 
@@ -482,7 +485,7 @@ input:active, input:focus {
 .time_buttons button {
     align-items: center;
 
-    color: #fff;
+    color: #000;
     margin-right: 10px;
 
     border: 0;
@@ -492,10 +495,10 @@ input:active, input:focus {
 }
 
 .time_buttons button:disabled {
-    background: rgba(36,0,144,0.6);
+    background: rgba(101,157,189,0.6);
 }
 .time_buttons button:disabled:hover {
-    background: rgba(36,0,144,0.6);
+    background: rgba(101,157,189,0.6);
     cursor: default;
 }
 .time_buttons button:disabled:active {
@@ -521,8 +524,9 @@ input:active, input:focus {
 
     padding: 0 5px;
 
-    background: rgba(40,40,40,1);
+    background: #fff;
     box-shadow: 0 2px 4px rgba(255,255,255,0.2);
+    box-shadow: 0 0 5px;
 }
 
 .time_edit_window input:first-child {
@@ -579,7 +583,7 @@ input:active, input:focus {
     padding: 7px 10px;
 
     font-size: 14px;
-    color: #fff;
+    color: #000;
 
     background: rgba(36,0,144,0.9);
     opacity: 0.8;
@@ -607,12 +611,12 @@ input:active, input:focus {
 
     font-size: 14px;
 
-    background: rgba(36,0,144,0.8);
+    background: rgba(101,157,189,0.8);
     transition: background 0.15s linear;
 }
 
 .button:hover {
-    background: rgba(36,0,144,1);
+    background: rgba(101,157,189,1);
     cursor: pointer;
 }
 
@@ -627,17 +631,17 @@ input:active, input:focus {
 
     font-size: 14px;
 
-    background: rgba(255,0,0,0.8);
+    background: rgba(218,173,134,0.9);
     transition: background 0.15s linear;
 }
 
 .played_button:hover {
-    background: red;
+    background: rgba(218,173,134,1);
     cursor: pointer;
 }
 
 .played_button:active {
-    box-shadow: 0 -4px 6px rgba(0,0,0,0.35) inset;
+    box-shadow: 0 -2px 3px rgba(0,0,0,0.35) inset;
 }
 
 .button_out {
@@ -647,12 +651,12 @@ input:active, input:focus {
 
     font-size: 14px;
 
-    box-shadow: 1px 1px 0 #240090 inset, -1px -1px 0 #240090 inset;
+    box-shadow: 1px 1px 0 #659DBD inset, -1px -1px 0 #659DBD inset;
     transition: background 0.15s linear;
 }
 
 .button_out:hover {
-    background: #240090;
+    background: #659DBD;
     cursor: pointer;
 }
 
@@ -677,7 +681,7 @@ input:active, input:focus {
 }
 
 .notice {
-    background: #fff;
+    background: #000;
     box-shadow: 0 0 1em -.5em #000, -.5em 1em 5em -1em rgba(0,0,0,.7);
 
     padding: 1em;
