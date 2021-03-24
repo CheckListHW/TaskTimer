@@ -91,15 +91,25 @@ def edit_start_end_project_active(project_id: int, start_time, end_time) -> Opti
             if p_h.Start is None or p_h.End is None:
                 return 'Время можно менять только у остановленных таймеров'
 
-            p_h.Start = p_h.Start.replace(tzinfo=MyTimezone, hour=start_time.get('hour') if start_time.get('hour')
+
+            print('--before--')
+            print(p_h.Start)
+            print(p_h.End)
+            print('--before--')
+            p_h.Start = p_h.Start.astimezone().replace(hour=start_time.get('hour') if start_time.get('hour')
                                                                                             is not None else p_h.Start.hour,
                                           minute=start_time.get('minute') if start_time.get('minute')
                                                                              is not None else p_h.Start.minute, )
 
-            p_h.End = p_h.End.replace(tzinfo=MyTimezone, hour=end_time.get('hour') if end_time.get('hour')
+            p_h.End = p_h.End.astimezone().replace(hour=end_time.get('hour') if end_time.get('hour')
                                                                                       is not None else p_h.End.hour,
                                       minute=end_time.get('minute') if end_time.get('minute')
                                                                        is not None else p_h.End.minute, )
+            print('--in--')
+            print(p_h.Start)
+            print(p_h.End)
+            print('--in--')
+
             if p_h.Start > p_h.End:
                 return 'Не верные данные начало позже конца!'
 
@@ -127,6 +137,10 @@ def edit_start_end_project_active(project_id: int, start_time, end_time) -> Opti
                         .format(p_h_d.Name, p_h_d.Start.astimezone().hour, p_h_d.Start.astimezone().minute,
                                 p_h_d.End.astimezone().hour, p_h_d.End.astimezone().minute)
 
+            print('--after--')
+            print(p_h.Start)
+            print(p_h.End)
+            print('--after--')
             p_h.save()
             return True
     except Error:

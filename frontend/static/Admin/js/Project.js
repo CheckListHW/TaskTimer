@@ -104,16 +104,12 @@ new Vue ({
                     });
                 return
             }
-
-            if (deleteProj<0){
-                Toast.add({
-                        text: 'Проект: \"{project}\" нельзя удалить! Его уже выполняют.'
-                            .replace('{project}', this.projects_list[index].name),
-                        color: '#ff0000',
-                        delay: 100000,
-                    });
-                return
-            }
+            Toast.add({
+                text: 'Проект: \"{project}\" Удален.'
+                    .replace('{project}', this.projects_list[index].name),
+                color: '#37ff00',
+                delay: 10000,
+            });
             this.projects_list.splice(index, 1);
             this.activeProject = -1;
             this.isDeleted = true;

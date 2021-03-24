@@ -3,9 +3,6 @@
 import os
 import sys
 
-sys.stderr = open('FileError.log', 'w')
-sys.stdout = open('File.log', 'w')
-
 def main():
 
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TaskTimer.settings')
