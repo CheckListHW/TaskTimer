@@ -621,6 +621,7 @@ new Vue ({
                     this.addNote(idNote);
                 }
             }
+
             else if(this.isChoosed) {
                 var el = this.$refs["list"];
                 var target = e.target;

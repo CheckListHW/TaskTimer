@@ -3,9 +3,11 @@
 import os
 import sys
 
-
+sys.stderr = open('FileError.log', 'w')
+sys.stdout = open('File.log', 'w')
 
 def main():
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TaskTimer.settings')
     try:
         from django.core.management import execute_from_command_line

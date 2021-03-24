@@ -135,12 +135,15 @@ def edit_start_end_project_active(project_id: int, start_time, end_time) -> Opti
 
 def delete_project_active(project_id: int) -> Optional[Union[bool, str]]:
     try:
-        project_active = ProjectHistory.objects.filter(id=project_id)
-        for p_h in project_active:
+        for p_h in ProjectHistory.objects.filter(id=project_id):
             if p_h.Activity:
                 return 'Перед удалением необходимо остановить таймер'
             else:
-                project_active.delete()
+                p_a = p_h.ProjectActive
+                p_h.delete()
+                p_hs = ProjectHistory.objects.filter(ProjectActive=p_a)
+                if len(p_hs) == 0:
+                    p_hs.delete()
         return True
     except Error:
         return 'Проект не удален! Перезагрузите страницу'

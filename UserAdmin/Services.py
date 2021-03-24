@@ -19,9 +19,9 @@ def add_project(name: str, user: User) -> Optional[Union[str, int]]:
 def delete_project(project_id: int) -> Optional[int]:
     try:
         Project.objects.get(id=project_id).delete()
-        return 0
+        return True
     except Error:
-        return -1
+        return False
 
 
 def edit_project(name: str, project_id: int) -> Optional[Union[str, int]]:
