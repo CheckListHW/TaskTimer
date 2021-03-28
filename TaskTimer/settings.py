@@ -101,7 +101,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_ROOT = '/home/woxel/TaskTimer/frontend/static'
 
 STATIC_URL = '/TaskTimer/frontend/static/'
 
@@ -109,6 +108,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "/TaskTimer/frontend/static"),
     os.path.join(BASE_DIR, "frontend/static"),
 ]
+
+STATIC_ROOT = '/home/woxel/TaskTimer/frontend/static'
 
 STATICFILES_FINDERS =[
     'django.contrib.staticfiles.finders.FileSystemFinder',
