@@ -111,7 +111,7 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = '/home/woxel/TaskTimer/frontend/static'
 
-STATICFILES_FINDERS =[
+STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
