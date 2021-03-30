@@ -245,8 +245,6 @@ new Vue ({
                 itemsFormatted[i][TOTAL_TIME_EMP] = vm.timeFromSecond(outProjectTime(TOTAL_TIME_EMP, item.projectsList, vm.startdate, vm.enddate))
             });
 
-            console.log(itemsFormatted)
-
             var fileTitle = 'Report_'+vm.inputStart+'_'+vm.inputEnd;
 
             exportCSVFile(headers, itemsFormatted, fileTitle)
@@ -346,13 +344,6 @@ function get_project_list(projectActive, user_id = null) {
 
     projectActive.forEach(function (p_a) {
         if ((user_id === null || p_a.Owner === user_id) & p_a.End != null){
-            console.log('Date.parse(p_a.End)')
-            console.log((p_a.End))
-            console.log(Date.parse(p_a.End))
-            console.log((p_a.Start))
-            console.log(Date.parse(p_a.Start))
-            console.log(Date.parse(p_a.End) - Date.parse(p_a.Start))
-            console.log('Date.parse(p_a.Start)')
             let date_parse = new Date(Date.parse(p_a.Date))
             let new_p_a = Object.assign({}, P_A_TEMPLATE);
             new_p_a.name =  p_a.Name
@@ -368,7 +359,7 @@ function get_project_list(projectActive, user_id = null) {
         }
     })
 
-    console.log(temp_projectActive)
+    .log(temp_projectActive)
 
     return temp_projectActive
 }

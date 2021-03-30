@@ -98,7 +98,6 @@ STATIC_URL = '/TaskTimer/frontend/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "/TaskTimer/frontend/static"),
     os.path.join(BASE_DIR, "frontend/static"),
-    os.path.join(BASE_DIR, "/djangoenv/lib/python3.7/site-packages/django/contrib/admin/static/"),
 ]
 
 STATIC_ROOT = '/home/woxel/TaskTimer/frontend/static'
