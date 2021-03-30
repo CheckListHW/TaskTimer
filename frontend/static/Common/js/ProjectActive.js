@@ -401,7 +401,6 @@ new Vue ({
 
         tik_timer_iteration: function(index){
             if (this.projectsTimers[index].isPlayed){
-                console.log(this.projectsTimers[index])
                 this.projectsTimers[index].time += 1;
                 var now = new Date();
                 this.projectsTimers[index].timeEnd.hour = now.getHours();
@@ -547,7 +546,6 @@ new Vue ({
                 var target = e.target;
 
                 if (el !== target && !el[0].contains(target)) {
-                    console.log('ad')
                     var elem = this.projectsTimers[id];
 
                     var dataStart = this.startEditTime.split(':');
@@ -701,7 +699,6 @@ new Vue ({
         await vm.upgradeProjectTimer(new Date())
 
         vm.isOneTimerDoing = vm.projectsTimers.find(p => p.isPlayed == 1) != null
-        console.log(vm.isOneTimerDoing)
 
         let until_day_end = 86400-((date.getHours()*60)+date.getMinutes())*60+date.getSeconds()
         setTimeout(night_update, (until_day_end-60)*1000);
@@ -732,7 +729,6 @@ async function get_project_history(day, Owner=null) {
             var done = projAct.End != null;
             var total_time = (end.valueOf()-start.valueOf())/1000
             number += 1
-            console.log(end)
             returnProjectsHistory.push({
                 number: number,
                 id: projAct.id,
