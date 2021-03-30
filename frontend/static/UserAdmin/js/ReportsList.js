@@ -359,7 +359,6 @@ function get_project_list(projectActive, user_id = null) {
         }
     })
 
-    .log(temp_projectActive)
 
     return temp_projectActive
 }
