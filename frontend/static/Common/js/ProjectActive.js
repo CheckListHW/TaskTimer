@@ -56,6 +56,8 @@ new Vue ({
     el: '#projectList',
     data: {
         projects: [ ],
+        common_user_projects: [],
+        remaining_projects: [],
 
         projectsTimers: [ ],
 
@@ -116,8 +118,8 @@ new Vue ({
     },
 
     methods: {
-        chooseProject: function(index) {
-            this.chosenProject = this.projects[index];
+        chooseProject: function(array, index) {
+            this.chosenProject = array[index];
             this.isChoosed = false;
         },
 
@@ -675,6 +677,19 @@ new Vue ({
         deleteNotification: function(note) {
             var id = this.notifications.indexOf(note);
             this.notifications.splice(id, 1);
+        },
+
+        deleteUsersProjects: function(array, common_array) {
+            var result = array;
+            console.log(array.length);
+
+            for(var i = 0; i < common_array.length; i++) {
+                var id = result.findIndex(project => project.name === common_array[i].name);
+                result.splice(id, 1);
+                console.log(id);
+            }
+
+            return result;
         }
     },
 
@@ -702,6 +717,9 @@ new Vue ({
 
         let until_day_end = 86400-((date.getHours()*60)+date.getMinutes())*60+date.getSeconds()
         setTimeout(night_update, (until_day_end-60)*1000);
+
+        //Сначала заполняется common_user_projects
+        this.remaining_projects = this.deleteUsersProjects(this.projects, this.common_user_projects);
     },
     destroyed: function() {
         document.removeEventListener('click', this.dropdown);

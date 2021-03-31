@@ -80,8 +80,16 @@
                             <h3>Список проектов</h3>
                         </div>
 
+                        <div class="common_projects_list">
+                            <div class="choose_project" v-for="(project, index) in common_user_projects" @click="chooseProject(common_user_projects, index)">
+                                {{project.name}}
+                            </div>
+                        </div>
+
+                        <hr />
+
                         <div class="choose_projects_list">
-                            <div class="choose_project" v-for="(project, index) in projects" @click="chooseProject(index)">
+                            <div class="choose_project" v-for="(project, index) in remaining_projects" @click="chooseProject(remaining_projects, index)">
                                 {{project.name}}
                             </div>
                         </div>

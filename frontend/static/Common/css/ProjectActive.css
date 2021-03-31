@@ -253,8 +253,8 @@ input:active, input:focus {
     flex-direction: column;
 
     width: 300px;
-    height: 189px;
-    max-height: 189px;
+    height: 358px;
+    max-height: 358px;
 
     position: absolute;
     margin-top: 289px;
@@ -275,6 +275,23 @@ input:active, input:focus {
     padding: 0 0 0 5px;
 
     margin-bottom: 0;
+}
+
+.common_projects_list {
+    height: 150px;
+    max-height: 150px;
+
+    overflow: auto;
+}
+
+hr {
+    background: rgba(188,152,106,0.4);
+    border: 2px;
+
+    height: 4px;
+    width: 90%;
+
+    margin: 7px auto;
 }
 
 .choose_projects_list {
