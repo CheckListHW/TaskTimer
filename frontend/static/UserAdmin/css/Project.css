@@ -16,15 +16,15 @@ body {
 /* Scrollbar ===============*/
 
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
     height: 6px;
     background-color: #8D8741;
 }
 
 ::-webkit-scrollbar-thumb {
-    width: 6px;
+    width: 8px;
     height: 6px;
-    background-color: #8D8741;
+    background-color: #DAAD86;
 }
 
 ::-webkit-scrollbar-track {
