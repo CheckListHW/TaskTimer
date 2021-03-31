@@ -361,7 +361,8 @@ input:active, input:focus {
     padding: 0px 10px;
 
     height: 80%;
-    width: 200px;
+    width: 400px;
+    min-width: 200px;
 }
 
 .project_timer_title h2 {
