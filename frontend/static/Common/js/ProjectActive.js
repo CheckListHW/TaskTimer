@@ -397,18 +397,21 @@ new Vue ({
         startTimer: function(index) {
             interval_id = setInterval(()=>this.tik_timer_iteration(index), 1000)
             this.projectsTimers[index].timer = interval_id
-            for (let i = 1; i < interval_id; i++)
-                window.clearInterval(i);
+            this.projectsTimers.forEach(function (Timer) {
+                if (Timer.timer != interval_id)
+                    window.clearInterval(Timer.timer);
+            })
         },
 
         tik_timer_iteration: function(index){
-            if (this.projectsTimers[index].isPlayed){
-                this.projectsTimers[index].time += 1;
-                var now = new Date();
-                this.projectsTimers[index].timeEnd.hour = now.getHours();
-                this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
+            if (this.projectsTimers[index] != undefined){
+                if (this.projectsTimers[index].isPlayed){
+                    this.projectsTimers[index].time += 1;
+                    var now = new Date();
+                    this.projectsTimers[index].timeEnd.hour = now.getHours();
+                    this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
+                }
             }
-
         },
 
         calendar: function() {

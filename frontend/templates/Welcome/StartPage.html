@@ -24,8 +24,8 @@
                 </h1>
                 <form method="post">
                     <div v-bind:class="[login_visible ? 'short_margin' : 'expand_margin', 'form-container', 'animated', 'fadeIn']" style="animation-delay: .2s;">
-                        <label for=""><i class="fa fa-at"></i> Email</label>
-                        <input type="text" name="username" v-model="login.email" placeholder="E-mail">
+                        <label for=""><i class="fa fa-at"></i>Login</label>
+                        <input type="text" name="username" v-model="login.email" placeholder="Login">
 
                         <label for=""><i class="fa fa-slack"></i> Пароль</label>
                         <input type="password" name="password" v-model="login.password" placeholder="Пароль">
@@ -55,8 +55,8 @@
                     <label for=""><i class="fa fa-user-circle"></i> Имя </label>
                     <input  type="text" v-model="register.name" placeholder="Имя">
 
-                    <label for=""><i class="fa fa-at"></i> Email </label>
-                    <input type="email" v-model="register.email" placeholder="E-mail">
+                    <label for=""><i class="fa fa-at"></i> Login </label>
+                    <input type="email" v-model="register.email" placeholder="Email">
 
                     <label for=""><i class="fa fa-slack"></i> Пароль </label>
                     <input type="password" v-model="register.password" placeholder="Пароль">

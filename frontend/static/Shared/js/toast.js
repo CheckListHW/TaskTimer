@@ -7,8 +7,9 @@ var Toast = function (element, config) {
     _config = {
       autohide: true,
       color: '#ff0000',
-      delay: 10000
+      delay: 5000
     };
+
   for (var prop in config) {
     _config[prop] = config[prop];
   }
@@ -27,21 +28,19 @@ var Toast = function (element, config) {
       _this.hide();
     }
   });
-};
+}
 
 Toast.prototype = {
   show: function () {
     var _this = this;
     this.element.classList.add('toast_show');
     if (this.config.autohide) {
-      setTimeout(function () {
-        _this.hide();
-      }, this.config.delay)
+      setTimeout( _this.hide, _this.config.delay, this.element.classList )
     }
   },
-  hide: function () {
+  hide: function (classList) {
     var event = new CustomEvent('hidden.toast', { detail: { toast: this.element } });
-    this.element.classList.remove('toast_show');
+    classList.remove('toast_show');
     document.dispatchEvent(event);
   }
 };
@@ -51,42 +50,46 @@ Toast.create = function (text, color) {
     fragment = document.createDocumentFragment(),
     toast = document.createElement('div'),
     toastClose = document.createElement('button');
-    toast.classList.add('toast');
-    toast.style.backgroundColor = 'rgba(' + parseInt(color.substr(1, 2), 16) + ',' + parseInt(color.substr(3, 2), 16) + ',' + parseInt(color.substr(5, 2), 16) + ',0.5)';
-    toast.textContent = text;
-    toastClose.classList.add('toast__close');
-    toastClose.setAttribute('type', 'button');
-    toastClose.textContent = '×';
-    toast.appendChild(toastClose);
-    fragment.appendChild(toast);
+  toast.classList.add('toast');
+  toast.style.backgroundColor = 'rgba(' + parseInt(color.substr(1, 2), 16) + ',' + parseInt(color.substr(3, 2), 16) + ',' + parseInt(color.substr(5, 2), 16) + ',0.5)';
+  toast.textContent = text;
+  toastClose.classList.add('toast__close');
+  toastClose.setAttribute('type', 'button');
+  toastClose.textContent = '×';
+  toast.appendChild(toastClose);
+  fragment.appendChild(toast);
   return fragment;
 };
 
 Toast.add = function (params) {
+
   var config = {
     text: 'Текст сообщения...',
     color: '#ff0000',
-    delay: 10000,
     autohide: true,
+    delay: 10000,
   };
+
   if (params !== undefined) {
     for (var item in params) {
       if (params[item] !== undefined)
         config[item] = params[item];
     }
-  };
+  }
+
   if (!document.querySelector('.toasts')) {
     var container = document.createElement('div');
     container.classList.add('toasts');
     container.style.cssText = 'position: fixed; top: 15px; right: 15px; width: 250px;';
     document.body.appendChild(container);
   }
+
   document.querySelector('.toasts').appendChild(Toast.create(config.text, config.color));
   var toasts = document.querySelectorAll('.toast');
   var toast = new Toast(toasts[toasts.length - 1], { autohide: config.autohide, delay: config.delay });
   toast.show();
   return toast;
-};
+}
 
 document.addEventListener('hidden.toast', function (e) {
   var element = e.detail.toast;
@@ -94,3 +97,13 @@ document.addEventListener('hidden.toast', function (e) {
     element.parentNode.removeChild(element);
   }
 });
+
+/*(() => {
+    [ 'clearInterval', 'clearTimeout' ].forEach(method_name => {
+        const original_method = window[ method_name ];
+        window[ method_name ] = function() {
+            console.log(`method ${ method_name } is called with arguments:`, arguments)
+            return original_method.apply(this, arguments)
+        }
+    })
+})()*/
