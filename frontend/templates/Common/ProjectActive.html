@@ -133,7 +133,7 @@
                                enter-active-class="animate__animated animate__zoomIn"
                                leave-active-class="animate__animated animate__zoomOut"
                             >
-                                <div class="time_edit_window" v-show="projectTimer.isChangeTime && !isOneTimerDoing">
+                                <div class="time_edit_window" v-show="projectTimer.isChangeTime && !projectTimer.isPlayed">
                                     <input type="time" v-model="startEditTime" />
                                     <p>-</p>
                                     <input type="time" v-model="endEditTime" />
