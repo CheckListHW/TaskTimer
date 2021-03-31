@@ -56,6 +56,7 @@ new Vue ({
     el: '#projectList',
     data: {
         projects: [ ],
+        ConstprojectsTimers: [ ],
         common_user_projects: [],
         remaining_projects: [],
 
@@ -395,12 +396,11 @@ new Vue ({
         },
 
         startTimer: function(index) {
-            interval_id = setInterval(()=>this.tik_timer_iteration(index), 1000)
-            this.projectsTimers[index].timer = interval_id
-            this.projectsTimers.forEach(function (Timer) {
-                if (Timer.timer != interval_id)
-                    window.clearInterval(Timer.timer);
+            this.ConstprojectsTimers.forEach(function (timerId) {
+                window.clearInterval(timerId)
             })
+            this.projectsTimers[index].timer = setInterval(this.tik_timer_iteration, 1000, index)
+            this.ConstprojectsTimers.push(this.projectsTimers[index].timer)
         },
 
         tik_timer_iteration: function(index){
@@ -594,14 +594,12 @@ new Vue ({
                         if(prj.timeStart.hour > prj.timeEnd.hour) {
                             prj.timeError = true;
                             if(this.notifications.indexOf(this.pushNoteTime) == -1) {
-                                this.notifications.push(this.pushNoteTime);
                                 elem.time = 0;
                             }
                         }
                         else if(prj.timeStart.hour == prj.timeEnd.hour && prj.timeStart.minutes > prj.timeEnd.minutes) {
                             prj.timeError = true;
                             if(this.notifications.indexOf(this.pushNoteTime) == -1) {
-                                this.notifications.push(this.pushNoteTime);
                                 elem.time = 0;
                             }
                         }
