@@ -56,7 +56,7 @@ new Vue ({
     el: '#projectList',
     data: {
         projects: [ ],
-        ConstprojectsTimers: [ ],
+        constProjectsTimers: [ ],
 
         common_user_projects: [],
         remaining_projects: [],
@@ -397,11 +397,11 @@ new Vue ({
         },
 
         startTimer: function(index) {
-            this.ConstprojectsTimers.forEach(function (timerId) {
+            this.constProjectsTimers.forEach(function (timerId) {
                 window.clearInterval(timerId)
             })
             this.projectsTimers[index].timer = setInterval(this.tik_timer_iteration, 1000, index)
-            this.ConstprojectsTimers.push(this.projectsTimers[index].timer)
+            this.constProjectsTimers.push(this.projectsTimers[index].timer)
         },
 
         tik_timer_iteration: function(index){
@@ -530,7 +530,7 @@ new Vue ({
             //необхадимо для даты без учета UTC и приведению к формату БД
             const vm = this;
             let localdate = date.toLocaleDateString('fr-CA')
-            vm.common_user_projects = (await get_last_projects(5))
+            vm.common_user_projects = (await get_projects(5))
             owner = document.getElementById('user_id').getAttribute('value')
             vm.projectsTimers = await get_project_history(localdate)
             vm.continue_timer()
@@ -684,12 +684,10 @@ new Vue ({
 
         deleteUsersProjects: function(array, common_array) {
             var result = array;
-            console.log(array.length);
 
             for(var i = 0; i < common_array.length; i++) {
                 var id = result.findIndex(project => project.name === common_array[i].name);
                 result.splice(id, 1);
-                console.log(id);
             }
 
             return result;
@@ -706,27 +704,20 @@ new Vue ({
 
         const vm = this;
 
-        let tempProjets = (await axios.get('/api/project/')).data
+        vm.projects = (await get_projects())
 
-        tempProjets.forEach(function (proj) {
-            vm.projects.push({
-                id: proj.id,
-                name: proj.Name,
-            })
-        })
-
-        vm.common_user_projects = (await get_last_projects(5))
-
-        console.log(vm.common_user_projects)
-
-
+        vm.common_user_projects = (await get_projects(5))
 
         await vm.upgradeProjectTimer(new Date())
 
         vm.isOneTimerDoing = vm.projectsTimers.find(p => p.isPlayed == 1) != null
 
         let until_day_end = 86400-((date.getHours()*60)+date.getMinutes())*60+date.getSeconds()
-        setTimeout(night_update, (until_day_end-60)*1000);
+        setTimeout(night_update, (until_day_end)*1000);
+
+
+
+
 
         //Сначала заполняется common_user_projects
         this.remaining_projects = this.deleteUsersProjects(this.projects, this.common_user_projects);
@@ -738,24 +729,25 @@ new Vue ({
 
 
 function night_update() {
-    Toast.add({text: 'Через 60 страница перезагрузится и активная задача перенесется на следущий день',
+    Toast.add({text: 'Через 30 секунд страница перезагрузится и активная задача перенесется на следущий день',
                 color: '#16d1d7',
-                delay: 60000})
-    setTimeout(window.location.reload, 60000);
+                delay: 30000})
+    setTimeout(() => window.location.reload(), 30000);
 }
 
 
-async function get_last_projects(last=null) {
-    if (last === 0 || last === null)
-        return []
+async function get_projects(last=null) {
+    let TempProjets = []
+    if (last === 0 || last === null){
+        TempProjets = (await axios.get('/api/project/')).data
+    }
+    else{
+        TempProjets = (await axios.get('/api/project/?last='+last)).data
+    }
 
-    let lastTempProjets = (await axios.get('/api/project/?last='+last)).data
     let returnProject = []
 
-
-    console.log(lastTempProjets)
-
-    lastTempProjets.forEach(function (proj) {
+    TempProjets.forEach(function (proj) {
        returnProject.push({
             id: proj.id,
             name: proj.Name,
@@ -771,7 +763,6 @@ async function get_project_history(Day=null) {
     let day = Day == null ? '' : '&Date=' + Day
     let tempProjectsHistory = (await axios.get('/api/project_history/?x=0'+day)).data,
         returnProjectsHistory = []
-    console.log(tempProjectsHistory)
 
     tempProjectsHistory.forEach(function (projAct) {
             var start = projAct.Start == null ? new Date() : new Date(projAct.Start);

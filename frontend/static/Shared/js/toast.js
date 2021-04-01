@@ -40,7 +40,13 @@ Toast.prototype = {
   },
   hide: function (classList) {
     var event = new CustomEvent('hidden.toast', { detail: { toast: this.element } });
-    classList.remove('toast_show');
+    if (classList === undefined)
+    {
+      this.element.classList.remove('toast_show');
+    }
+    else{
+      classList.remove('toast_show');
+    }
     document.dispatchEvent(event);
   }
 };
