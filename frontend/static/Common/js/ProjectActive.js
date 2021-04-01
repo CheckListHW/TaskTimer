@@ -57,6 +57,7 @@ new Vue ({
     data: {
         projects: [ ],
         ConstprojectsTimers: [ ],
+
         common_user_projects: [],
         remaining_projects: [],
 
@@ -529,8 +530,9 @@ new Vue ({
             //необхадимо для даты без учета UTC и приведению к формату БД
             const vm = this;
             let localdate = date.toLocaleDateString('fr-CA')
+            vm.common_user_projects = (await get_last_projects(5))
             owner = document.getElementById('user_id').getAttribute('value')
-            vm.projectsTimers = await get_project_history(localdate, owner)
+            vm.projectsTimers = await get_project_history(localdate)
             vm.continue_timer()
         },
 
@@ -712,6 +714,13 @@ new Vue ({
                 name: proj.Name,
             })
         })
+
+        vm.common_user_projects = (await get_last_projects(5))
+
+        console.log(vm.common_user_projects)
+
+
+
         await vm.upgradeProjectTimer(new Date())
 
         vm.isOneTimerDoing = vm.projectsTimers.find(p => p.isPlayed == 1) != null
@@ -727,6 +736,7 @@ new Vue ({
     }
 })
 
+
 function night_update() {
     Toast.add({text: 'Через 60 страница перезагрузится и активная задача перенесется на следущий день',
                 color: '#16d1d7',
@@ -735,12 +745,33 @@ function night_update() {
 }
 
 
+async function get_last_projects(last=null) {
+    if (last === 0 || last === null)
+        return []
 
-async function get_project_history(day, Owner=null) {
+    let lastTempProjets = (await axios.get('/api/project/?last='+last)).data
+    let returnProject = []
+
+
+    console.log(lastTempProjets)
+
+    lastTempProjets.forEach(function (proj) {
+       returnProject.push({
+            id: proj.id,
+            name: proj.Name,
+        })
+    })
+
+    return returnProject
+}
+
+
+async function get_project_history(Day=null) {
     let number = -1
-    let owner_or_null = Owner == null ? '' : '&Owner=' + Owner
-    let tempProjectsHistory = (await axios.get('/api/project_history/?Date='+day+owner_or_null)).data,
+    let day = Day == null ? '' : '&Date=' + Day
+    let tempProjectsHistory = (await axios.get('/api/project_history/?x=0'+day)).data,
         returnProjectsHistory = []
+    console.log(tempProjectsHistory)
 
     tempProjectsHistory.forEach(function (projAct) {
             var start = projAct.Start == null ? new Date() : new Date(projAct.Start);

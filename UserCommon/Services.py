@@ -6,7 +6,6 @@ from django.utils import timezone
 from UserAdmin import models as admin_models
 from TaskTimer import settings
 from dateutil import tz
-from django.db import Error
 
 MyTimezone = tz.gettz(settings.TIME_ZONE)
 
@@ -20,7 +19,7 @@ def start_project_active(project_id: int) -> Optional[Union[bool, str]]:
             project_history.save()
             print(project_history)
         return True
-    except Error:
+    except Exception:
         return 'Проект не начат! Перезагрузите страницу'
 
 
@@ -36,12 +35,13 @@ def stop_project_active(project_id: int) -> Optional[Union[bool, str]]:
             project_history.Activity = False
             project_history.save()
             return True
-    except Error:
+    except Exception:
         return 'Проект не оставновлен! Перезагрузите страницу'
 
 
 def add_project_active(project_id: int, user: User) -> Optional[Union[int, str]]:
     try:
+        print(project_id)
         main_project = admin_models.Project.objects.get(id=project_id)
         project_active, created = ProjectActive.objects.get_or_create(Owner=user, Project=main_project,
                                                                       Name=main_project.Name)
@@ -51,7 +51,7 @@ def add_project_active(project_id: int, user: User) -> Optional[Union[int, str]]
                                          Name=main_project.Name, Activity=False)
         project_history.save()
         return project_history.id
-    except Error:
+    except Exception:
         return 'Проект не добавлен! Произошла ошибка :('
 
 
@@ -70,7 +70,7 @@ def add_date_project_active(project_id: int, date, user: User) -> Optional[Union
                                          Name=main_project.Name, Activity=False)
         project_history.save()
         return project_history.id
-    except Error:
+    except Exception:
         return 'Проект не добавлен! Произошла ошибка :('
 
 
@@ -81,7 +81,7 @@ def edit_note_project_active(project_id: int, Note) -> Optional[Union[int, str]]
             p_h.Note = Note if Note is not None else p_h.Note
             p_h.save()
         return True
-    except Error:
+    except Exception:
         return 'Проект не изменен! Произошла ошибка :('
 
 
@@ -92,10 +92,6 @@ def edit_start_end_project_active(project_id: int, start_time, end_time) -> Opti
                 return 'Время можно менять только у остановленных таймеров'
 
 
-            print('--before--')
-            print(p_h.Start)
-            print(p_h.End)
-            print('--before--')
             p_h.Start = p_h.Start.astimezone().replace(hour=start_time.get('hour') if start_time.get('hour')
                                                                                             is not None else p_h.Start.hour,
                                           minute=start_time.get('minute') if start_time.get('minute')
@@ -105,10 +101,6 @@ def edit_start_end_project_active(project_id: int, start_time, end_time) -> Opti
                                                                                       is not None else p_h.End.hour,
                                       minute=end_time.get('minute') if end_time.get('minute')
                                                                        is not None else p_h.End.minute, )
-            print('--in--')
-            print(p_h.Start)
-            print(p_h.End)
-            print('--in--')
 
             if p_h.Start > p_h.End:
                 return 'Не верные данные начало позже конца!'
@@ -143,7 +135,7 @@ def edit_start_end_project_active(project_id: int, start_time, end_time) -> Opti
             print('--after--')
             p_h.save()
             return True
-    except Error:
+    except Exception:
         return 'Проект не изменен! Произошла ошибка :('
 
 
@@ -159,7 +151,7 @@ def delete_project_active(project_id: int) -> Optional[Union[bool, str]]:
                 if len(p_hs) == 0:
                     p_hs.delete()
         return True
-    except Error:
+    except Exception:
         return 'Проект не удален! Перезагрузите страницу'
 
 

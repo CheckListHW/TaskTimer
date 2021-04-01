@@ -39,6 +39,11 @@
                         {% endif %}
                     " href="/project/active">HOME</a>
 
+                    <a class="nav_link
+                        {% if request.path == "/report" %}
+                            selected
+                        {% endif %}
+                    " href="/report">REPORT</a>
                     {% if user.groups.all.0.name == "admin" %}
                         <a class="nav_link
                                 {% if request.path == "/project" %}
@@ -46,13 +51,15 @@
                                 {% endif %}
                             "
                         href="/project">PROJECTS</a>
+                        <a class="nav_link
+                                {% if request.path == "/project" %}
+                                    selected
+                                {% endif %}
+                            "
+                        href="/admin">administration</a>
                     {% endif %}
 
-                    <a class="nav_link
-                        {% if request.path == "/report" %}
-                            selected
-                        {% endif %}
-                    " href="/report">REPORT</a>
+
 
                 </nav>
 

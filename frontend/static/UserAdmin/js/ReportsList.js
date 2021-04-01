@@ -186,7 +186,7 @@ new Vue ({
 
             vm.users.forEach(function (user) {
                vm.employees.push({
-                    name: user.first_name+' '+user.last_name+' '+user.patronymic,
+                    name: user.last_name+' '+user.first_name+' '+user.patronymic,
                     projectsList: get_project_list(projectActive, user.id),
                 })
             })
@@ -305,9 +305,6 @@ new Vue ({
         document.getElementById("endDate").setAttribute('max', EndDateDb)
 
         vm.update_reports('StartDate='+StartDateDb, 'EndDate='+EndDateDb)
-
-
-
     },
 })
 
@@ -353,8 +350,6 @@ function get_project_list(projectActive, user_id = null) {
                 month: date_parse.getMonth(),
                 day: date_parse.getDate(),
             }
-            new_p_a.name =  p_a.Name
-            new_p_a.name =  p_a.Name
             temp_projectActive.push(new_p_a)
         }
     })
