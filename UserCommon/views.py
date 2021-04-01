@@ -26,13 +26,15 @@ def add_project_active_views(request):
 
 
 def add_date_project_active_views(request):
-    return HttpResponse(add_date_project_active(parse_request(request).get('id'), parse_request(request).get('date'), request.user))
+    return HttpResponse(
+        add_date_project_active(parse_request(request).get('id'), parse_request(request).get('date'), request.user))
 
 
 def edit_start_end_project_active_views(request):
     return HttpResponse(edit_start_end_project_active(parse_request(request).get('id'),
-                                                 parse_request(request).get('Start'),
-                                                 parse_request(request).get('End')))
+                                                      parse_request(request).get('Start'),
+                                                      parse_request(request).get('End')))
+
 
 def edit_note_project_active_views(request):
     return HttpResponse(edit_note_project_active(parse_request(request).get('id'),
@@ -41,4 +43,3 @@ def edit_note_project_active_views(request):
 
 def delete_project_active_views(request):
     return HttpResponse(delete_project_active(parse_request(request).get('id')))
-
