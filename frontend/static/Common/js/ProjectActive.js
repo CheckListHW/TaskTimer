@@ -187,7 +187,7 @@ new Vue ({
                     },
 
                     isDone: true,
-                    isPlayed: true,
+                    isPlayed: false,
                 }
 
                 this.projectsTimers.push(newProject);
@@ -198,6 +198,7 @@ new Vue ({
                 response_message = await axiospost('/project_active/add', {
                     id: this.chosenProject.id,
                 })
+
                 if (response_message > 0){
                     Toast.add({
                             text: 'Проект: '+this.chosenProject.name+' добавлен!',
@@ -243,6 +244,7 @@ new Vue ({
                     isDone: false,
                     isPlayed: false,
                 }
+
                 this.projectsTimers.push(newProject);
 
                 this.chosenProject = null;
