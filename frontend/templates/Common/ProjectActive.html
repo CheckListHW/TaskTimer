@@ -133,7 +133,7 @@
                             </transition>
                         </div>
 
-                        <div class="time_period" :class="{error_time: projectTimer.timeError}" :ref="'dropdown' + index">
+                        <div class="time_period" :ref="'dropdown' + index">
                             <p @click="editTime(index)">{{prettify(projectTimer.timeStart.hour)}}:{{prettify(projectTimer.timeStart.minutes)}} - {{prettify(projectTimer.timeEnd.hour)}}:{{prettify(projectTimer.timeEnd.minutes)}}</p>
 
                             <transition
@@ -141,7 +141,7 @@
                                enter-active-class="animate__animated animate__zoomIn"
                                leave-active-class="animate__animated animate__zoomOut"
                             >
-                                <div class="time_edit_window" v-show="projectTimer.isChangeTime && !projectTimer.isPlayed">
+                                <div class="time_edit_window" v-show="projectTimer.isChangeTime && ( !projectTimer.isPlayed || projectTimer.isDone)">
                                     <input type="time" v-model="startEditTime" />
                                     <p>-</p>
                                     <input type="time" v-model="endEditTime" />
@@ -157,15 +157,13 @@
 
                         <div class="time_buttons">
                             <button class="button"
-                                    v-if="!projectTimer.isPlayed"
-                                    v-show="!projectTimer.isDone"
+                                    v-if="!projectTimer.isPlayed && !projectTimer.isDone"
                                     :disabled="projectTimer.isAddNote || isOneTimerDoing"
                                     @click="start(index)">
                                         <i class="fa fa-play"></i>
                             </button>
                             <button :class="{played_button: projectTimer.isPlayed, button: !projectTimer.isPlayed}"
-                                    v-show="!projectTimer.isDone"
-                                    v-else
+                                    v-if="projectTimer.isPlayed && !projectTimer.isDone"
                                     @click="stop(index)"
                                     :disabled="projectTimer.isAddNote">
                                         <i class="fa fa-stop"></i>
