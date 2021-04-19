@@ -47,7 +47,7 @@ input:active, input:focus {
 .container {
     width: 100%;
     height: 100%;
-    max-width: 1200px;
+    max-width: calc(100vw - 100px);
     margin: 0 auto;
 }
 
@@ -161,7 +161,7 @@ input:active, input:focus {
     max-height: calc(100vh - 85px);
 
     width: 100%;
-    max-width: 1200px;
+    max-width: calc(100vw - 100px);
 
     margin: 0 auto;
     padding: 0 15px;
