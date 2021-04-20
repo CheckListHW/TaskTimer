@@ -763,7 +763,7 @@ async function get_projects(last=null) {
 async function get_project_history(Day=null) {
     let number = -1
     let day = Day == null ? '' : '&Date=' + Day
-    let tempProjectsHistory = (await axios.get('/api/project_history/?x=0'+day)).data,
+    let tempProjectsHistory = (await axios.get('/api/project_history/?user=1'+day)).data,
         returnProjectsHistory = []
 
     tempProjectsHistory.forEach(function (projAct) {
