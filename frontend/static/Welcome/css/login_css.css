@@ -109,7 +109,7 @@ body {
 }
 
 .expand_margin {
-    margin-top: 75px;
+    margin-top: 105px;
 }
 
 
@@ -165,4 +165,25 @@ body {
 .submit-buttons input:nth-of-type(2) {
     border-radius: 0 5px 5px 0;
     background: #c8d6e5;
+}
+
+.submit-button {
+    display: flex;
+
+    margin-top: 20px;
+}
+
+.submit-button input {
+    text-align: center;
+    color: white;
+    transition: .2s;
+}
+
+.submit-button input:hover {
+    opacity: .7;
+}
+
+.submit-button input:nth-of-type(1) {
+    border-radius: 5px 0 0 5px;
+    background: #55a0ff;
 }

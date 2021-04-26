@@ -47,26 +47,37 @@
                     <i class="fa fa-user-plus" style="color:#57efc4;"></i>
                 </div>
                 <h1 class="form-title">
-                    РЕГИСТРАЦИЯ
+                    ВОССТАНОВЛЕНИЕ ПАРОЛЯ
                     <hr>
                 </h1>
 
-                <div v-bind:class="[login_visible ? 'short_margin' : 'expand_margin', 'form-container', 'animated', 'fadeIn']" style="animation-delay: .2s;">
+                <div v-show="!isRecovery" v-bind:class="[login_visible ? 'short_margin' : 'expand_margin', 'form-container', 'animated', 'fadeIn']" style="animation-delay: .2s;">
                     <label for=""><i class="fa fa-user-circle"></i> Имя </label>
-                    <input  type="text" v-model="register.name" placeholder="Имя">
+                    <input  type="text" v-model="recoveryName.name" placeholder="Имя">
 
-                    <label for=""><i class="fa fa-at"></i> Login </label>
-                    <input type="email" v-model="register.email" placeholder="Email">
-
-                    <label for=""><i class="fa fa-slack"></i> Пароль </label>
-                    <input type="password" v-model="register.password" placeholder="Пароль">
-
-                    <label for=""><i class="fa fa-slack"></i> Подтвердите пароль </label>
-                    <input type="password" v-model="register.confirn_passford"  placeholder="Пароль">
+                    <div class="submit-button">
+                        <input type="submit" value="Восстановить" @click="recovery" style="background:#55efc4; color: white;">
+                    </div>
 
                     <div class="submit-buttons">
-                        <input type="submit" value="Регистрация" style="background:#55efc4;">
+                        <input type="submit" value="Восстановление" style="background:#55efc4;">
                         <input type="button" value="Войти"  @click="change">
+                    </div>
+                </div>
+
+                 <div v-show="isRecovery" v-bind:class="[login_visible ? 'short_margin' : 'expand_margin', 'form-container', 'animated', 'fadeIn']" style="animation-delay: .2s;">
+                    <label for=""><i class="fa fa-user-circle"></i> Код </label>
+                    <input  type="text" v-model="getRecovery.cod" placeholder="Код">
+
+                    <label for=""><i class="fa fa-slack"></i> Новый пароль </label>
+                    <input type="email" v-model="getRecovery.password" placeholder="Новый пароль">
+
+                    <label for=""><i class="fa fa-slack"></i> Повторить новый пароль </label>
+                    <input type="password" v-model="getRecovery.passwordRepeat" placeholder="Повторить новый пароль">
+
+                    <div class="submit-buttons">
+                        <input type="submit" value="Назад" @click="back">
+                        <input type="button" value="Окей"  @click="ok"  style="background:#55efc4;">
                     </div>
                 </div>
             </div>
