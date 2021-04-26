@@ -55,6 +55,7 @@ EMAIL_HOST_PASSWORD = '162534!K'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

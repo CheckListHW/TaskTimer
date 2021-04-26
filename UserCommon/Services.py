@@ -39,6 +39,9 @@ def recovery(username: str) -> Optional[Union[bool, str]]:
     recovery_user = CustomUser.objects.filter(username=username)
     if len(recovery_user) > 0:
         recovery_user = CustomUser.objects.get(username=username)
+        print(recovery_user.email)
+        if recovery_user.email is None or not recovery_user.email.__contains__('@'):
+            return 'У пользователя нет почты. Для восстановления пароля обратитесь к админимтратору.'
         UserTokens.objects.filter(username=recovery_user.username).delete()
         new_token = UserTokens(username=recovery_user.username, token=random_word(6))
         new_token.save()
