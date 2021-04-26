@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="{% static "Welcome/icons/font-awesome-4.7.0/css/font-awesome.min.css" %}">
     <link rel="stylesheet" href="{% static "Welcome/css/login_css.css" %}">
     <link rel="stylesheet" href="{% static "Welcome/anim/animate.min.css" %}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.js"></script>
+    <script src="{% static "Shared/js/axiospost.js" %} "></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
     <title>Document</title>
 </head>
@@ -30,13 +33,13 @@
                         <label for=""><i class="fa fa-slack"></i> Пароль</label>
                         <input type="password" name="password" v-model="login.password" placeholder="Пароль">
 
-                        <label style="color: red; font-size: 13px"> {{ message }}</label>
+                        <label style="color: red; font-size: 13px" v-model="login.error"> {{ message }}</label>
 
                         {% csrf_token %}
 
                         <div class="submit-buttons">
                             <input type="submit" value="Войти">
-                            <input type="button" value="Регистрация" @click="change">
+                            <input type="button" value="Забыли пароль?" @click="change">
                         </div>
                     </div>
                 </form>
@@ -54,6 +57,7 @@
                 <div v-show="!isRecovery" v-bind:class="[login_visible ? 'short_margin' : 'expand_margin', 'form-container', 'animated', 'fadeIn']" style="animation-delay: .2s;">
                     <label for=""><i class="fa fa-user-circle"></i> Имя </label>
                     <input  type="text" v-model="recoveryName.name" placeholder="Имя">
+                    <label style="color: red; font-size: 13px" id="error"></label>
 
                     <div class="submit-button">
                         <input type="submit" value="Восстановить" @click="recovery" style="background:#55efc4; color: white;">
@@ -68,12 +72,13 @@
                  <div v-show="isRecovery" v-bind:class="[login_visible ? 'short_margin' : 'expand_margin', 'form-container', 'animated', 'fadeIn']" style="animation-delay: .2s;">
                     <label for=""><i class="fa fa-user-circle"></i> Код </label>
                     <input  type="text" v-model="getRecovery.cod" placeholder="Код">
+                    <label style="color: red; font-size: 13px" id="error"></label>
 
                     <label for=""><i class="fa fa-slack"></i> Новый пароль </label>
-                    <input type="email" v-model="getRecovery.password" placeholder="Новый пароль">
+                    <input type="password" v-model="getRecovery.password" placeholder="Новый пароль">
 
                     <label for=""><i class="fa fa-slack"></i> Повторить новый пароль </label>
-                    <input type="password" v-model="getRecovery.passwordRepeat" placeholder="Повторить новый пароль">
+                    <input type="password" v-model="getRecovery.passwordRepeat" placeholder="Повторить новый пароль" autocomplete="new-password">
 
                     <div class="submit-buttons">
                         <input type="submit" value="Назад" @click="back">
@@ -82,6 +87,9 @@
                 </div>
             </div>
         </div>
+    <form name="csrf-token">
+        {% csrf_token %}
+    </form>
     </div>
     {% load static %}
     <script src="{% static "Welcome/js/login_js.js" %} "></script>

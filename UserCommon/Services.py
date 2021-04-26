@@ -1,13 +1,51 @@
+import random
+import string
 from datetime import datetime, timedelta
 from typing import Optional, Union
 from django.contrib.auth.models import User
-from .models import ProjectHistory, ProjectActive
+from django.core.mail import send_mail
+
+from UserAdmin.models import CustomUser
+from .models import ProjectHistory, ProjectActive, UserTokens
 from django.utils import timezone
 from UserAdmin import models as admin_models
 from TaskTimer import settings
 from dateutil import tz
 
 MyTimezone = tz.gettz(settings.TIME_ZONE)
+
+
+def random_word(length):
+    return ''.join(random.choice(string.ascii_lowercase) for i in range(length))
+
+
+def recovery_change(user: str, token: str, new_password: str, repeat_new_password: str) -> Optional[Union[bool, str]]:
+    tokens = UserTokens.objects.filter(username=user)
+    users = CustomUser.objects.filter(username=user)
+    if len(users) <= 0:
+        return 'Пользователь не найден'
+    if len(tokens) <= 0:
+        return 'Код не найден'
+    if UserTokens.objects.get(username=user).token != token:
+        print(token)
+        print(UserTokens.objects.get(username=user).token)
+        return 'Код неправильный'
+    print(new_password)
+    print(repeat_new_password)
+    return change_password(CustomUser.objects.get(username=user), new_password, repeat_new_password)
+
+
+def recovery(username: str) -> Optional[Union[bool, str]]:
+    recovery_user = CustomUser.objects.filter(username=username)
+    if len(recovery_user) > 0:
+        recovery_user = CustomUser.objects.get(username=username)
+        UserTokens.objects.filter(username=recovery_user.username).delete()
+        new_token = UserTokens(username=recovery_user.username, token=random_word(6))
+        new_token.save()
+        #send_mail('Django mail', 'Ваш код восстановления: ' + new_token.token,
+                  #recovery_user.email, [recovery_user.email], fail_silently=False)
+        return True
+    return 'Пользователь не найден'
 
 
 def start_project_active(project_id: int) -> Optional[Union[bool, str]]:
@@ -23,8 +61,24 @@ def start_project_active(project_id: int) -> Optional[Union[bool, str]]:
         return 'Проект не начат! Перезагрузите страницу'
 
 
-def change_password(user: User, password: str) -> Optional[Union[bool, str]]:
-    return password
+def change_password(user: User, new_password: str, repeat_new_password: str) -> Optional[Union[bool, str]]:
+    if new_password == repeat_new_password:
+        u = CustomUser.objects.get(username=user)
+        u.set_password(new_password)
+        u.save()
+        return True
+    return 'пароли не совпадают'
+
+
+def change_info(user: User, name: str, surname: str, patronymic: str, email: str) -> Optional[Union[bool, str]]:
+    u = CustomUser.objects.get(username=user)
+    u.first_name = name
+    u.last_name = surname
+    u.patronymic = patronymic
+    u.email = email
+    u.save()
+    return True
+
 
 def stop_project_active(project_id: int) -> Optional[Union[bool, str]]:
     try:
@@ -94,16 +148,15 @@ def edit_start_end_project_active(project_id: int, start_time, end_time) -> Opti
             if p_h.Start is None or p_h.End is None:
                 return 'Время можно менять только у остановленных таймеров'
 
-
             p_h.Start = p_h.Start.astimezone().replace(hour=start_time.get('hour') if start_time.get('hour')
-                                                                                            is not None else p_h.Start.hour,
-                                          minute=start_time.get('minute') if start_time.get('minute')
-                                                                             is not None else p_h.Start.minute, )
+                                                                                      is not None else p_h.Start.hour,
+                                                       minute=start_time.get('minute') if start_time.get('minute')
+                                                                                          is not None else p_h.Start.minute, )
 
             p_h.End = p_h.End.astimezone().replace(hour=end_time.get('hour') if end_time.get('hour')
-                                                                                      is not None else p_h.End.hour,
-                                      minute=end_time.get('minute') if end_time.get('minute')
-                                                                       is not None else p_h.End.minute, )
+                                                                                is not None else p_h.End.hour,
+                                                   minute=end_time.get('minute') if end_time.get('minute')
+                                                                                    is not None else p_h.End.minute, )
 
             if p_h.Start > p_h.End:
                 return 'Не верные данные начало позже конца!'
@@ -159,7 +212,6 @@ def project_active() -> None:
 
         utc_start = p_h.Start.astimezone().date()
         if (timezone.localtime().date() - utc_start).days > 0:
-
             ProjectHistory.objects.filter(Start=None, End=None).delete()
 
             p_h.End = datetime(p_h.Start.astimezone().year, month=p_h.Start.astimezone().month,

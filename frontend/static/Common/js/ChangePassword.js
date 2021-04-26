@@ -1,12 +1,7 @@
 new Vue ({
     el: '#password',
     data: {
-        user: {
-            name: "Петр",
-            surname: "Обухов",
-            patronymic: "Кириллович",
-            email: "petr5542@gmail.com",
-        },
+        user: null,
 
         newPassword: "",
         repeatNewPassword: "",
@@ -48,7 +43,7 @@ new Vue ({
                     repeatNewPassword: this.repeatNewPassword,
                 })
 
-                if (response_message > 0){
+                if (response_message == 'True'){
                     Toast.add({
                             text: 'Проект: '+this.chosenProject.name+' добавлен!',
                             color: '#ffe600',
@@ -68,8 +63,38 @@ new Vue ({
             this.message = "";
         },
 
-        change: function() {
+        change:async function() {
+            let response_message = await axiospost('/change/info', {
+                name: this.user.name,
+                surname: this.user.surname,
+                patronymic: this.user.patronymic,
+                email: this.user.email,
+            })
 
+                if (response_message == 'True'){
+                    Toast.add({
+                            text: 'Проект: '+this.chosenProject.name+' добавлен!',
+                            color: '#ffe600',
+                            delay: 3000,
+                    });
+                }
+                else{
+                    Toast.add({
+                        text: response_message,
+                        color: '#ff0000',
+                        delay: 10000,
+                    });
+                    return
+                }
+        }
+    },
+
+    created: async function() {
+        this.user = {
+            name: document.getElementById('first_name').getAttribute('value'),
+            surname: document.getElementById('last_name').getAttribute('value'),
+            patronymic: document.getElementById('patronymic').getAttribute('value'),
+            email: document.getElementById('email').getAttribute('value'),
         }
     }
 })

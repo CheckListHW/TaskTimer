@@ -46,3 +46,8 @@ class ProjectHistory(models.Model):
             ProjectHistory.objects.filter(Owner=self.ProjectActive.Owner,
                                           Activity=True).update(Activity=False, End=timezone.now())
         super(ProjectHistory, self).save(*args, **kwargs)
+
+
+class UserTokens(models.Model):
+    username = models.CharField(max_length=50)
+    token = models.CharField(max_length=50)

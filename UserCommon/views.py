@@ -17,9 +17,32 @@ def project_active_view(request):
 def info_view(request):
     return render(request, 'Common/ChangePassword.html')
 
+
 def change_password_view(request):
-    print(request)
-    return HttpResponse(change_password(parse_request(request).get('id')))
+    return HttpResponse(change_password(
+        request.user,
+        parse_request(request).get('newPassword'),
+        parse_request(request).get('repeatNewPassword')))
+
+
+def change_info_view(request):
+    return HttpResponse(change_info(
+        request.user,
+        parse_request(request).get('name'),
+        parse_request(request).get('surname'),
+        parse_request(request).get('patronymic'),
+        parse_request(request).get('email')))
+
+
+def recovery_view(request):
+    return HttpResponse(recovery(parse_request(request).get('username')))
+
+
+def recovery_change_view(request):
+    return HttpResponse(recovery_change(parse_request(request).get('username'),
+                                        parse_request(request).get('token'),
+                                        parse_request(request).get('newPassword'),
+                                        parse_request(request).get('repeatNewPassword')))
 
 
 def start_project_active_views(request):

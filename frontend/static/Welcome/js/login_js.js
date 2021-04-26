@@ -32,7 +32,15 @@ new Vue ({
             this.register_visible = !this.register_visible;
         },
 
-        recovery: function() {
+        recovery:async function() {
+            response_message = await axiospost('/recovery', {
+                    username: this.recoveryName.name,
+                })
+            if (response_message !== 'True'){
+                document.getElementById('error').innerHTML=response_message
+                this.isRecovery = false;
+                return
+            }
             this.isRecovery = true;
         },
 
@@ -41,7 +49,18 @@ new Vue ({
 
         },
 
-        ok: function() {
+        ok:async function() {
+            response_message = await axiospost('/recovery/change', {
+                    username: this.recoveryName.name,
+                    token: this.getRecovery.cod,
+                    newPassword: this.getRecovery.password,
+                    repeatNewPassword: this.getRecovery.passwordRepeat,
+                })
+            if (response_message !== 'True'){
+                document.getElementById('error').innerHTML=response_message
+                this.isRecovery = false;
+                return
+            }
             this.isRecovery = false;
             this.login_visible = !this.login_visible;
             this.register_visible = !this.register_visible;

@@ -21,7 +21,6 @@
     <script src="{% static "Shared/js/Head.js" %} "></script>
     <script src="{% static "Shared/js/toast.js" %} "></script>
     <script src="{% static "Shared/js/axiospost.js" %} "></script>
-    <script src="{% static "Shared/js/axiospost.js" %} "></script>
 
     <title>HarTime</title>
 </head>
@@ -66,6 +65,10 @@
                 <div class="user">
                     <a class="user_link" id="user_name" value="{{user.username}}" href="/info"> {{user.username}} </a>
                     <a class="user_link" id="user_id" value="{{user.id}}"></a>
+                    <a class="user_link" id="first_name" value="{{user.first_name}}"></a>
+                    <a class="user_link" id="last_name" value="{{user.last_name}}"></a>
+                    <a class="user_link" id="email" value="{{user.email}}"></a>
+                    <a class="user_link" id="patronymic" value="{{user.patronymic}}"></a>
                     <a class="user_link" style="display: none" id="user_group" name="{{user.groups.all.0.name}}"></a>
                     <a class="user_link" href="/logout">&nbsp Выйти</a>
                 </div>
