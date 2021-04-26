@@ -46,6 +46,10 @@ new Vue ({
             this.newPassword = "";
             this.repeatNewPassword = "";
             this.message = "";
+        },
+
+        change: function() {
+
         }
     }
 })
