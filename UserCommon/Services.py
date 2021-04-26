@@ -42,8 +42,8 @@ def recovery(username: str) -> Optional[Union[bool, str]]:
         UserTokens.objects.filter(username=recovery_user.username).delete()
         new_token = UserTokens(username=recovery_user.username, token=random_word(6))
         new_token.save()
-        #send_mail('Django mail', 'Ваш код восстановления: ' + new_token.token,
-                  #recovery_user.email, [recovery_user.email], fail_silently=False)
+        send_mail('Django mail', 'Ваш код восстановления: ' + new_token.token,
+                  recovery_user.email, [recovery_user.email], fail_silently=False)
         return True
     return 'Пользователь не найден'
 
