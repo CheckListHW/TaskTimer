@@ -31,21 +31,38 @@ new Vue ({
             }
         },
 
-        isCorrect:async function() {
+        isCorrect:function() {
             if(this.newPassword != "" && this.newPassword == this.repeatNewPassword) {
                 return false;
-                console.log()
             }
             else {
                 return true;
-                console.log()
             }
         },
     },
 
     methods: {
-        sent: function() {
+        sent:async function() {
+            response_message = await axiospost('/change/password', {
+                    newPassword: this.newPassword,
+                    repeatNewPassword: this.repeatNewPassword,
+                })
 
+                if (response_message > 0){
+                    Toast.add({
+                            text: 'Проект: '+this.chosenProject.name+' добавлен!',
+                            color: '#ffe600',
+                            delay: 3000,
+                    });
+                }
+                else{
+                    Toast.add({
+                        text: response_message,
+                        color: '#ff0000',
+                        delay: 10000,
+                    });
+                    return
+                }
             this.newPassword = "";
             this.repeatNewPassword = "";
             this.message = "";
