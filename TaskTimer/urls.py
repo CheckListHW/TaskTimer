@@ -23,6 +23,8 @@ urlpatterns = [
     path('logout', AdminViews.LogoutView),
     path('project', AdminViews.project_view),
     path('report', AdminViews.report_view),
+    path('info', CommonViews.info_view),
+    path('change/password', CommonViews.change_password_view),
     path('project/add', AdminViews.add_project_views),
     path('project/active', CommonViews.project_active_view),
     path('project_active/add', CommonViews.add_project_active_views),

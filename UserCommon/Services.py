@@ -23,6 +23,9 @@ def start_project_active(project_id: int) -> Optional[Union[bool, str]]:
         return 'Проект не начат! Перезагрузите страницу'
 
 
+def change_password(user: User, password: str) -> Optional[Union[bool, str]]:
+    return password
+
 def stop_project_active(project_id: int) -> Optional[Union[bool, str]]:
     try:
         project_history = ProjectHistory.objects.get(id=project_id)

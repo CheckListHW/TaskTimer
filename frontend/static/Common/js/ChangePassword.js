@@ -15,14 +15,14 @@ new Vue ({
     },
 
     computed: {
-        isEntered: function() {
-            if(this.newPassword != "" && this.repeatNewPassword != 
-            "" && this.newPassword == this.repeatNewPassword) {
+        isEntered:  function() {
+            if(this.newPassword !== "" && this.repeatNewPassword !==
+            "" && this.newPassword === this.repeatNewPassword) {
                 this.message = "Пароли совпадают";
                 return true;
             }
-            else if(this.newPassword != "" && this.repeatNewPassword != 
-            "" && this.newPassword != this.repeatNewPassword) {
+            else if(this.newPassword !== "" && this.repeatNewPassword !==
+            "" && this.newPassword !== this.repeatNewPassword) {
                 this.message = "Пароли не совпадают";
                 return true;
             }
@@ -31,18 +31,21 @@ new Vue ({
             }
         },
 
-        isCorrect: function() {
+        isCorrect:async function() {
             if(this.newPassword != "" && this.newPassword == this.repeatNewPassword) {
                 return false;
+                console.log()
             }
             else {
                 return true;
+                console.log()
             }
         },
     },
 
     methods: {
         sent: function() {
+
             this.newPassword = "";
             this.repeatNewPassword = "";
             this.message = "";

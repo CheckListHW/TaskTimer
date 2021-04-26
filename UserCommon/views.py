@@ -13,6 +13,15 @@ def project_active_view(request):
     return render(request, 'Common/ProjectActive.html')
 
 
+@login_required(login_url='/')
+def info_view(request):
+    return render(request, 'Common/ChangePassword.html')
+
+def change_password_view(request):
+    print(request)
+    return HttpResponse(change_password(parse_request(request).get('id')))
+
+
 def start_project_active_views(request):
     return HttpResponse(start_project_active(parse_request(request).get('id')))
 
