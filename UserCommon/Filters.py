@@ -40,7 +40,6 @@ class ProjectHistoryListView(ModelViewSet):
     filterset_class = ProjectHistoryFilter
 
     def get_queryset(self):
-        print
         request_get = self.request.GET
         start_date = request_get.get('StartDate') if request_get.get('StartDate') is not None else "2010-01-01"
         end_date = request_get.get('EndDate') if request_get.get('EndDate') is not None else timezone.now().today()
@@ -48,11 +47,10 @@ class ProjectHistoryListView(ModelViewSet):
         user = self.request.user
 
         if user.groups.filter(name='admin').exists():
-            print(request_get)
             if request_get.get('user') is None:
                 return_p_h = ProjectHistory.objects.filter(Date__range=[start_date, end_date])
             else:
-                return_p_h = ProjectHistory.objects.filter(Owner=request_user, Date__range=[start_date, end_date])
+                return_p_h = ProjectHistory.objects.filter(Owner=user, Date__range=[start_date, end_date])
         else:
             return_p_h = ProjectHistory.objects.filter(Owner=user, Date__range=[start_date, end_date])
 
