@@ -409,7 +409,8 @@ hr {
     margin-right: 20px;
     padding: 0px 10px;
 
-    width: 200px;
+    min-width: 200px;
+    flex: 1;
     height: 70%;
 }
 
@@ -497,7 +498,6 @@ hr {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    flex: 1;
 }
 
 .time_buttons button {
