@@ -173,6 +173,7 @@ new Vue ({
                     timeStart: {
                         hour: now.getHours(),
                         minutes: now.getMinutes(),
+                        seconds: now.getSeconds(),
                     },
                     timeEnd: {
                         hour: now.getHours(),
@@ -228,6 +229,7 @@ new Vue ({
                     timeStart: {
                         hour: now.getHours(),
                         minutes: now.getMinutes(),
+                        seconds: now.getSeconds(),
                     },
                     timeEnd: {
                         hour: now.getHours(),
@@ -409,8 +411,11 @@ new Vue ({
         tik_timer_iteration: function(index){
             if (this.projectsTimers[index] != undefined){
                 if (this.projectsTimers[index].isPlayed){
-                    this.projectsTimers[index].time += 1;
                     var now = new Date();
+                    let secondsPassed = now.getSeconds() - this.projectsTimers[index].timeStart.seconds
+                    let minutesPassed = now.getMinutes() - this.projectsTimers[index].timeStart.minutes
+                    let hoursPassed = now.getHours() - this.projectsTimers[index].timeStart.hour
+                    this.projectsTimers[index].time = ((hoursPassed * 60) + minutesPassed) * 60 + secondsPassed;
                     this.projectsTimers[index].timeEnd.hour = now.getHours();
                     this.projectsTimers[index].timeEnd.minutes = now.getMinutes();
                 }
@@ -717,10 +722,6 @@ new Vue ({
         let until_day_end = 86400-((date.getHours()*60)+date.getMinutes())*60+date.getSeconds()
         setTimeout(night_update, (until_day_end)*1000);
 
-
-
-
-
         //Сначала заполняется common_user_projects
         this.remaining_projects = this.deleteUsersProjects(this.projects, this.common_user_projects);
     },
@@ -785,6 +786,7 @@ async function get_project_history(Day=null) {
                 timeStart: {
                     hour: start.getHours(),
                     minutes: start.getMinutes(),
+                    seconds: start.getSeconds(),
                 },
 
                 timeEnd: {

@@ -43,7 +43,7 @@ class ProjectHistoryListView(ModelViewSet):
         request_get = self.request.GET
         start_date = request_get.get('StartDate') if request_get.get('StartDate') is not None else "2010-01-01"
         end_date = request_get.get('EndDate') if request_get.get('EndDate') is not None else timezone.now().today()
-        request_user = request_get.get('user') if request_get.get('user') is not None else None
+        # request_user = request_get.get('user') if request_get.get('user') is not None else None
         user = self.request.user
 
         if user.groups.filter(name='admin').exists():
