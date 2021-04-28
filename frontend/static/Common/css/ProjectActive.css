@@ -498,6 +498,7 @@ hr {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    min-width: 90px;
 }
 
 .time_buttons button {
