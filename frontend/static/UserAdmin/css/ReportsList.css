@@ -17,13 +17,13 @@ body {
 
 ::-webkit-scrollbar {
     width: 8px;
-    height: 6px;
+    height: 8px;
     background-color: #8D8741;
 }
 
 ::-webkit-scrollbar-thumb {
     width: 8px;
-    height: 6px;
+    height: 8px;
     background-color: #DAAD86;
 }
 
@@ -304,8 +304,8 @@ button, button:active, button:focus {
     padding: 0 5px;
     height: 40px;
 
-    width: 104px;
-    min-width: 104px;
+    width: 80px;
+    min-width: 80px;
 
     font-size: 14px;
     vertical-align: middle;
@@ -327,15 +327,15 @@ button, button:active, button:focus {
     padding: 3px 5px;
     height: 40px;
 
-    width: 104px;
-    min-width: 104px;
+    width: 80px;
+    min-width: 80px;
 
     font-size: 14px;
     vertical-align: middle;
     text-align: center;
     word-wrap: break-word;
 
-    background-color: rgba(101,157,189,0.8);
+    background-color: rgba(101,157,189,1);
 }
 
 .report_table tr th:first-child {

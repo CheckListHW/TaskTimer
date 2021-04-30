@@ -23,18 +23,18 @@ input[type="number"]::-webkit-inner-spin-button {
 
 ::-webkit-scrollbar {
     width: 8px;
-    height: 6px;
+    height: 8px;
     background-color: #8D8741;
 }
 
 ::-webkit-scrollbar-thumb {
     width: 8px;
-    height: 6px;
+    height: 8px;
     background-color: #DAAD86;
 }
 
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    -webkit-box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
     background-color: #8D8741;
 }
 
@@ -577,7 +577,7 @@ hr {
 .format-week {
     float: right;
 }
-
+report_table
 .table td {
     text-align: center;
     padding: 5px;
