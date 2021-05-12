@@ -214,9 +214,6 @@ def project_active() -> None:
     for p_h in ProjectHistory.objects.filter(Activity=True, Owner_id=2):
         utc_start = p_h.Start.astimezone().date()
 
-        print(timezone.localtime())
-        print(p_h.Start.astimezone())
-
         if (timezone.localtime() - p_h.Start.astimezone()).seconds > 36000:
             if (timezone.localtime().date() - utc_start).days == 0:
                 p_h.End = p_h.Start.astimezone() + timedelta(hours=10)
@@ -247,9 +244,6 @@ def project_active() -> None:
                                      Name=p_h.Name, Date=datetime_next_day_project.date(),
                                      Start=datetime_next_day_project, End=new_p_h_end,
                                      Note=p_h.Note, Activity=new_p_h_activity)
-            print('p_h.Start.astimezone()')
-            print(p_h.Start.astimezone())
-            print(p_h.Start.astimezone() + timedelta(hours=10))
 
             p_h.save()
             new_p_h.save()
