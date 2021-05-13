@@ -211,7 +211,7 @@ def delete_project_active(project_id: int) -> Optional[Union[bool, str]]:
 
 
 def project_active() -> None:
-    for p_h in ProjectHistory.objects.filter(Activity=True, Owner_id=2):
+    for p_h in ProjectHistory.objects.filter(Activity=True):
         utc_start = p_h.Start.astimezone().date()
 
         if (timezone.localtime() - p_h.Start.astimezone()).seconds > 36000:
