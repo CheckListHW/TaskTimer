@@ -211,9 +211,18 @@ def delete_project_active(project_id: int) -> Optional[Union[bool, str]]:
 
 
 def project_active() -> None:
-    for p_h in ProjectHistory.objects.filter(Activity=True):
-
+    for p_h in ProjectHistory.objects.filter(Activity=True, Owner_id=2):
         utc_start = p_h.Start.astimezone().date()
+
+        print(timezone.localtime())
+        print(p_h.Start.astimezone())
+
+        if (timezone.localtime() - p_h.Start.astimezone()).seconds > 36000:
+            if (timezone.localtime().date() - utc_start).days == 0:
+                p_h.End = p_h.Start.astimezone() + timedelta(hours=10)
+                p_h.Activity = False
+                p_h.save()
+
         if (timezone.localtime().date() - utc_start).days > 0:
             ProjectHistory.objects.filter(Start=None, End=None).delete()
 
@@ -227,12 +236,24 @@ def project_active() -> None:
                                                  day=start_plus_day.day, hour=0, minute=0, second=0,
                                                  microsecond=0, tzinfo=MyTimezone)
 
+            if (timezone.localtime() - p_h.Start.astimezone()).total_seconds() > 36000:
+                new_p_h_end = p_h.Start.astimezone() + timedelta(hours=10)
+                new_p_h_activity = False
+            else:
+                new_p_h_end = None
+                new_p_h_activity = True
+
             new_p_h = ProjectHistory(Owner=p_h.Owner, ProjectActive=p_h.ProjectActive,
                                      Name=p_h.Name, Date=datetime_next_day_project.date(),
-                                     Start=datetime_next_day_project,
-                                     Note=p_h.Note, Activity=True)
+                                     Start=datetime_next_day_project, End=new_p_h_end,
+                                     Note=p_h.Note, Activity=new_p_h_activity)
+            print('p_h.Start.astimezone()')
+            print(p_h.Start.astimezone())
+            print(p_h.Start.astimezone() + timedelta(hours=10))
+
             p_h.save()
             new_p_h.save()
             project_active()
+            print(new_p_h.Activity)
             break
     return
